@@ -97,7 +97,7 @@ export class StepperComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.http.get('../../assets/heraclea.png', { responseType: 'blob' })
+    this.http.get('assets/heraclea.png', { responseType: 'blob' })
       .subscribe(blob => {
         const reader = new FileReader();
         reader.readAsDataURL(blob);
