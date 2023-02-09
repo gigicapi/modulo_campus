@@ -125,7 +125,7 @@
     <p>
       il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;
       <strong>{{datiAtletaMinorenne.value['cognomeGenitore']}}</strong> genitore/esercente la patria potestà
-      chiede l'iscrizione al campus di: <strong>{{datiAtletaMinorenne.value['iscrizione']}}</strong>
+      chiede l'iscrizione al campus: <strong>{{datiAtletaMinorenne.value['iscrizione']}}</strong>
     </p>
     <p>
       Nome <strong>{{datiAtletaMinorenne.value['nome']}}</strong> Cognome
@@ -157,7 +157,7 @@
     <p>
       il/la sottoscritto/a <strong>{{datiAtletaMaggiorenne.value['nome']}}</strong>&nbsp;
       <strong>{{datiAtletaMaggiorenne.value['cognome']}}</strong> chiede
-      l'iscrizione al campus di: <strong>{{datiAtletaMaggiorenne.value['iscrizione']}}</strong>
+      l'iscrizione al campus: <strong>{{datiAtletaMaggiorenne.value['iscrizione']}}</strong>
     </p>
     <p>
       nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> Il
@@ -270,8 +270,8 @@
     <strong>{{datiAtletaMaggiorenne.value['telefonoAtleta']}}</strong>
   </p>
   <h5 class="title">CON LA PRESENTE AUTORIZZA</h5>
-  <p *ngIf="!isMaggiorenne">Il/La proprio/a figlio/figlia a prendere parte al Heraclea Fencing Camp di:</p>
-  <p *ngIf="isMaggiorenne">la sua iscrizione all'Heraclea Fencing Camp di:</p>
+  <p *ngIf="!isMaggiorenne">Il/La proprio/a figlio/figlia a prendere parte al camp:</p>
+  <p *ngIf="isMaggiorenne">la sua iscrizione al camp:</p>
   <ul *ngIf="!isMaggiorenne">
     <li *ngFor="let item of datiAtletaMinorenne.value['iscrizione']">{{ item }}</li>
   </ul>
