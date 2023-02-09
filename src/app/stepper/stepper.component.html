@@ -1,0 +1,367 @@
+<mat-stepper [linear]="!upload" #stepper>
+  <mat-step label="Atleta minorenne" [completed]="isMaggiorenne >= 0">
+    <div class="full-width">
+      <label>Seleziona un'opzione</label>
+      <mat-radio-group (change)="setIsMaggiorenne($event)" aria-label="Seleziona un'opzione">
+        <mat-radio-button value="0">Minorenne</mat-radio-button>
+        <mat-radio-button value="1">Maggiorenne</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div class="button-container">
+      <div></div>
+      <button *ngIf="isMaggiorenne >= 0" mat-raised-button color="primary" matStepperNext>
+        <span>Avanti</span>
+        <mat-icon fontIcon="arrow_forward"></mat-icon>
+      </button>
+    </div>
+  </mat-step>
+  <mat-step label="Dati Atleta" [stepControl]="isMaggiorenne ? datiAtletaMaggiorenne : datiAtletaMinorenne"
+    errorMessage="Compilare tutti i campi"
+    [completed]="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid">
+    <p style="color: red; font-weight: bold;" *ngIf="isMaggiorenne < 0">Devi prima selezionare se atleta maggiorenne o
+      minorenne allo step precedente</p>
+    <app-minorenne *ngIf="!isMaggiorenne && isMaggiorenne !== -1" [datiAtleta]="datiAtletaMinorenne"
+      (formCompleteEvent)="isFormComplete($event)"></app-minorenne>
+    <app-maggiorenne *ngIf="isMaggiorenne && isMaggiorenne !== -1" [datiAtleta]="datiAtletaMaggiorenne"
+      (formCompleteEvent)="isFormComplete($event)"></app-maggiorenne>
+    <div class="button-container">
+      <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+        <span>Indietro</span></button>
+      <button mat-raised-button color="primary"
+        *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" matStepperNext>
+        <span>Avanti</span>
+        <mat-icon fontIcon="arrow_forward"></mat-icon>
+      </button>
+    </div>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Esporta PDF</ng-template>
+    <p *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid">
+      Puoi scaricare i moduli precompilati, firmarli e ricaricarli nello step successivo per il completamento
+      dell'iscrizione.
+    </p>
+    <p style="color: red; font-weight: bold;"
+      *ngIf="isMaggiorenne ? !datiAtletaMaggiorenne.valid : !datiAtletaMinorenne.valid">
+      Devi prima compilare il modulo allo step precedente
+    </p>
+    <div>
+      <button mat-raised-button *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid"
+        (click)="exportPDF()" color="primary">
+        <span>Scarica PDF</span> <mat-icon fontIcon="download"></mat-icon>
+      </button>
+    </div>
+    <div class="button-container">
+      <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+        <span>Indietro</span></button>
+      <button *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" mat-raised-button
+        color="primary" matStepperNext>
+        <span>Avanti</span> <mat-icon fontIcon="arrow_forward"></mat-icon>
+      </button>
+    </div>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Carica file</ng-template>
+    <div class="col-container">
+      <p>Carica tutti i file necessari</p>
+      <div class="upload-section">
+        <label>Modulo di Iscrizione Firmato</label>
+        <input type="file" id="fileIscrizione" (change)="selectFile($event, 'MODULO_ISCRIZIONE')"
+          name="fileIscrizione" />
+      </div>
+      <div class="upload-section">
+        <label>Esonero Responsabilità Firmato</label>
+        <input type="file" id="fileEsonero" (change)="selectFile($event, 'ESONERO_RESPONSABILITA')"
+          name="fileEsonero" />
+      </div>
+      <div class="upload-section">
+        <label>Liberatoria Firmata</label>
+        <input type="file" id="fileLiberatoria" (change)="selectFile($event, 'LIBERATORIA')" name="fileLiberatoria" />
+      </div>
+      <div class="upload-section">
+        <label>Documento di riconoscimento Atleta (Fronte)</label>
+        <input type="file" id="fileInput1" (change)="selectFile($event, 'CI_FRONTE')" name="fileInput1" />
+      </div>
+      <div class="upload-section">
+        <label>Documento di riconoscimento Atleta (Retro)</label>
+        <input type="file" id="fileInput2" (change)="selectFile($event, 'CI_RETRO')" name="fileInput2" />
+      </div>
+      <div class="upload-section">
+        <label>Tessera sanitaria Atleta</label>
+        <input type="file" id="fileInput3" (change)="selectFile($event, 'TESSERA_SANITARIA')" name="fileInput3" />
+      </div>
+      <div class="upload-section">
+        <label>Attestazione Versamento caparra</label>
+        <input type="file" id="fileInput4" (change)="selectFile($event, 'VERSAMENTO_CAPARRA')" name="fileInput4" />
+      </div>
+      <div class="upload-section"
+        *ngIf="upload || (isMaggiorenne? datiAtletaMaggiorenne.value['allergie'] : datiAtletaMinorenne.value['allergie'])">
+        <label>Documentazione Allergie/Intolleranze</label>
+        <input type="file" id="fileInput5" (change)="selectFile($event, 'ALLERGIE_INTOLLERANZE')" name="fileInput5" />
+      </div>
+      <div class="upload-section" *ngIf="isAllLoaded()">
+        <button *ngIf="!sendingMail" mat-raised-button (click)="sendMail()"><mat-icon fontIcon="send"></mat-icon>
+          <span>Invia modulo</span>
+        </button>
+        <mat-spinner *ngIf="sendingMail"></mat-spinner>
+        <div class="action-complete" *ngIf="mailSent">
+          <label>Mail inviata con successo!</label>
+        </div>
+        <div class="action-error" *ngIf="mailError">
+          <label>Si è verificato un errore durante l'invio della mail. Riprova.</label>
+        </div>
+      </div>
+    </div>
+    <div class="button-container">
+      <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+        <span>Indietro</span></button>
+    </div>
+  </mat-step>
+</mat-stepper>
+
+<!--
+<div class="pdf_section" id="pdfTable" #pdftable="">
+
+
+</div> -->
+
+<div id="firstPage" class="page">
+  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />MODULO D'ISCRIZIONE HERACLEA
+    FENCING CAMP</h3>
+  <div *ngIf="!isMaggiorenne" class="dati_atleta">
+    <p>
+      il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;
+      <strong>{{datiAtletaMinorenne.value['cognomeGenitore']}}</strong> genitore/esercente la patria potestà
+      chiede l'iscrizione al campus di: <strong>{{datiAtletaMinorenne.value['iscrizione']}}</strong>
+    </p>
+    <p>
+      Nome <strong>{{datiAtletaMinorenne.value['nome']}}</strong> Cognome
+      <strong>{{datiAtletaMinorenne.value['cognome']}}</strong>
+      nato/a a <strong>{{datiAtletaMinorenne.value['luogo']}}</strong> Il
+      <strong>{{datiAtletaMinorenne.value['dataNascita']}}</strong> Residente a
+      <strong>{{datiAtletaMinorenne.value['residenza']}}</strong>
+      in Via <strong>{{datiAtletaMinorenne.value['viaResidenza']}}</strong> n°
+      <strong>{{datiAtletaMinorenne.value['nResidenza']}}</strong>
+      <br />
+      Tesserato con la Società <strong>{{datiAtletaMinorenne.value['societa']}}</strong>
+      Arma <strong>{{datiAtletaMinorenne.value['arma']}}</strong> Numero F.I.S.
+      <strong>{{datiAtletaMinorenne.value['numeroFIS']}}</strong>
+      <br />
+      Allergie o intolleranze <strong>{{datiAtletaMinorenne.value['allergie'] ? 'SI' : 'NO'}}</strong>
+      Desidererei, se possibile, essere sistemato/a in camera con
+      <strong>{{datiAtletaMinorenne.value['preferenzaCamera']}}</strong>
+      <br />
+      Cell Atleta <strong>{{datiAtletaMinorenne.value['telefonoAtleta']}}</strong> Cell Padre
+      <strong>{{datiAtletaMinorenne.value['telefonoPadre']}}</strong> Cell Madre
+      <strong>{{datiAtletaMinorenne.value['telefonoMadre']}}</strong>
+      Email <strong>{{datiAtletaMinorenne.value['email']}}</strong>
+      <br />
+      T-Shirt <strong>{{datiAtletaMinorenne.value['tShirt']}}</strong> Pantaloncino
+      <strong>{{datiAtletaMinorenne.value['pantaloncino']}}</strong>
+    </p>
+  </div>
+  <div *ngIf="isMaggiorenne" class="dati_atleta">
+    <p>
+      il/la sottoscritto/a <strong>{{datiAtletaMaggiorenne.value['nome']}}</strong>&nbsp;
+      <strong>{{datiAtletaMaggiorenne.value['cognome']}}</strong> chiede
+      l'iscrizione al campus di: <strong>{{datiAtletaMaggiorenne.value['iscrizione']}}</strong>
+    </p>
+    <p>
+      nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> Il
+      <strong>{{datiAtletaMaggiorenne.value['dataNascita']}}</strong> Residente a
+      <strong>{{datiAtletaMaggiorenne.value['residenza']}}</strong> in Via
+      <strong>{{datiAtletaMaggiorenne.value['viaResidenza']}}</strong> n°
+      <strong>{{datiAtletaMaggiorenne.value['nResidenza']}}</strong>
+      <br />
+      Tesserato con la Società <strong>{{datiAtletaMaggiorenne.value['societa']}}</strong>
+      Arma <strong>{{datiAtletaMaggiorenne.value['arma']}}</strong> Numero F.I.S.
+      <strong>{{datiAtletaMaggiorenne.value['numeroFIS']}}</strong>
+      <br />
+      Allergie o intolleranze <strong>{{datiAtletaMaggiorenne.value['allergie'] ? 'SI' : 'NO'}}</strong>
+      Desidererei, se possibile, essere sistemato/a in camera con
+      <strong>{{datiAtletaMaggiorenne.value['preferenzaCamera']}}</strong>
+      <br />
+      Cell Atleta <strong>{{datiAtletaMaggiorenne.value['telefonoAtleta']}}</strong> Cell Padre
+      <strong>{{datiAtletaMaggiorenne.value['telefonoPadre']}}</strong> Cell Madre
+      <strong>{{datiAtletaMaggiorenne.value['telefonoMadre']}}</strong>
+      Email <strong>{{datiAtletaMaggiorenne.value['email']}}</strong>
+      <br />
+      T-Shirt <strong>{{datiAtletaMaggiorenne.value['tShirt']}}</strong> Pantaloncino
+      <strong>{{datiAtletaMaggiorenne.value['pantaloncino']}}</strong>
+    </p>
+  </div>
+  <h5 class="underline center">REGOLAMENTO GENERALE</h5>
+  <div class="regolamento">
+    <ol>
+      <li>La quota campus ammonta a 650,00 € e comprende: Sistemazione in camera multipla, pensione completa,
+        all-inclusive 24h (solo camp di Pizzo),
+        lezioni individuali e di gruppo, tornei, kit campus, transfer da stazione/aeroporto (solo camp
+        di Pizzo), attività ricreativa con l’utilizzo di tutti i servizi della struttura.
+        <ul>
+          <li>Sono previste due tipologie di sconto non cumulabili fra loro.
+            <ol>
+              <li>50,00 € sulla seconda quota per fratelli/sorelle.</li>
+              <li>100,00 € per chi parteciperà ad entrambi i campus. (Sconto applicabile sul saldo del secondo campus)
+              </li>
+            </ol>
+          </li>
+        </ul>
+      </li>
+      <li>
+        Anticipo quota d’iscrizione di 350,00 €, saldo da consegnare al proprio Maestro di sala oppure da
+        concordare telefonicamente. La quota non è rimborsabile, fatta salva l’ipotesi di non effettuazione
+        dello stage o in caso di quarantena covid accertata.
+      </li>
+      <li>
+        La società organizzatrice declina ogni responsabilità per eventuali incidenti o danni a persone o
+        cose che dovessero verificarsi prima, durante e dopo il ritiro.
+      </li>
+      <li>
+        Eventuali danni all’interno della struttura, saranno risarciti dai responsabili prima della partenza.
+      </li>
+      <li>
+        Potrà essere richiesto il green pass e/o il risultato di una tampone antigenico negativo eseguito
+        nelle 48 ore precedenti l’inizio dell’evento.
+      </li>
+    </ol>
+  </div>
+  <h6 class="bold">Preso atto ed approvato il presente Regolamento Generale, dichiaro di:</h6>
+  <div>
+    <ul>
+      <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell’atleta</li>
+      <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico per
+        chi non ha compiuto i 10 anni)</li>
+      <li>Essere in regola con l’iscrizione alla F.I.S. per la stagione 2022-2023 per Formia, e 2023-2024 per Pizzo
+      </li>
+      <li>Modulo scarico responsabilità</li>
+      <li>Attestazione di versamento della caparra (350,00 €) sul C/C bancario intestato a: Club Scherma
+        Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720
+        specificando nella causale: camp cognome e nome dell’atleta – es. Formia o Pizzo – Luigi Rossi.</li>
+    </ul>
+    <p>
+      Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
+      per gli effetti dell’art. 13 del regolamento (UE) 2016/679 definito GDPR.
+    </p>
+    <p *ngIf="isMaggiorenne">
+      Luogo e data ___________________ Firma __________________________________ (atleta maggiorenne)
+    </p>
+    <p *ngIf="!isMaggiorenne">
+      Luogo e data ___________________ Firma __________________________________ (genitore/tutore legale)
+    </p>
+  </div>
+</div>
+
+<div id="secondPage" class="page">
+  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />DICHIARAZIONE DI ESONERO DA
+    OGNI RESPONSABILITA' HERACLEA FENCING CAMP</h3>
+
+  <p *ngIf="!isMaggiorenne">
+    il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;
+    <strong>{{datiAtletaMinorenne.value['cognomeGenitore']}}</strong>
+    nato/a a <strong>{{datiAtletaMinorenne.value['luogo']}}</strong> Il
+    <strong>{{datiAtletaMinorenne.value['dataNascita']}}</strong>
+    Residente <strong>{{datiAtletaMinorenne.value['residenza']}}</strong> in Via
+    <strong>{{datiAtletaMinorenne.value['viaResidenza']}}</strong> n°
+    <strong>{{datiAtletaMinorenne.value['nResidenza']}}</strong>
+    Email <strong>{{datiAtletaMinorenne.value['email']}}</strong> Cell
+    <strong>{{datiAtletaMinorenne.value['telefonoPadre']}}</strong> -
+    <strong>{{datiAtletaMinorenne.value['telefonoMadre']}}</strong>
+    In qualità di genitore/esercente la patria potestà del minore <strong>{{datiAtletaMinorenne.value['nome']}}</strong>&nbsp;
+    <strong>{{datiAtletaMinorenne.value['cognome']}}</strong>
+  </p>
+  <p *ngIf="isMaggiorenne">
+    il/la sottoscritto/a <strong>{{datiAtletaMaggiorenne.value['nome']}}</strong>&nbsp;
+    <strong>{{datiAtletaMaggiorenne.value['cognome']}}</strong>
+    nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> Il
+    <strong>{{datiAtletaMaggiorenne.value['dataNascita']}}</strong>
+    Residente <strong>{{datiAtletaMaggiorenne.value['residenza']}}</strong> in Via
+    <strong>{{datiAtletaMaggiorenne.value['viaResidenza']}}</strong> n°
+    <strong>{{datiAtletaMaggiorenne.value['nResidenza']}}</strong>
+    Email <strong>{{datiAtletaMaggiorenne.value['email']}}</strong> Cell
+    <strong>{{datiAtletaMaggiorenne.value['telefonoAtleta']}}</strong>
+  </p>
+  <h5 class="title">CON LA PRESENTE AUTORIZZA</h5>
+  <p *ngIf="!isMaggiorenne">Il/La proprio/a figlio/figlia a prendere parte al Heraclea Fencing Camp di:</p>
+  <p *ngIf="isMaggiorenne">la sua iscrizione all'Heraclea Fencing Camp di:</p>
+  <ul *ngIf="!isMaggiorenne">
+    <li *ngFor="let item of datiAtletaMinorenne.value['iscrizione']">{{ item }}</li>
+  </ul>
+  <ul *ngIf="isMaggiorenne">
+    <li *ngFor="let item of datiAtletaMaggiorenne.value['iscrizione']">{{ item }}</li>
+  </ul>
+  <h5 class="title">E DICHIARA</h5>
+  <p *ngIf="!isMaggiorenne">
+    di aver provveduto all’iscrizione del proprio figlio/figlia e provvederà al pagamento della quota come
+    riportato dal Regolamento Generale presente nel modello d’iscrizione. Dichiara altresì di sollevare il Club
+    Scherma Cosenza, l’azienda/società ospitante dell’evento e la F.I.S. da ogni e qualsiasi responsabilità
+    connessa al comportamento del minore, nonché da eventuali obblighi degli accompagnatori incaricati,
+    anche ai sensi dell’art.2048 c.c.
+  </p>
+  <p *ngIf="isMaggiorenne">
+    di aver provveduto all’iscrizione e provvederà al pagamento della quota come
+    riportato dal Regolamento Generale presente nel modello d’iscrizione. Dichiara altresì di sollevare il Club
+    Scherma Cosenza, l’azienda/società ospitante dell’evento e la F.I.S. da ogni e qualsiasi responsabilità
+    connessa al comportamento del minore, nonché da eventuali obblighi degli accompagnatori incaricati,
+    anche ai sensi dell’art.2048 c.c.
+  </p>
+  <p>
+    Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
+    per gli effetti dell’art. 13 del regolamento (UE) 2016/679 definito GDPR.
+  </p>
+  <p *ngIf="isMaggiorenne">
+    Luogo e data ___________________ Firma __________________________________ (atleta maggiorenne)
+  </p>
+  <p *ngIf="!isMaggiorenne">
+    Luogo e data ___________________ Firma __________________________________ (genitore/tutore legale)
+  </p>
+</div>
+
+<div id="thirdPage" class="page">
+  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />LIBERATORIA DI UTILIZZO DELLE IMMAGINI E
+    DEI VIDEO</h3>
+  <p *ngIf="!isMaggiorenne">
+    il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;
+    <strong>{{datiAtletaMinorenne.value['cognomeGenitore']}}</strong>
+    nato/a a <strong>{{datiAtletaMinorenne.value['luogo']}}</strong> Il
+    <strong>{{datiAtletaMinorenne.value['dataNascita']}}</strong>
+    Residente <strong>{{datiAtletaMinorenne.value['residenza']}}</strong> in Via
+    <strong>{{datiAtletaMinorenne.value['viaResidenza']}}</strong> n°
+    <strong>{{datiAtletaMinorenne.value['nResidenza']}}</strong>
+    In qualità di genitore/esercente la patria potestà del minore
+    <strong>{{datiAtletaMinorenne.value['nome']}}</strong>&nbsp;
+    <strong>{{datiAtletaMinorenne.value['cognome']}}</strong>
+  </p>
+  <p *ngIf="isMaggiorenne">
+    il/la sottoscritto/a <strong>{{datiAtletaMaggiorenne.value['nome']}}</strong>&nbsp;
+    <strong>{{datiAtletaMaggiorenne.value['cognome']}}</strong>
+    nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> Il
+    <strong>{{datiAtletaMaggiorenne.value['dataNascita']}}</strong>
+    Residente <strong>{{datiAtletaMaggiorenne.value['residenza']}}</strong> in Via
+    <strong>{{datiAtletaMaggiorenne.value['viaResidenza']}}</strong> n°
+    <strong>{{datiAtletaMaggiorenne.value['nResidenza']}}</strong>
+  </p>
+  <h5 class="title">AUTORIZZA</h5>
+  <p>
+    Il Club Scherma Cosenza, con sede legale in via degli stadi snc, 87100 Cosenza C.F. 98026430789 P.iva
+    01973250788 (di seguito anche “Titolare” o “Club”), telefono 3926341679, email
+    campusscherma@gmail.com, in qualità di Titolare del trattamento, a realizzare fotografie e riprese audio e
+    video, non lesive della mia immagine, a titolo gratuito, anche ai sensi degli artt. 10 e 320 Cod. civ. e degli
+    artt. 96 e 97 Legge 22.04.1941 n. 633 (Legge sul diritto d’autore) e ad utilizzare, sia direttamente, sia
+    attraverso la cessione a terzi, le foto e le riprese audio e video, anche in diretta streaming, realizzate dagli
+    operatori o persone incaricate dal Club, anche ai fini della comunicazione, pubblicazione e/o diffusione in
+    qualsiasi forma su siti internet, su social network e su qualsiasi altro mezzo di diffusione (es. giornali,
+    brochure o quotidiani). Autorizza, inoltre, la conservazione delle foto e dei video stessi negli archivi
+    informatici dello stesso Titolare e prende atto che le finalità di tali pubblicazioni sono meramente di
+    carattere istituzionale, informativo e promozionale.
+  </p>
+  <p>
+    Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
+    per gli
+    effetti dell’art. 13 del regolamento (UE) 2016/679 definito GDPR.
+  </p>
+  <p *ngIf="isMaggiorenne">
+    Luogo e data ___________________ Firma __________________________________ (atleta maggiorenne)
+  </p>
+  <p *ngIf="!isMaggiorenne">
+    Luogo e data ___________________ Firma __________________________________ (genitore/tutore legale)
+  </p>
+</div>

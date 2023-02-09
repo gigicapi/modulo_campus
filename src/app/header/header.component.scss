@@ -1,0 +1,17 @@
+.primary-toolbar {
+  background: #3f51b5;
+  color: white;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  .logo {
+    width: 15rem;
+  }
+
+  label {
+    width: 70%;
+    margin-left: 1rem;
+  }
+
+}

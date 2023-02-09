@@ -1,0 +1,115 @@
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.h-space {
+  display: inline-flex;
+  width: 5px;
+}
+
+.full-width {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 50px;
+}
+
+.col-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  .upload-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+
+    .action-complete {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 50px;
+      width: 100%;
+      padding: 10px;
+      background-color: green;
+      font-size: larger;
+      font-weight: bold;
+      color: white;
+      border-radius: 5px;
+    }
+
+    .action-error {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 50px;
+      width: 100%;
+      padding: 10px;
+      background-color: red;
+      font-size: larger;
+      font-weight: bold;
+      color: white;
+      border-radius: 5px;
+    }
+  }
+}
+
+.pdf_section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 10px;
+
+
+}
+
+.page {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  visibility: hidden;
+  .logo_header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .logoBG {}
+  }
+
+  .title {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .dati_atleta {}
+
+  .regolamento {
+
+    .center {
+      text-align: center;
+    }
+
+    .underline {
+      text-decoration: underline;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+  }
+
+}
+
+
+.text-center {
+  text-align: center;
+}

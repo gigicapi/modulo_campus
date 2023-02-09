@@ -1,0 +1,14 @@
+<app-header></app-header>
+<div class="container">
+  <div *ngIf="!stepStart">
+    <h4>Vuoi compilare il modulo di iscrizione per il campo di scherma 2023?</h4>
+    <button mat-raised-button class="btn btn-success" color="primary" (click)="stepStart = true">Inizia</button>
+  </div>
+  <div *ngIf="!stepStart">
+    <h4>Se hai già compilato il modulo e vuoi solo caricare i file per l'invio della mail, vai alla sezione di upload</h4>
+    <button mat-raised-button class="btn btn-success" color="secondary" (click)="onlyUpload = true; stepStart = true;">Vai</button>
+  </div>
+  <div *ngIf="stepStart || onlyUpload" class="stepper-container">
+    <app-stepper [upload]="onlyUpload"></app-stepper>
+  </div>
+</div>
