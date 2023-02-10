@@ -1,17 +1,16 @@
 .primary-toolbar {
-  background: #3f51b5;
-  color: white;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
+}
 
-  .logo {
-    width: 15rem;
-  }
+.logo-1 {
+  max-width: 60px;
+}
 
-  label {
-    width: 70%;
-    margin-left: 1rem;
-  }
+.logo-2 {
+  max-width: 150px;
+}
 
+label {
 }

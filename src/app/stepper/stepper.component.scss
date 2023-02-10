@@ -25,12 +25,24 @@
   justify-content: space-between;
   align-items: center;
 
+  .warning-text {
+    color: orange;
+    font-size: small;
+    text-decoration: underline;
+  }
+
   .upload-section {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-top: 25px;
+
+    .file-loaded {
+      color: green;
+      font-weight: bold;
+      text-decoration: underline;
+    }
 
     .action-complete {
       display: flex;

@@ -74,7 +74,7 @@
     </div>
     <div class="form-group title">
       <label>n°</label>
-      <input matInput type="number" class="form-control"  formControlName="nResidenza"
+      <input matInput class="form-control"  formControlName="nResidenza"
         placeholder="n°">
       <div class="characters-notify">
         <span *ngIf="formControl['nResidenza'].touched && formControl['nResidenza'].errors" class="form--error">
@@ -212,7 +212,7 @@
       </div>
     </div>
     <div class="form-group title">
-      <label>Preferenze Camera</label>
+      <label>Desidererei, se possibile, essere sistemato in camera con</label>
       <input matInput class="form-control"  formControlName="preferenzaCamera"
         placeholder="...">
       <div class="characters-notify">

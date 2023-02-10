@@ -49,6 +49,11 @@ export class StepperComponent implements OnInit, OnChanges {
 
   docsToUpload: string[] = [];
 
+  allergie: boolean = false;
+
+  totalSize: number = 0;
+  sizeUnit: string = "Bytes";
+
   constructor(private _formBuilder: FormBuilder, private http: HttpClient) {
     this.datiAtletaMinorenne = this._formBuilder.group({
       nomeGenitore: ['', Validators.required],
@@ -139,22 +144,25 @@ export class StepperComponent implements OnInit, OnChanges {
     const pdfTable = document.getElementById("firstPage") as HTMLElement;
     const pdfTable2 = document.getElementById("secondPage") as HTMLElement;
     const pdfTable3 = document.getElementById("thirdPage") as HTMLElement;
-    this.downloadPDF(pdfTable, "Modulo Iscrizione.pdf");
-    this.downloadPDF(pdfTable2, "Esonero Responsabilità.pdf");
-    this.downloadPDF(pdfTable3, "Liberatoria.pdf");
-
-  }
-
-  downloadPDF(pdf: HTMLElement, name: string) {
-    let html = htmlToPdfmake(pdf.innerHTML);
+    this.generatePDF(pdfTable, true);
+    this.generatePDF(pdfTable2, true);
+    this.generatePDF(pdfTable3, false);
 
     const defaultStyle = {
-      fontSize: 10,
+      fontSize: 11,
       alignment: 'justify'
     }
+    const documentDefinition: any = { pageOrientation: 'portrait', pageSize: 'A4', content: this.allPDF, defaultStyle };
+    pdfMake.createPdf(documentDefinition).download('Modulo Iscrizione.pdf');
+  }
 
-    html = html.map((element:any) => {
-      if(element.nodeName.includes('H')) {
+  allPDF : any[] = [];
+
+  generatePDF(pdf: HTMLElement, pageBreak: boolean) {
+    let html = htmlToPdfmake(pdf.innerHTML);
+
+    html = html.map((element: any) => {
+      if (element.nodeName.includes('H')) {
         element.style = {
           alignment: 'center'
         }
@@ -162,19 +170,19 @@ export class StepperComponent implements OnInit, OnChanges {
       return element;
     });
 
-    // html[0].style = {
-    //   alignment: 'center'
-    // }
-
-    const documentDefinition: any = { pageOrientation: 'portrait', pageSize: 'A4', content: html, defaultStyle };
-    console.log("document Definition", documentDefinition)
-    pdfMake.createPdf(documentDefinition).download(name);
+    if(pageBreak) {
+      html[html.length-1] = {
+        ...html[html.length-1],
+        pageBreak: 'after'
+      }
+    }
+    this.allPDF.push(html);
   }
 
   selectFile(event: any, key: string): void {
     if (event.target.files && event.target.files[0]) {
       const file: File = event.target.files[0];
-      //this.attachmentsDict[key] = file;
+
       const reader = new FileReader();
       reader.onloadend = () => {
         // Use a regex to remove data url part
@@ -183,8 +191,41 @@ export class StepperComponent implements OnInit, OnChanges {
         this.attachmentsDict[key] = [];
         this.attachmentsDict[key].push(base64String);
         this.attachmentsDict[key].push(file.name.split(".").pop() || "");
+        this.attachmentsDict[key].push("" + file.size);
+        this.getTotalSize();
       };
       reader.readAsDataURL(file);
+    } else {
+      this.attachmentsDict[key] = [];
+      this.getTotalSize();
+    }
+  }
+
+  getTotalSize() {
+    if (!this.attachmentsDict) return "0";
+    const keys = Object.keys(this.attachmentsDict);
+    if (!keys || keys.length === 0) return "0";
+
+    let total = 0;
+    keys.forEach(k => {
+      total += parseFloat(this.attachmentsDict[k][2]) || 0;
+    });
+    let fSExt = new Array('Bytes', 'KB', 'MB', 'GB'), i = 0; while (total > 900) { total /= 1024; i++; }
+    this.totalSize = (Math.round(total * 100) / 100);
+    this.sizeUnit = fSExt[i];
+    let exactSize = (Math.round(total * 100) / 100) + ' ' + fSExt[i];
+    return exactSize;
+  }
+
+  isOverSize() {
+    switch (this.sizeUnit) {
+      case 'GB':
+        return true;
+      case 'MB':
+        if (this.totalSize > 20) return true;
+        return false;
+      default:
+        return false;
     }
   }
 
@@ -192,8 +233,8 @@ export class StepperComponent implements OnInit, OnChanges {
     const keys = Object.keys(this.attachmentsDict);
     const documentiFirmati = keys.includes("MODULO_ISCRIZIONE") && keys.includes("ESONERO_RESPONSABILITA") && keys.includes("LIBERATORIA");
     this.allFilesLoaded = documentiFirmati && (keys.includes("CI_FRONTE") || keys.includes("CI_RETRO")) && keys.includes("TESSERA_SANITARIA") && keys.includes("VERSAMENTO_CAPARRA");
-    let allergie = this.upload ? false : this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['allergie'] : this.datiAtletaMinorenne.value['allergie'];
-    if (allergie) {
+    let isAllergie = this.upload ? this.allergie : this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['allergie'] : this.datiAtletaMinorenne.value['allergie'];
+    if (isAllergie) {
       this.allFilesLoaded = this.allFilesLoaded && keys.includes("ALLERGIE_INTOLLERANZE");
     }
     return this.allFilesLoaded;

@@ -25,9 +25,9 @@
       </div>
     </div>
     <div class="form-group title">
-      <label>Nome</label>
+      <label>Nome Atleta</label>
       <input matInput class="form-control"  formControlName="nome"
-        placeholder="Nome">
+        placeholder="Nome Atleta">
       <div class="characters-notify">
         <span *ngIf="formControl['nome'].touched && formControl['nome'].errors" class="form--error">
           <span *ngIf="formControl['nome'].errors['required']">
@@ -37,9 +37,9 @@
       </div>
     </div>
     <div class="form-group title">
-      <label>Cognome</label>
+      <label>Cognome Atleta</label>
       <input matInput class="form-control"  formControlName="cognome"
-        placeholder="Cognome">
+        placeholder="Cognome Atleta">
       <div class="characters-notify">
         <span *ngIf="formControl['cognome'].touched && formControl['cognome'].errors" class="form--error">
           <span *ngIf="formControl['cognome'].errors['required']">
@@ -49,9 +49,9 @@
       </div>
     </div>
     <div class="form-group title">
-      <label>Luogo di nascita</label>
+      <label>Luogo di nascita Atleta</label>
       <input matInput class="form-control"  formControlName="luogo"
-        placeholder="Luogo di nascita">
+        placeholder="Luogo di nascita Atleta">
       <div class="characters-notify">
         <span *ngIf="formControl['luogo'].touched && formControl['luogo'].errors" class="form--error">
           <span *ngIf="formControl['luogo'].errors['required']">
@@ -61,9 +61,9 @@
       </div>
     </div>
     <div class="form-group title">
-      <label>Data di nascita</label>
+      <label>Data di nascita Atleta</label>
       <input matInput id="dateField" class="form-control" type="date"  formControlName="dataNascita"
-        placeholder="Data di nascita">
+        placeholder="Data di nascita Atleta">
       <div class="characters-notify">
         <span *ngIf="formControl['dataNascita'].touched && formControl['dataNascita'].errors" class="form--error">
           <span *ngIf="formControl['dataNascita'].errors['required']">
@@ -73,7 +73,7 @@
       </div>
     </div>
     <div class="form-group title">
-      <label>Residenza</label>
+      <label>Residenza Atleta</label>
       <input matInput class="form-control"  formControlName="residenza"
         placeholder="Residente in">
       <div class="characters-notify">
@@ -98,7 +98,7 @@
     </div>
     <div class="form-group title">
       <label>n°</label>
-      <input matInput type="number" class="form-control"  formControlName="nResidenza"
+      <input matInput class="form-control"  formControlName="nResidenza"
         placeholder="n°">
       <div class="characters-notify">
         <span *ngIf="formControl['nResidenza'].touched && formControl['nResidenza'].errors" class="form--error">
@@ -236,7 +236,7 @@
       </div>
     </div>
     <div class="form-group title">
-      <label>Preferenze Camera</label>
+      <label>Desidererei, se possibile, essere sistemato in camera con</label>
       <input matInput class="form-control"  formControlName="preferenzaCamera"
         placeholder="...">
       <div class="characters-notify">

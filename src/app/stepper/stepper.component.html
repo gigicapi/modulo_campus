@@ -62,41 +62,86 @@
   <mat-step>
     <ng-template matStepLabel>Carica file</ng-template>
     <div class="col-container">
-      <p>Carica tutti i file necessari</p>
+      <h3>Carica tutti i file necessari</h3>
+      <p>Totale file caricati: {{totalSize}}&nbsp;{{sizeUnit}}</p>
+      <p *ngIf="isOverSize()" class="warning-text">NOTA: il totale dei file non deve superare i 20MB per l'invio via mail</p>
       <div class="upload-section">
-        <label>Modulo di Iscrizione Firmato</label>
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['MODULO_ISCRIZIONE'] && attachmentsDict['MODULO_ISCRIZIONE'].length > 0 }">Modulo
+          di Iscrizione Firmato
+          <mat-icon
+            *ngIf="attachmentsDict['MODULO_ISCRIZIONE'] && attachmentsDict['MODULO_ISCRIZIONE'].length > 0">check</mat-icon></label>
         <input type="file" id="fileIscrizione" (change)="selectFile($event, 'MODULO_ISCRIZIONE')"
           name="fileIscrizione" />
       </div>
       <div class="upload-section">
-        <label>Esonero Responsabilità Firmato</label>
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['ESONERO_RESPONSABILITA'] && attachmentsDict['ESONERO_RESPONSABILITA'].length > 0 }">Esonero
+          Responsabilità Firmato
+          <mat-icon
+            *ngIf="attachmentsDict['ESONERO_RESPONSABILITA'] && attachmentsDict['ESONERO_RESPONSABILITA'].length > 0">check</mat-icon></label>
         <input type="file" id="fileEsonero" (change)="selectFile($event, 'ESONERO_RESPONSABILITA')"
           name="fileEsonero" />
       </div>
       <div class="upload-section">
-        <label>Liberatoria Firmata</label>
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['LIBERATORIA'] && attachmentsDict['LIBERATORIA'].length > 0 }">Liberatoria
+          Firmata<mat-icon
+            *ngIf="attachmentsDict['LIBERATORIA'] && attachmentsDict['LIBERATORIA'].length > 0">check</mat-icon></label>
         <input type="file" id="fileLiberatoria" (change)="selectFile($event, 'LIBERATORIA')" name="fileLiberatoria" />
       </div>
       <div class="upload-section">
-        <label>Documento di riconoscimento Atleta (Fronte)</label>
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['CI_FRONTE'] && attachmentsDict['CI_FRONTE'].length > 0 }">Documento
+          di riconoscimento Atleta (Fronte)
+          <mat-icon
+            *ngIf="attachmentsDict['CI_FRONTE'] && attachmentsDict['CI_FRONTE'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInput1" (change)="selectFile($event, 'CI_FRONTE')" name="fileInput1" />
       </div>
       <div class="upload-section">
-        <label>Documento di riconoscimento Atleta (Retro)</label>
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['CI_RETRO'] && attachmentsDict['CI_RETRO'].length > 0 }">Documento
+          di riconoscimento Atleta (Retro)
+          <mat-icon
+            *ngIf="attachmentsDict['CI_RETRO'] && attachmentsDict['CI_RETRO'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInput2" (change)="selectFile($event, 'CI_RETRO')" name="fileInput2" />
       </div>
       <div class="upload-section">
-        <label>Tessera sanitaria Atleta</label>
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['TESSERA_SANITARIA'] && attachmentsDict['TESSERA_SANITARIA'].length > 0 }">Tessera
+          sanitaria Atleta
+          <mat-icon
+            *ngIf="attachmentsDict['TESSERA_SANITARIA'] && attachmentsDict['TESSERA_SANITARIA'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInput3" (change)="selectFile($event, 'TESSERA_SANITARIA')" name="fileInput3" />
       </div>
       <div class="upload-section">
-        <label>Attestazione Versamento caparra</label>
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['VERSAMENTO_CAPARRA'] && attachmentsDict['VERSAMENTO_CAPARRA'].length > 0 }">Attestazione
+          Versamento caparra<mat-icon
+            *ngIf="attachmentsDict['VERSAMENTO_CAPARRA'] && attachmentsDict['VERSAMENTO_CAPARRA'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInput4" (change)="selectFile($event, 'VERSAMENTO_CAPARRA')" name="fileInput4" />
       </div>
       <div class="upload-section"
-        *ngIf="upload || (isMaggiorenne? datiAtletaMaggiorenne.value['allergie'] : datiAtletaMinorenne.value['allergie'])">
-        <label>Documentazione Allergie/Intolleranze</label>
+        *ngIf="!upload && (isMaggiorenne? datiAtletaMaggiorenne.value['allergie'] : datiAtletaMinorenne.value['allergie'])">
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['ALLERGIE_INTOLLERANZE'] && attachmentsDict['ALLERGIE_INTOLLERANZE'].length > 0 }">Documentazione
+          Allergie/Intolleranze<mat-icon
+            *ngIf="attachmentsDict['ALLERGIE_INTOLLERANZE'] && attachmentsDict['ALLERGIE_INTOLLERANZE'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInput5" (change)="selectFile($event, 'ALLERGIE_INTOLLERANZE')" name="fileInput5" />
+      </div>
+
+      <div class="upload-section" *ngIf="upload">
+
+        <div class="form-group title">
+          <label>Allergie (allegare eventuale documentazione)</label>
+          <mat-checkbox matInput [(ngModel)]="allergie" placeholder="allergie"></mat-checkbox>
+        </div>
+
+        <label *ngIf="allergie"
+          [ngClass]="{ 'file-loaded' : attachmentsDict['ALLERGIE_INTOLLERANZE'] && attachmentsDict['ALLERGIE_INTOLLERANZE'].length > 0 }">Documentazione
+          Allergie/Intolleranze<mat-icon>check</mat-icon></label>
+        <input *ngIf="allergie" type="file" id="fileInput5" (change)="selectFile($event, 'ALLERGIE_INTOLLERANZE')"
+          name="fileInput5" />
       </div>
       <div class="upload-section" *ngIf="isAllLoaded()">
         <button *ngIf="!sendingMail" mat-raised-button (click)="sendMail()"><mat-icon fontIcon="send"></mat-icon>
@@ -104,10 +149,10 @@
         </button>
         <mat-spinner *ngIf="sendingMail"></mat-spinner>
         <div class="action-complete" *ngIf="mailSent">
-          <label>Mail inviata con successo!</label>
+          <label>Mail inviata con successo!<mat-icon>check</mat-icon></label>
         </div>
         <div class="action-error" *ngIf="mailError">
-          <label>Si è verificato un errore durante l'invio della mail. Riprova.</label>
+          <label>Si è verificato un errore durante l'invio della mail. Riprova.<mat-icon>check</mat-icon></label>
         </div>
       </div>
     </div>
@@ -255,7 +300,8 @@
     Email <strong>{{datiAtletaMinorenne.value['email']}}</strong> Cell
     <strong>{{datiAtletaMinorenne.value['telefonoPadre']}}</strong> -
     <strong>{{datiAtletaMinorenne.value['telefonoMadre']}}</strong>
-    In qualità di genitore/esercente la patria potestà del minore <strong>{{datiAtletaMinorenne.value['nome']}}</strong>&nbsp;
+    In qualità di genitore/esercente la patria potestà del minore
+    <strong>{{datiAtletaMinorenne.value['nome']}}</strong>&nbsp;
     <strong>{{datiAtletaMinorenne.value['cognome']}}</strong>
   </p>
   <p *ngIf="isMaggiorenne">
