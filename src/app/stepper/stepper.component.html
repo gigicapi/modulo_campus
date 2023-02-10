@@ -74,7 +74,7 @@
         <input type="file" id="fileIscrizione" (change)="selectFile($event, 'MODULO_ISCRIZIONE')"
           name="fileIscrizione" />
       </div>
-      <div class="upload-section">
+      <!-- <div class="upload-section">
         <label
           [ngClass]="{ 'file-loaded' : attachmentsDict['ESONERO_RESPONSABILITA'] && attachmentsDict['ESONERO_RESPONSABILITA'].length > 0 }">Esonero
           Responsabilità Firmato
@@ -89,7 +89,7 @@
           Firmata<mat-icon
             *ngIf="attachmentsDict['LIBERATORIA'] && attachmentsDict['LIBERATORIA'].length > 0">check</mat-icon></label>
         <input type="file" id="fileLiberatoria" (change)="selectFile($event, 'LIBERATORIA')" name="fileLiberatoria" />
-      </div>
+      </div> -->
       <div class="upload-section">
         <label
           [ngClass]="{ 'file-loaded' : attachmentsDict['CI_FRONTE'] && attachmentsDict['CI_FRONTE'].length > 0 }">Documento
@@ -139,7 +139,7 @@
 
         <label *ngIf="allergie"
           [ngClass]="{ 'file-loaded' : attachmentsDict['ALLERGIE_INTOLLERANZE'] && attachmentsDict['ALLERGIE_INTOLLERANZE'].length > 0 }">Documentazione
-          Allergie/Intolleranze<mat-icon>check</mat-icon></label>
+          Allergie/Intolleranze<mat-icon *ngIf="attachmentsDict['ALLERGIE_INTOLLERANZE'] && attachmentsDict['ALLERGIE_INTOLLERANZE'].length > 0">check</mat-icon></label>
         <input *ngIf="allergie" type="file" id="fileInput5" (change)="selectFile($event, 'ALLERGIE_INTOLLERANZE')"
           name="fileInput5" />
       </div>
