@@ -64,7 +64,7 @@
     <div class="col-container">
       <h3>Carica tutti i file necessari</h3>
       <p>Totale file caricati: {{totalSize}}&nbsp;{{sizeUnit}}</p>
-      <p *ngIf="isOverSize()" class="warning-text">NOTA: il totale dei file non deve superare i 20MB per l'invio via mail</p>
+      <p *ngIf="isOverSize()" class="warning-text">NOTA: il totale dei file non deve superare i 10MB per l'invio via mail</p>
       <div class="upload-section">
         <label
           [ngClass]="{ 'file-loaded' : attachmentsDict['MODULO_ISCRIZIONE'] && attachmentsDict['MODULO_ISCRIZIONE'].length > 0 }">Modulo
@@ -120,6 +120,12 @@
           Versamento caparra<mat-icon
             *ngIf="attachmentsDict['VERSAMENTO_CAPARRA'] && attachmentsDict['VERSAMENTO_CAPARRA'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInput4" (change)="selectFile($event, 'VERSAMENTO_CAPARRA')" name="fileInput4" />
+      </div>
+      <div class="upload-section">
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0 }">Certificato medico di idoneità agonistica (non agonistico per i nati nel 2013 e 2014)<mat-icon
+            *ngIf="attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0">check</mat-icon></label>
+        <input type="file" id="fileInputCertificatoMedico" (change)="selectFile($event, 'CERTIFICATO_MEDICO')" name="fileInputCertificatoMedico" />
       </div>
       <div class="upload-section"
         *ngIf="!upload && (isMaggiorenne? datiAtletaMaggiorenne.value['allergie'] : datiAtletaMinorenne.value['allergie'])">

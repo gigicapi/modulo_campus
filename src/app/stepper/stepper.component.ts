@@ -232,7 +232,7 @@ export class StepperComponent implements OnInit, OnChanges {
   isAllLoaded() {
     const keys = Object.keys(this.attachmentsDict);
     //const documentiFirmati = keys.includes("MODULO_ISCRIZIONE") && keys.includes("ESONERO_RESPONSABILITA") && keys.includes("LIBERATORIA");
-    this.allFilesLoaded = keys.includes("MODULO_ISCRIZIONE") && (keys.includes("CI_FRONTE") || keys.includes("CI_RETRO")) && keys.includes("TESSERA_SANITARIA") && keys.includes("VERSAMENTO_CAPARRA");
+    this.allFilesLoaded = keys.includes("MODULO_ISCRIZIONE") && (keys.includes("CI_FRONTE") || keys.includes("CI_RETRO")) && keys.includes("CERTIFICATO_MEDICO") && keys.includes("TESSERA_SANITARIA") && keys.includes("VERSAMENTO_CAPARRA");
     let isAllergie = this.upload ? this.allergie : this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['allergie'] : this.datiAtletaMinorenne.value['allergie'];
     if (isAllergie) {
       this.allFilesLoaded = this.allFilesLoaded && keys.includes("ALLERGIE_INTOLLERANZE");
