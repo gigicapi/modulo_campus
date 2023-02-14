@@ -6,8 +6,6 @@ import { MatStepper } from '@angular/material/stepper/index.js';
 import jsPDF from 'jspdf';
 declare var require: any;
 
-import * as JSZip from 'jszip';
-
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { forkJoin } from 'rxjs';
