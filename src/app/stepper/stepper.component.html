@@ -150,15 +150,15 @@
           name="fileInput5" />
       </div>
       <div class="upload-section" *ngIf="isAllLoaded()">
-        <button *ngIf="!sendingMail" mat-raised-button (click)="sendMail()"><mat-icon fontIcon="send"></mat-icon>
+        <button *ngIf="!sendingMail" mat-raised-button (click)="prepareAndSendMail()"><mat-icon fontIcon="send"></mat-icon>
           <span>Invia modulo</span>
         </button>
         <mat-spinner *ngIf="sendingMail"></mat-spinner>
-        <div class="action-complete" *ngIf="mailSent">
-          <label>Mail inviata con successo!<mat-icon>check</mat-icon></label>
+        <div class="action-complete" *ngIf="!sendingMail && mailSent && !mailError">
+          <label>Mail inviata con successo!</label>
         </div>
-        <div class="action-error" *ngIf="mailError">
-          <label>Si è verificato un errore durante l'invio della mail. Riprova.<mat-icon>check</mat-icon></label>
+        <div class="action-error" *ngIf="!sendingMail && mailError">
+          <label>Si è verificato un errore durante l'invio della mail. Riprova.</label>
         </div>
       </div>
     </div>

@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { AfterContentInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper/index.js';
-import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 declare var require: any;
 
+import * as JSZip from 'jszip';
+
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
+import { forkJoin } from 'rxjs';
 const htmlToPdfmake = require("html-to-pdfmake");
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
@@ -45,7 +47,7 @@ export class StepperComponent implements OnInit, OnChanges {
   logoBase64!: string;
 
   attachments: File[] = [];
-  attachmentsDict: { [key: string]: string[] } = {};
+  attachmentsDict: { [key: string]: any[] } = {};
 
   docsToUpload: string[] = [];
 
@@ -156,7 +158,7 @@ export class StepperComponent implements OnInit, OnChanges {
     pdfMake.createPdf(documentDefinition).download('Modulo Iscrizione.pdf');
   }
 
-  allPDF : any[] = [];
+  allPDF: any[] = [];
 
   generatePDF(pdf: HTMLElement, pageBreak: boolean) {
     let html = htmlToPdfmake(pdf.innerHTML);
@@ -170,9 +172,9 @@ export class StepperComponent implements OnInit, OnChanges {
       return element;
     });
 
-    if(pageBreak) {
-      html[html.length-1] = {
-        ...html[html.length-1],
+    if (pageBreak) {
+      html[html.length - 1] = {
+        ...html[html.length - 1],
         pageBreak: 'after'
       }
     }
@@ -183,6 +185,10 @@ export class StepperComponent implements OnInit, OnChanges {
     if (event.target.files && event.target.files[0]) {
       const file: File = event.target.files[0];
 
+      if(!file || file.size === 0) {
+        delete this.attachmentsDict[key];
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         // Use a regex to remove data url part
@@ -192,11 +198,13 @@ export class StepperComponent implements OnInit, OnChanges {
         this.attachmentsDict[key].push(base64String);
         this.attachmentsDict[key].push(file.name.split(".").pop() || "");
         this.attachmentsDict[key].push("" + file.size);
+        this.attachmentsDict[key].push("" + file.type);
+        this.attachmentsDict[key].push(file);
         this.getTotalSize();
       };
       reader.readAsDataURL(file);
     } else {
-      this.attachmentsDict[key] = [];
+      delete this.attachmentsDict[key];
       this.getTotalSize();
     }
   }
@@ -217,12 +225,36 @@ export class StepperComponent implements OnInit, OnChanges {
     return exactSize;
   }
 
+  getPartialSize(sizes: number[]) {
+    let total = 0;
+    sizes.forEach(size => {
+      total += size || 0;
+    });
+    let fSExt = new Array('Bytes', 'KB', 'MB', 'GB'), i = 0; while (total > 900) { total /= 1024; i++; }
+    return {
+      size: (Math.round(total * 100) / 100),
+      unit: fSExt[i]
+    };
+  }
+
+  isOverPartialSize(size: any, unit: any) {
+    switch (unit) {
+      case 'GB':
+        return true;
+      case 'MB':
+        if (size > 8) return true;
+        return false;
+      default:
+        return false;
+    }
+  }
+
   isOverSize() {
     switch (this.sizeUnit) {
       case 'GB':
         return true;
       case 'MB':
-        if (this.totalSize > 20) return true;
+        if (this.totalSize > 9.5) return true;
         return false;
       default:
         return false;
@@ -240,7 +272,7 @@ export class StepperComponent implements OnInit, OnChanges {
     return this.allFilesLoaded;
   }
 
-  sendMail() {
+  prepareAndSendMail() {
     if (this.isAllLoaded()) {
       this.mailError = false;
       this.mailSent = false;
@@ -249,47 +281,120 @@ export class StepperComponent implements OnInit, OnChanges {
         this.datiAtletaMaggiorenne.value['nome'] + " " + this.datiAtletaMaggiorenne.value['cognome'] :
         this.datiAtletaMinorenne.value['nome'] + " " + this.datiAtletaMinorenne.value['cognome'];
 
-      const attachmentsList = Object.keys(this.attachmentsDict).map(fileName => {
-        return {
-          name: fileName + "." + this.attachmentsDict[fileName][1],
-          data: this.attachmentsDict[fileName][0]
-        }
-      });
-
-      Email.send({
-        Host: 'smtp.elasticemail.com',
-        Username: 'moduli-csc@gmail.com',
-        Password: '89CD18545D382C7A0B120B190A3FEE1B56E4',
-        To: 'campusscherma@gmail.com',
-        From: 'luigicapizzano86@gmail.com',
-        Subject: 'Modulo Iscrizione Campo Estivo - ' + subject,
-        Body: `
-        ${this.upload ? `L'utente che ha inviato questa mail, non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
-            `In allegato i documenti di iscrizione per il campo estivo dell'atleta: <strong>${subject}</strong>.<br/>
-        Questa mail è stata inviata dalla mail: <strong>${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}</strong>. <br/>`
-          }
-        <br/>
-        <br/>
-        Questa mail è stata generata automaticamente. Si prega di non rispondere.`,
-        Attachments: attachmentsList
-      }).then(
-        (message: string) => {
-          this.sendingMail = false;
-          console.log("sendmail message", message);
-          if (message.toLowerCase().includes("ok")) {
-            this.mailSent = true;
+      if (this.isOverSize()) {
+        let differentAttachments = [];
+        const differentMails = [];
+        const files = Object.keys(this.attachmentsDict);
+        let actualSizes = [];
+        for (let i = 0; i < files.length; i++) {
+          actualSizes.push(parseFloat(this.attachmentsDict[files[i]][2]));
+          const { size, unit } = this.getPartialSize(actualSizes);
+          if (!this.isOverPartialSize(size, unit)) {
+              differentAttachments.push(
+                {
+                  name: files[i] + "." + this.attachmentsDict[files[i]][1],
+                  data: this.attachmentsDict[files[i]][0]
+                }
+              );
           } else {
-            this.mailError = true;
+            differentMails.push( {subject, differentAttachments } );
+            differentAttachments = [];
+            differentAttachments.push(
+              {
+                name: files[i] + "." + this.attachmentsDict[files[i]][1],
+                data: this.attachmentsDict[files[i]][0]
+              }
+            );
+            actualSizes = [];
+            actualSizes.push(parseFloat(this.attachmentsDict[files[i]][2]));
           }
-        },
-        (error: any) => {
-          console.log("sendmail error", error);
-          this.mailError = true;
-          this.mailSent = false;
+        }
+
+        if(differentAttachments.length > 0) {
+          differentMails.push( {subject, differentAttachments } );
+          differentAttachments = [];
+          actualSizes = [];
+        }
+        let nMail = 0;
+        differentMails.forEach( el => {
+          this.sendEmail(el.subject, el.differentAttachments, nMail++);
         });
+
+        setTimeout( () => {
+          if(!this.mailError) this.mailSent = true;
+        }, 5000);
+
+      } else {
+        const attachmentsList = Object.keys(this.attachmentsDict).map(fileName => {
+          return {
+            name: fileName + "." + this.attachmentsDict[fileName][1],
+            data: this.attachmentsDict[fileName][0]
+          }
+        });
+        this.sendEmail(subject, attachmentsList);
+      }
+
+      // const zip = new JSZip();
+      // const name = "docs_" + subject + '.zip';
+      // // tslint:disable-next-line:prefer-for-of
+      // Object.keys(this.attachmentsDict).forEach(k => {
+      //   const file = this.attachmentsDict[k][4];
+      //   const b: any = new Blob([file], { type: '' + file.type + '' });
+      //   zip.file(file.name.substring(file.name.lastIndexOf('/') + 1), b);
+      // })
+
+      // zip.generateAsync({
+      //   type: 'base64',
+      //   compression: "DEFLATE",
+      //   compressionOptions: {
+      //     level: 9
+      //   }
+      // }).then((content) => {
+      //   console.log("content", content);
+
+      //   if (content) {
+
+      //   }
+      // });
+
     } else {
       alert("Caricare tutti i file richiesti");
     }
+  }
+
+  sendEmail(subject: string, attachmentsList: any[], numEmail?: number) {
+    this.sendingMail = true;
+    Email.send({
+      Host: 'smtp.elasticemail.com',
+      Username: 'moduli-csc@gmail.com',
+      Password: '89CD18545D382C7A0B120B190A3FEE1B56E4',
+      To: 'luigicapizzano86@gmail.com', //'campusscherma@gmail.com',
+      From: 'luigicapizzano86@gmail.com',
+      Subject: 'Modulo Iscrizione Campo Estivo - ' + subject + '' + (numEmail && numEmail >= 1) ? '[' + numEmail + ']' : '',
+      Body: `
+      ${this.upload ? `L'utente che ha inviato questa mail, non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
+          `In allegato i documenti di iscrizione per il campo estivo dell'atleta: <strong>${subject}</strong>.<br/>
+      Questa mail è stata inviata dalla mail: <strong>${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}</strong>. <br/>`
+        }
+      <br/>
+      <br/>
+      Questa mail è stata generata automaticamente. Si prega di non rispondere.`,
+      Attachments: attachmentsList
+    }).then(
+      (message: string) => {
+        this.sendingMail = false;
+        console.log("sendmail message", message);
+        if (message.toLowerCase().includes("ok")) {
+          if(!numEmail || numEmail === 0) this.mailSent = true;
+        } else {
+          this.mailError = true;
+        }
+      },
+      (error: any) => {
+        console.log("sendmail error", error);
+        this.mailError = true;
+        this.mailSent = false;
+      });;
   }
 
 }
