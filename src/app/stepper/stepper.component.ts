@@ -366,7 +366,7 @@ export class StepperComponent implements OnInit, OnChanges {
       Host: 'smtp.elasticemail.com',
       Username: 'moduli-csc@gmail.com',
       Password: '89CD18545D382C7A0B120B190A3FEE1B56E4',
-      To: 'luigicapizzano86@gmail.com', //'campusscherma@gmail.com',
+      To: 'campusscherma@gmail.com',
       From: 'luigicapizzano86@gmail.com',
       Subject: 'Modulo Iscrizione Campo Estivo - ' + subject + '' + (numEmail && numEmail >= 1) ? '[' + numEmail + ']' : '',
       Body: `
