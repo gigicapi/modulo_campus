@@ -5,12 +5,33 @@
 }
 
 .logo-1 {
+  max-width: 10%;
   max-width: 60px;
 }
 
 .logo-2 {
+  max-width: 15%;
   max-width: 150px;
 }
 
-label {
+.title {
+  max-width: 70%;
+  font-size: large;
+  white-space: pre-wrap;
+}
+
+@media (min-width: 200px) {
+  .title {
+    font-size: 12px;
+  }
+}
+@media (min-width: 768px) {
+  .title {
+    font-size: 14px;
+  }
+}
+@media (min-width: 1000px) {
+  .title {
+    font-size: 20px;
+  }
 }

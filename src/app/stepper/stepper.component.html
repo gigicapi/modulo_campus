@@ -37,8 +37,7 @@
   <mat-step>
     <ng-template matStepLabel>Esporta PDF</ng-template>
     <p *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid">
-      Puoi scaricare i moduli precompilati, firmarli e ricaricarli nello step successivo per il completamento
-      dell'iscrizione.
+      Scarica e stampa i moduli precompilati, firmali in originale e ricaricali nello step successivo per il completamento dell'iscrizione.
     </p>
     <p style="color: red; font-weight: bold;"
       *ngIf="isMaggiorenne ? !datiAtletaMaggiorenne.valid : !datiAtletaMinorenne.valid">
@@ -64,7 +63,7 @@
     <div class="col-container">
       <h3>Carica tutti i file necessari</h3>
       <p>Totale file caricati: {{totalSize}}&nbsp;{{sizeUnit}}</p>
-      <p *ngIf="isOverSize()" class="warning-text">NOTA: il totale dei file non deve superare i 10MB per l'invio via mail</p>
+      <!-- <p *ngIf="isOverSize()" class="warning-text">NOTA: il totale dei file non deve superare i 10MB per l'invio via mail</p> -->
       <div class="upload-section">
         <label
           [ngClass]="{ 'file-loaded' : attachmentsDict['MODULO_ISCRIZIONE'] && attachmentsDict['MODULO_ISCRIZIONE'].length > 0 }">Modulo
@@ -123,7 +122,8 @@
       </div>
       <div class="upload-section">
         <label
-          [ngClass]="{ 'file-loaded' : attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0 }">Certificato medico di idoneità agonistica (non agonistico per i nati nel 2013 e 2014)<mat-icon
+          [ngClass]="{ 'file-loaded' : attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0 }">Certificato medico di idoneità agonistica (non agonistico per
+          i nati dal 2013 in poi)<mat-icon
             *ngIf="attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInputCertificatoMedico" (change)="selectFile($event, 'CERTIFICATO_MEDICO')" name="fileInputCertificatoMedico" />
       </div>
@@ -169,7 +169,7 @@
   </mat-step>
 </mat-stepper>
 
-<div id="firstPage" class="page">
+<div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="firstPage" class="page">
   <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />MODULO D'ISCRIZIONE HERACLEA
     FENCING CAMP</h3>
   <div *ngIf="!isMaggiorenne" class="dati_atleta">
@@ -270,7 +270,7 @@
     <ul>
       <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell’atleta</li>
       <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico per
-        chi non ha compiuto i 10 anni)</li>
+        i nati dal 2013 in poi)</li>
       <li>Essere in regola con l’iscrizione alla F.I.S. per la stagione 2022-2023 per Formia, e 2023-2024 per Pizzo
       </li>
       <li>Modulo scarico responsabilità</li>
@@ -291,7 +291,7 @@
   </div>
 </div>
 
-<div id="secondPage" class="page">
+<div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="secondPage" class="page">
   <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />DICHIARAZIONE DI ESONERO DA
     OGNI RESPONSABILITA' HERACLEA FENCING CAMP</h3>
 
@@ -357,7 +357,7 @@
   </p>
 </div>
 
-<div id="thirdPage" class="page">
+<div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="thirdPage" class="page">
   <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />LIBERATORIA DI UTILIZZO DELLE IMMAGINI E
     DEI VIDEO</h3>
   <p *ngIf="!isMaggiorenne">
