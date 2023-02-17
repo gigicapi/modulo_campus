@@ -25,6 +25,66 @@
       </div>
     </div>
     <div class="form-group title">
+      <label>Luogo di nascita Genitore</label>
+      <input matInput class="form-control"  formControlName="luogoGenitore"
+        placeholder="Luogo di nascita Genitore">
+      <div class="characters-notify">
+        <span *ngIf="formControl['luogoGenitore'].touched && formControl['luogoGenitore'].errors" class="form--error">
+          <span *ngIf="formControl['luogoGenitore'].errors['required']">
+            Questo campo è obbligatorio
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group title">
+      <label>Data di nascita Genitore</label>
+      <input matInput id="dateFieldGenitore" class="form-control" type="date"  formControlName="dataNascitaGenitore"
+        placeholder="Data di nascita Genitore">
+      <div class="characters-notify">
+        <span *ngIf="formControl['dataNascitaGenitore'].touched && formControl['dataNascitaGenitore'].errors" class="form--error">
+          <span *ngIf="formControl['dataNascitaGenitore'].errors['required']">
+            Questo campo è obbligatorio
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group title">
+      <label>Residenza Genitore</label>
+      <input matInput class="form-control"  formControlName="residenzaGenitore"
+        placeholder="Residente in">
+      <div class="characters-notify">
+        <span *ngIf="formControl['residenzaGenitore'].touched && formControl['residenzaGenitore'].errors" class="form--error">
+          <span *ngIf="formControl['residenzaGenitore'].errors['required']">
+            Questo campo è obbligatorio
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group title">
+      <label>in via</label>
+      <input matInput class="form-control"  formControlName="viaResidenzaGenitore"
+        placeholder="Via">
+      <div class="characters-notify">
+        <span *ngIf="formControl['viaResidenzaGenitore'].touched && formControl['viaResidenzaGenitore'].errors" class="form--error">
+          <span *ngIf="formControl['viaResidenzaGenitore'].errors['required']">
+            Questo campo è obbligatorio
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group title">
+      <label>n°</label>
+      <input matInput class="form-control"  formControlName="nResidenzaGenitore"
+        placeholder="n°">
+      <div class="characters-notify">
+        <span *ngIf="formControl['nResidenzaGenitore'].touched && formControl['nResidenzaGenitore'].errors" class="form--error">
+          <span *ngIf="formControl['nResidenzaGenitore'].errors['required']">
+            Questo campo è obbligatorio
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group title">
       <label>Nome Atleta</label>
       <input matInput class="form-control"  formControlName="nome"
         placeholder="Nome Atleta">
@@ -261,7 +321,7 @@
     <div class="form-group title">
       <label>Richiede iscrizione a:</label>
       <mat-select class="form-control" formControlName="iscrizione" multiple>
-        <mat-option value="Heraclea Fencing Camp di Formia (spada) - da domenica 16 luglio a sabato 22 luglio 2023">Heraclea Fencing Camp di Formia (spada) - da domenica 16 luglio a sabato 22 luglio 2023</mat-option>
+        <!-- <mat-option value="Heraclea Fencing Camp di Formia (spada) - da domenica 16 luglio a sabato 22 luglio 2023">Heraclea Fencing Camp di Formia (spada) - da domenica 16 luglio a sabato 22 luglio 2023</mat-option> -->
         <mat-option value="Heraclea Fencing Camp di Pizzo (fioretto e spada) - da sabato 26 agosto a sabato 2 settembre 2023">Heraclea Fencing Camp di Pizzo (fioretto e spada) - da sabato 26 agosto a sabato 2 settembre 2023</mat-option>
       </mat-select>
       <div class="characters-notify">

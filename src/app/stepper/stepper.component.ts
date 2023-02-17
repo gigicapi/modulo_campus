@@ -58,6 +58,11 @@ export class StepperComponent implements OnInit, OnChanges {
     this.datiAtletaMinorenne = this._formBuilder.group({
       nomeGenitore: ['', Validators.required],
       cognomeGenitore: ['', Validators.required],
+      luogoGenitore: ['', Validators.required],
+      dataNascitaGenitore: ['', Validators.required],
+      residenzaGenitore: ['', Validators.required],
+      viaResidenzaGenitore: ['', Validators.required],
+      nResidenzaGenitore: ['', Validators.required],
       nome: ['', Validators.required],
       cognome: ['', Validators.required],
       luogo: ['', Validators.required],

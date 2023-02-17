@@ -175,13 +175,21 @@
   <div *ngIf="!isMaggiorenne" class="dati_atleta">
     <p>
       il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;
-      <strong>{{datiAtletaMinorenne.value['cognomeGenitore']}}</strong> genitore/esercente la patria potestà
-      chiede l'iscrizione al campus: <strong>{{datiAtletaMinorenne.value['iscrizione']}}</strong>
+      <strong>{{datiAtletaMinorenne.value['cognomeGenitore']}}</strong>
+      nato/a a <strong>{{datiAtletaMinorenne.value['luogoGenitore']}}</strong> il
+      <strong>{{datiAtletaMinorenne.value['dataNascitaGenitore']}}</strong>
+      Residente <strong>{{datiAtletaMinorenne.value['residenzaGenitore']}}</strong> in Via
+      <strong>{{datiAtletaMinorenne.value['viaResidenzaGenitore']}}</strong> n°
+      <strong>{{datiAtletaMinorenne.value['nResidenzaGenitore']}}</strong>
+      Email <strong>{{datiAtletaMinorenne.value['email']}}</strong> Cell
+      <strong>{{datiAtletaMinorenne.value['telefonoPadre']}}</strong> -
+      <strong>{{datiAtletaMinorenne.value['telefonoMadre']}}</strong>
+      in qualità di genitore/esercente la patria potestà chiede l'iscrizione al campus&nbsp;<strong>{{datiAtletaMinorenne.value['iscrizione']}}</strong>&nbsp;del/della figlio/figlia:
     </p>
     <p>
       Nome <strong>{{datiAtletaMinorenne.value['nome']}}</strong> Cognome
       <strong>{{datiAtletaMinorenne.value['cognome']}}</strong>
-      nato/a a <strong>{{datiAtletaMinorenne.value['luogo']}}</strong> Il
+      nato/a a <strong>{{datiAtletaMinorenne.value['luogo']}}</strong> il
       <strong>{{datiAtletaMinorenne.value['dataNascita']}}</strong> Residente a
       <strong>{{datiAtletaMinorenne.value['residenza']}}</strong>
       in Via <strong>{{datiAtletaMinorenne.value['viaResidenza']}}</strong> n°
@@ -195,10 +203,7 @@
       Desidererei, se possibile, essere sistemato/a in camera con
       <strong>{{datiAtletaMinorenne.value['preferenzaCamera']}}</strong>
       <br />
-      Cell Atleta <strong>{{datiAtletaMinorenne.value['telefonoAtleta']}}</strong> Cell Padre
-      <strong>{{datiAtletaMinorenne.value['telefonoPadre']}}</strong> Cell Madre
-      <strong>{{datiAtletaMinorenne.value['telefonoMadre']}}</strong>
-      Email <strong>{{datiAtletaMinorenne.value['email']}}</strong>
+      Cell Atleta <strong>{{datiAtletaMinorenne.value['telefonoAtleta']}}</strong>
       <br />
       T-Shirt <strong>{{datiAtletaMinorenne.value['tShirt']}}</strong> Pantaloncino
       <strong>{{datiAtletaMinorenne.value['pantaloncino']}}</strong>
@@ -211,7 +216,7 @@
       l'iscrizione al campus: <strong>{{datiAtletaMaggiorenne.value['iscrizione']}}</strong>
     </p>
     <p>
-      nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> Il
+      nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> il
       <strong>{{datiAtletaMaggiorenne.value['dataNascita']}}</strong> Residente a
       <strong>{{datiAtletaMaggiorenne.value['residenza']}}</strong> in Via
       <strong>{{datiAtletaMaggiorenne.value['viaResidenza']}}</strong> n°
@@ -293,27 +298,32 @@
 
 <div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="secondPage" class="page">
   <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />DICHIARAZIONE DI ESONERO DA
-    OGNI RESPONSABILITA' HERACLEA FENCING CAMP</h3>
+    OGNI RESPONSABILITA'</h3>
 
   <p *ngIf="!isMaggiorenne">
-    il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;
+    Il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;
     <strong>{{datiAtletaMinorenne.value['cognomeGenitore']}}</strong>
-    nato/a a <strong>{{datiAtletaMinorenne.value['luogo']}}</strong> Il
-    <strong>{{datiAtletaMinorenne.value['dataNascita']}}</strong>
-    Residente <strong>{{datiAtletaMinorenne.value['residenza']}}</strong> in Via
-    <strong>{{datiAtletaMinorenne.value['viaResidenza']}}</strong> n°
-    <strong>{{datiAtletaMinorenne.value['nResidenza']}}</strong>
+    nato/a a <strong>{{datiAtletaMinorenne.value['luogoGenitore']}}</strong> il
+    <strong>{{datiAtletaMinorenne.value['dataNascitaGenitore']}}</strong>
+    Residente <strong>{{datiAtletaMinorenne.value['residenzaGenitore']}}</strong> in Via
+    <strong>{{datiAtletaMinorenne.value['viaResidenzaGenitore']}}</strong> n°
+    <strong>{{datiAtletaMinorenne.value['nResidenzaGenitore']}}</strong>
     Email <strong>{{datiAtletaMinorenne.value['email']}}</strong> Cell
     <strong>{{datiAtletaMinorenne.value['telefonoPadre']}}</strong> -
     <strong>{{datiAtletaMinorenne.value['telefonoMadre']}}</strong>
     In qualità di genitore/esercente la patria potestà del minore
     <strong>{{datiAtletaMinorenne.value['nome']}}</strong>&nbsp;
     <strong>{{datiAtletaMinorenne.value['cognome']}}</strong>
+    nato/a a <strong>{{datiAtletaMinorenne.value['luogo']}}</strong> il
+    <strong>{{datiAtletaMinorenne.value['dataNascita']}}</strong> Residente a
+    <strong>{{datiAtletaMinorenne.value['residenza']}}</strong>
+    in Via <strong>{{datiAtletaMinorenne.value['viaResidenza']}}</strong> n°
+    <strong>{{datiAtletaMinorenne.value['nResidenza']}}</strong>
   </p>
   <p *ngIf="isMaggiorenne">
     il/la sottoscritto/a <strong>{{datiAtletaMaggiorenne.value['nome']}}</strong>&nbsp;
     <strong>{{datiAtletaMaggiorenne.value['cognome']}}</strong>
-    nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> Il
+    nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> il
     <strong>{{datiAtletaMaggiorenne.value['dataNascita']}}</strong>
     Residente <strong>{{datiAtletaMaggiorenne.value['residenza']}}</strong> in Via
     <strong>{{datiAtletaMaggiorenne.value['viaResidenza']}}</strong> n°
@@ -363,19 +373,24 @@
   <p *ngIf="!isMaggiorenne">
     il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;
     <strong>{{datiAtletaMinorenne.value['cognomeGenitore']}}</strong>
-    nato/a a <strong>{{datiAtletaMinorenne.value['luogo']}}</strong> Il
-    <strong>{{datiAtletaMinorenne.value['dataNascita']}}</strong>
-    Residente <strong>{{datiAtletaMinorenne.value['residenza']}}</strong> in Via
-    <strong>{{datiAtletaMinorenne.value['viaResidenza']}}</strong> n°
-    <strong>{{datiAtletaMinorenne.value['nResidenza']}}</strong>
+    nato/a a <strong>{{datiAtletaMinorenne.value['luogoGenitore']}}</strong> il
+    <strong>{{datiAtletaMinorenne.value['dataNascitaGenitore']}}</strong>
+    Residente <strong>{{datiAtletaMinorenne.value['residenzaGenitore']}}</strong> in Via
+    <strong>{{datiAtletaMinorenne.value['viaResidenzaGenitore']}}</strong> n°
+    <strong>{{datiAtletaMinorenne.value['nResidenzaGenitore']}}</strong>
     In qualità di genitore/esercente la patria potestà del minore
     <strong>{{datiAtletaMinorenne.value['nome']}}</strong>&nbsp;
     <strong>{{datiAtletaMinorenne.value['cognome']}}</strong>
+    nato/a a <strong>{{datiAtletaMinorenne.value['luogo']}}</strong> il
+    <strong>{{datiAtletaMinorenne.value['dataNascita']}}</strong> Residente a
+    <strong>{{datiAtletaMinorenne.value['residenza']}}</strong>
+    in Via <strong>{{datiAtletaMinorenne.value['viaResidenza']}}</strong> n°
+    <strong>{{datiAtletaMinorenne.value['nResidenza']}}</strong>
   </p>
   <p *ngIf="isMaggiorenne">
     il/la sottoscritto/a <strong>{{datiAtletaMaggiorenne.value['nome']}}</strong>&nbsp;
     <strong>{{datiAtletaMaggiorenne.value['cognome']}}</strong>
-    nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> Il
+    nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> il
     <strong>{{datiAtletaMaggiorenne.value['dataNascita']}}</strong>
     Residente <strong>{{datiAtletaMaggiorenne.value['residenza']}}</strong> in Via
     <strong>{{datiAtletaMaggiorenne.value['viaResidenza']}}</strong> n°
