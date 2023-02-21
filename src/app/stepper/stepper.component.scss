@@ -89,6 +89,7 @@
   height: 100%;
   font-size: 16px;
   visibility: hidden;
+
   .logo_header {
     display: flex;
     justify-content: center;
@@ -121,6 +122,45 @@
 
 }
 
+.nome-cognome-atleta {
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+
+  .wi-25 {
+    width: 25%;
+  }
+
+  .form-control {
+    box-sizing: border-box;
+    border: 1px solid #d6d6d6;
+    background-color: white;
+    padding: 10px 10px;
+    position: relative;
+    width: 60%;
+  }
+
+  .form--error {
+    color: #d0021b;
+    font-size: 12px;
+    font-style: italic;
+    padding-top: 0.25rem;
+    padding-left: 0.25rem;
+  }
+
+  .characters-notify {
+    font-size: 12px;
+    line-height: 15px;
+    width: 20%;
+    margin-left: 5px;
+
+    .error {
+      color: #d0021b;
+    }
+  }
+}
 
 .text-center {
   text-align: center;

@@ -54,6 +54,11 @@ export class StepperComponent implements OnInit, OnChanges {
   totalSize: number = 0;
   sizeUnit: string = "Bytes";
 
+  nomeAtleta: string = '';
+  cognomeAtleta: string = '';
+
+  errorDescription: string = '';
+
   constructor(private _formBuilder: FormBuilder, private http: HttpClient) {
     this.datiAtletaMinorenne = this._formBuilder.group({
       nomeGenitore: ['', Validators.required],
@@ -266,8 +271,8 @@ export class StepperComponent implements OnInit, OnChanges {
 
   isAllLoaded() {
     const keys = Object.keys(this.attachmentsDict);
-    //const documentiFirmati = keys.includes("MODULO_ISCRIZIONE") && keys.includes("ESONERO_RESPONSABILITA") && keys.includes("LIBERATORIA");
-    this.allFilesLoaded = keys.includes("MODULO_ISCRIZIONE") && (keys.includes("CI_FRONTE") || keys.includes("CI_RETRO")) && keys.includes("CERTIFICATO_MEDICO") && keys.includes("TESSERA_SANITARIA") && keys.includes("VERSAMENTO_CAPARRA");
+    const documentiFirmati = keys.includes("MODULO_ISCRIZIONE") && keys.includes("ESONERO_RESPONSABILITA") && keys.includes("LIBERATORIA");
+    this.allFilesLoaded = documentiFirmati && (keys.includes("CI_FRONTE") || keys.includes("CI_RETRO")) && keys.includes("CERTIFICATO_MEDICO") && keys.includes("TESSERA_SANITARIA") && keys.includes("VERSAMENTO_CAPARRA");
     let isAllergie = this.upload ? this.allergie : this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['allergie'] : this.datiAtletaMinorenne.value['allergie'];
     if (isAllergie) {
       this.allFilesLoaded = this.allFilesLoaded && keys.includes("ALLERGIE_INTOLLERANZE");
@@ -277,6 +282,11 @@ export class StepperComponent implements OnInit, OnChanges {
 
   prepareAndSendMail() {
     if (this.isAllLoaded()) {
+      const whoIs = this.nomeAtleta && this.nomeAtleta !== '' && this.cognomeAtleta && this.cognomeAtleta !== '';
+      if(this.upload && !whoIs) {
+        alert("Inserire nome e cognome atleta");
+        return;
+      }
       this.mailError = false;
       this.mailSent = false;
       this.sendingMail = true;
@@ -320,7 +330,7 @@ export class StepperComponent implements OnInit, OnChanges {
         }
         let nMail = 0;
         differentMails.forEach( el => {
-          this.sendEmail(el.subject, el.differentAttachments, nMail++);
+          this.sendEmail(this.upload ? this.nomeAtleta + " " + this.cognomeAtleta : el.subject, el.differentAttachments, nMail++);
         });
 
         setTimeout( () => {
@@ -334,7 +344,7 @@ export class StepperComponent implements OnInit, OnChanges {
             data: this.attachmentsDict[fileName][0]
           }
         });
-        this.sendEmail(subject, attachmentsList);
+        this.sendEmail(this.upload ? this.nomeAtleta + " " + this.cognomeAtleta : subject, attachmentsList);
       }
 
       // const zip = new JSZip();
@@ -366,6 +376,8 @@ export class StepperComponent implements OnInit, OnChanges {
   }
 
   sendEmail(subject: string, attachmentsList: any[], numEmail?: number) {
+    const mailObject1 = (numEmail && numEmail >= 1) ? '[' + numEmail + ']' : '';
+    const mailObj = "Modulo Iscrizione Campo Estivo - " + subject + " " + mailObject1;
     this.sendingMail = true;
     Email.send({
       Host: 'smtp.elasticemail.com',
@@ -373,9 +385,9 @@ export class StepperComponent implements OnInit, OnChanges {
       Password: '89CD18545D382C7A0B120B190A3FEE1B56E4',
       To: 'campusscherma@gmail.com',
       From: 'luigicapizzano86@gmail.com',
-      Subject: 'Modulo Iscrizione Campo Estivo - ' + subject + '' + (numEmail && numEmail >= 1) ? '[' + numEmail + ']' : '',
+      Subject: mailObj,
       Body: `
-      ${this.upload ? `L'utente che ha inviato questa mail, non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
+      ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
           `In allegato i documenti di iscrizione per il campo estivo dell'atleta: <strong>${subject}</strong>.<br/>
       Questa mail è stata inviata dalla mail: <strong>${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}</strong>. <br/>`
         }
@@ -389,15 +401,19 @@ export class StepperComponent implements OnInit, OnChanges {
         console.log("sendmail message", message);
         if (message.toLowerCase().includes("ok")) {
           if(!numEmail || numEmail === 0) this.mailSent = true;
+          return true;
         } else {
           this.mailError = true;
+          return false;
         }
       },
       (error: any) => {
         console.log("sendmail error", error);
         this.mailError = true;
         this.mailSent = false;
-      });;
+        this.errorDescription = this.errorDescription + " " + numEmail + "\n"
+        return false;
+      });
   }
 
 }

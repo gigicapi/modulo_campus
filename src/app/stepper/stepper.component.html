@@ -1,4 +1,4 @@
-<mat-stepper [linear]="!upload" #stepper>
+<mat-stepper [linear]="!upload || isMaggiorenne >= 0" #stepper>
   <mat-step label="Atleta minorenne" [completed]="isMaggiorenne >= 0">
     <div class="full-width">
       <label>Seleziona un'opzione</label>
@@ -37,7 +37,8 @@
   <mat-step>
     <ng-template matStepLabel>Esporta PDF</ng-template>
     <p *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid">
-      Scarica e stampa i moduli precompilati, firmali in originale e ricaricali nello step successivo per il completamento dell'iscrizione.
+      Scarica e stampa i moduli precompilati, firmali in originale e ricaricali nello step successivo per il
+      completamento dell'iscrizione.
     </p>
     <p style="color: red; font-weight: bold;"
       *ngIf="isMaggiorenne ? !datiAtletaMaggiorenne.valid : !datiAtletaMinorenne.valid">
@@ -63,6 +64,26 @@
     <div class="col-container">
       <h3>Carica tutti i file necessari</h3>
       <p>Totale file caricati: {{totalSize}}&nbsp;{{sizeUnit}}</p>
+      <div *ngIf="upload">
+        <div class="nome-cognome-atleta form-group title">
+          <label class="wi-25">Nome Atleta</label>
+          <input matInput class="form-control" [(ngModel)]="nomeAtleta" placeholder="Nome Atleta">
+          <div class="characters-notify">
+            <span *ngIf="!nomeAtleta || nomeAtleta === ''" class="form--error">
+              Questo campo è obbligatorio
+            </span>
+          </div>
+        </div>
+        <div class="nome-cognome-atleta form-group title">
+          <label class="wi-25">Cognome Atleta</label>
+          <input matInput class="form-control" [(ngModel)]="cognomeAtleta" placeholder="Cognome Atleta">
+          <div class="characters-notify">
+            <span *ngIf="!cognomeAtleta || cognomeAtleta === ''" class="form--error">
+              Questo campo è obbligatorio
+            </span>
+          </div>
+        </div>
+      </div>
       <!-- <p *ngIf="isOverSize()" class="warning-text">NOTA: il totale dei file non deve superare i 10MB per l'invio via mail</p> -->
       <div class="upload-section">
         <label
@@ -73,7 +94,7 @@
         <input type="file" id="fileIscrizione" (change)="selectFile($event, 'MODULO_ISCRIZIONE')"
           name="fileIscrizione" />
       </div>
-      <!-- <div class="upload-section">
+      <div class="upload-section">
         <label
           [ngClass]="{ 'file-loaded' : attachmentsDict['ESONERO_RESPONSABILITA'] && attachmentsDict['ESONERO_RESPONSABILITA'].length > 0 }">Esonero
           Responsabilità Firmato
@@ -88,7 +109,7 @@
           Firmata<mat-icon
             *ngIf="attachmentsDict['LIBERATORIA'] && attachmentsDict['LIBERATORIA'].length > 0">check</mat-icon></label>
         <input type="file" id="fileLiberatoria" (change)="selectFile($event, 'LIBERATORIA')" name="fileLiberatoria" />
-      </div> -->
+      </div>
       <div class="upload-section">
         <label
           [ngClass]="{ 'file-loaded' : attachmentsDict['CI_FRONTE'] && attachmentsDict['CI_FRONTE'].length > 0 }">Documento
@@ -122,10 +143,12 @@
       </div>
       <div class="upload-section">
         <label
-          [ngClass]="{ 'file-loaded' : attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0 }">Certificato medico di idoneità agonistica (non agonistico per
+          [ngClass]="{ 'file-loaded' : attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0 }">Certificato
+          medico di idoneità agonistica (non agonistico per
           i nati dal 2013 in poi)<mat-icon
             *ngIf="attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0">check</mat-icon></label>
-        <input type="file" id="fileInputCertificatoMedico" (change)="selectFile($event, 'CERTIFICATO_MEDICO')" name="fileInputCertificatoMedico" />
+        <input type="file" id="fileInputCertificatoMedico" (change)="selectFile($event, 'CERTIFICATO_MEDICO')"
+          name="fileInputCertificatoMedico" />
       </div>
       <div class="upload-section"
         *ngIf="!upload && (isMaggiorenne? datiAtletaMaggiorenne.value['allergie'] : datiAtletaMinorenne.value['allergie'])">
@@ -145,12 +168,14 @@
 
         <label *ngIf="allergie"
           [ngClass]="{ 'file-loaded' : attachmentsDict['ALLERGIE_INTOLLERANZE'] && attachmentsDict['ALLERGIE_INTOLLERANZE'].length > 0 }">Documentazione
-          Allergie/Intolleranze<mat-icon *ngIf="attachmentsDict['ALLERGIE_INTOLLERANZE'] && attachmentsDict['ALLERGIE_INTOLLERANZE'].length > 0">check</mat-icon></label>
+          Allergie/Intolleranze<mat-icon
+            *ngIf="attachmentsDict['ALLERGIE_INTOLLERANZE'] && attachmentsDict['ALLERGIE_INTOLLERANZE'].length > 0">check</mat-icon></label>
         <input *ngIf="allergie" type="file" id="fileInput5" (change)="selectFile($event, 'ALLERGIE_INTOLLERANZE')"
           name="fileInput5" />
       </div>
       <div class="upload-section" *ngIf="isAllLoaded()">
-        <button *ngIf="!sendingMail" mat-raised-button (click)="prepareAndSendMail()"><mat-icon fontIcon="send"></mat-icon>
+        <button *ngIf="!sendingMail" mat-raised-button (click)="prepareAndSendMail()"><mat-icon
+            fontIcon="send"></mat-icon>
           <span>Invia modulo</span>
         </button>
         <mat-spinner *ngIf="sendingMail"></mat-spinner>
@@ -159,6 +184,7 @@
         </div>
         <div class="action-error" *ngIf="!sendingMail && mailError">
           <label>Si è verificato un errore durante l'invio della mail. Riprova.</label>
+          <p>{{ errorDescription }}</p>
         </div>
       </div>
     </div>
@@ -181,10 +207,11 @@
       Residente <strong>{{datiAtletaMinorenne.value['residenzaGenitore']}}</strong> in Via
       <strong>{{datiAtletaMinorenne.value['viaResidenzaGenitore']}}</strong> n°
       <strong>{{datiAtletaMinorenne.value['nResidenzaGenitore']}}</strong>
-      Email <strong>{{datiAtletaMinorenne.value['email']}}</strong> Cell
-      <strong>{{datiAtletaMinorenne.value['telefonoPadre']}}</strong> -
+      Email <strong>{{datiAtletaMinorenne.value['email']}}</strong> Cell Padre
+      <strong>{{datiAtletaMinorenne.value['telefonoPadre']}}</strong> - Cell Madre
       <strong>{{datiAtletaMinorenne.value['telefonoMadre']}}</strong>
-      in qualità di genitore/esercente la patria potestà chiede l'iscrizione al campus&nbsp;<strong>{{datiAtletaMinorenne.value['iscrizione']}}</strong>&nbsp;del/della figlio/figlia:
+      in qualità di genitore/esercente la patria potestà chiede l'iscrizione al
+      campus&nbsp;<strong>{{datiAtletaMinorenne.value['iscrizione']}}</strong>&nbsp;del/della figlio/figlia:
     </p>
     <p>
       Nome <strong>{{datiAtletaMinorenne.value['nome']}}</strong> Cognome
