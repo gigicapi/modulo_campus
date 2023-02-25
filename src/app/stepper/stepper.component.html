@@ -180,7 +180,9 @@
         </button>
         <mat-spinner *ngIf="sendingMail"></mat-spinner>
         <div class="action-complete" *ngIf="!sendingMail && mailSent && !mailError">
-          <label>Mail inviata con successo!</label>
+          <label>Modulo inviato con successo!
+            Sarà ricontattato/a ai contatti indicati non appena sarà effettuata la verifica dei dati e del pagamento della quota.
+          </label>
         </div>
         <div class="action-error" *ngIf="!sendingMail && mailError">
           <label>Si è verificato un errore durante l'invio della mail. Riprova.</label>
