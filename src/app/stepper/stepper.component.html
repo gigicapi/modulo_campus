@@ -64,6 +64,7 @@
     <div class="col-container">
       <h3>Carica tutti i file necessari</h3>
       <p>Totale file caricati: {{totalSize}}&nbsp;{{sizeUnit}}</p>
+      <p>Nota: ogni file non può superare i <strong>6MB</strong></p>
       <div *ngIf="upload">
         <div class="nome-cognome-atleta form-group title">
           <label class="wi-25">Nome Atleta</label>
@@ -174,7 +175,7 @@
           name="fileInput5" />
       </div>
       <div class="upload-section" *ngIf="isAllLoaded()">
-        <button *ngIf="!sendingMail" mat-raised-button (click)="prepareAndSendMail()"><mat-icon
+        <button *ngIf="!sendingMail" mat-raised-button (click)="sendMailWithService()"><mat-icon
             fontIcon="send"></mat-icon>
           <span>Invia modulo</span>
         </button>
@@ -184,9 +185,11 @@
             Sarà ricontattato/a ai contatti indicati non appena sarà effettuata la verifica dei dati e del pagamento della quota.
           </label>
         </div>
-        <div class="action-error" *ngIf="!sendingMail && mailError">
-          <label>Si è verificato un errore durante l'invio della mail. Riprova.</label>
-          <p>{{ errorDescription }}</p>
+        <div class="action-error" *ngIf="!sendingMail">
+          <label>Si è verificato un errore durante l'invio della mail. Invia gli eventuali messaggi sottostanti all'amministratore per contribuire a migliorare l'applicazione. Grazie</label>
+        </div>
+        <div *ngIf="errorDescriptions && errorDescriptions.length > 0">
+          <div *ngFor="let error of errorDescriptions">{{ error }}</div>
         </div>
       </div>
     </div>

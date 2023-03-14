@@ -13,6 +13,7 @@ const htmlToPdfmake = require("html-to-pdfmake");
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
 import '../../assets/smtp.js';
+import { EmailService, FileObject, MailRequest } from '../email.service';
 declare let Email: any;
 
 @Component({
@@ -57,9 +58,11 @@ export class StepperComponent implements OnInit, OnChanges {
   nomeAtleta: string = '';
   cognomeAtleta: string = '';
 
-  errorDescription: string = '';
+  errorDescriptions: string[] = [];
 
-  constructor(private _formBuilder: FormBuilder, private http: HttpClient) {
+  weTransferList: File[] = [];
+
+  constructor(private _formBuilder: FormBuilder, private http: HttpClient, private emailService: EmailService) {
     this.datiAtletaMinorenne = this._formBuilder.group({
       nomeGenitore: ['', Validators.required],
       cognomeGenitore: ['', Validators.required],
@@ -193,7 +196,9 @@ export class StepperComponent implements OnInit, OnChanges {
     if (event.target.files && event.target.files[0]) {
       const file: File = event.target.files[0];
 
-      if(!file || file.size === 0) {
+      const contentType = file.type;
+
+      if (!file || file.size === 0 || file.size >= 6000000) {
         delete this.attachmentsDict[key];
       }
 
@@ -208,6 +213,7 @@ export class StepperComponent implements OnInit, OnChanges {
         this.attachmentsDict[key].push("" + file.size);
         this.attachmentsDict[key].push("" + file.type);
         this.attachmentsDict[key].push(file);
+        this.attachmentsDict[key].push(""+contentType);
         this.getTotalSize();
       };
       reader.readAsDataURL(file);
@@ -250,7 +256,7 @@ export class StepperComponent implements OnInit, OnChanges {
       case 'GB':
         return true;
       case 'MB':
-        if (size > 8) return true;
+        if (size >= 8) return true;
         return false;
       default:
         return false;
@@ -281,9 +287,10 @@ export class StepperComponent implements OnInit, OnChanges {
   }
 
   prepareAndSendMail() {
+    this.errorDescriptions = [];
     if (this.isAllLoaded()) {
       const whoIs = this.nomeAtleta && this.nomeAtleta !== '' && this.cognomeAtleta && this.cognomeAtleta !== '';
-      if(this.upload && !whoIs) {
+      if (this.upload && !whoIs) {
         alert("Inserire nome e cognome atleta");
         return;
       }
@@ -303,14 +310,14 @@ export class StepperComponent implements OnInit, OnChanges {
           actualSizes.push(parseFloat(this.attachmentsDict[files[i]][2]));
           const { size, unit } = this.getPartialSize(actualSizes);
           if (!this.isOverPartialSize(size, unit)) {
-              differentAttachments.push(
-                {
-                  name: files[i] + "." + this.attachmentsDict[files[i]][1],
-                  data: this.attachmentsDict[files[i]][0]
-                }
-              );
+            differentAttachments.push(
+              {
+                name: files[i] + "." + this.attachmentsDict[files[i]][1],
+                data: this.attachmentsDict[files[i]][0]
+              }
+            );
           } else {
-            differentMails.push( {subject, differentAttachments } );
+            differentMails.push({ subject, differentAttachments });
             differentAttachments = [];
             differentAttachments.push(
               {
@@ -323,18 +330,18 @@ export class StepperComponent implements OnInit, OnChanges {
           }
         }
 
-        if(differentAttachments.length > 0) {
-          differentMails.push( {subject, differentAttachments } );
+        if (differentAttachments.length > 0) {
+          differentMails.push({ subject, differentAttachments });
           differentAttachments = [];
           actualSizes = [];
         }
         let nMail = 0;
-        differentMails.forEach( el => {
+        differentMails.forEach(el => {
           this.sendEmail(this.upload ? this.nomeAtleta + " " + this.cognomeAtleta : el.subject, el.differentAttachments, nMail++);
         });
 
-        setTimeout( () => {
-          if(!this.mailError) this.mailSent = true;
+        setTimeout(() => {
+          if (!this.mailError) this.mailSent = true;
         }, 5000);
 
       } else {
@@ -346,29 +353,6 @@ export class StepperComponent implements OnInit, OnChanges {
         });
         this.sendEmail(this.upload ? this.nomeAtleta + " " + this.cognomeAtleta : subject, attachmentsList);
       }
-
-      // const zip = new JSZip();
-      // const name = "docs_" + subject + '.zip';
-      // // tslint:disable-next-line:prefer-for-of
-      // Object.keys(this.attachmentsDict).forEach(k => {
-      //   const file = this.attachmentsDict[k][4];
-      //   const b: any = new Blob([file], { type: '' + file.type + '' });
-      //   zip.file(file.name.substring(file.name.lastIndexOf('/') + 1), b);
-      // })
-
-      // zip.generateAsync({
-      //   type: 'base64',
-      //   compression: "DEFLATE",
-      //   compressionOptions: {
-      //     level: 9
-      //   }
-      // }).then((content) => {
-      //   console.log("content", content);
-
-      //   if (content) {
-
-      //   }
-      // });
 
     } else {
       alert("Caricare tutti i file richiesti");
@@ -400,7 +384,7 @@ export class StepperComponent implements OnInit, OnChanges {
         this.sendingMail = false;
         console.log("sendmail message", message);
         if (message.toLowerCase().includes("ok")) {
-          if(!numEmail || numEmail === 0) this.mailSent = true;
+          if (!numEmail || numEmail === 0) this.mailSent = true;
           return true;
         } else {
           this.mailError = true;
@@ -411,9 +395,120 @@ export class StepperComponent implements OnInit, OnChanges {
         console.log("sendmail error", error);
         this.mailError = true;
         this.mailSent = false;
-        this.errorDescription = this.errorDescription + " " + numEmail + "\n"
+        this.errorDescriptions.push("Errore durante l'invio della mail (" + numEmail + "): " + error);
         return false;
       });
+  }
+
+  sendMailWithService() {
+    this.errorDescriptions = [];
+    if (this.isAllLoaded()) {
+      const whoIs = this.nomeAtleta && this.nomeAtleta !== '' && this.cognomeAtleta && this.cognomeAtleta !== '';
+      if (this.upload && !whoIs) {
+        alert("Inserire nome e cognome atleta");
+        return;
+      }
+      this.mailError = false;
+      this.mailSent = false;
+      this.sendingMail = true;
+      const subject = this.upload ? this.nomeAtleta + " " + this.cognomeAtleta : this.isMaggiorenne ?
+        this.datiAtletaMaggiorenne.value['nome'] + " " + this.datiAtletaMaggiorenne.value['cognome'] :
+        this.datiAtletaMinorenne.value['nome'] + " " + this.datiAtletaMinorenne.value['cognome'];
+
+
+      const mailRequests: MailRequest[] = Object.keys(this.attachmentsDict).map(fileName => {
+        const fo: FileObject = {
+          filename: fileName + "." + this.attachmentsDict[fileName][1],
+          data: this.attachmentsDict[fileName][0],
+          contentType: this.attachmentsDict[fileName][5]
+        }
+
+        const mailReq: MailRequest = {
+          subject: subject + ": " + fo.filename,
+          recipients: ['campusscherma@gmail.com'],
+          mailText: `
+          ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
+              `In allegato i documenti di iscrizione per il campo estivo dell'atleta: ${subject}.
+              Questa mail è stata inviata dalla mail: ${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}.`
+            }
+              Questa mail è stata generata automaticamente. Si prega di non rispondere.`,
+          files: [fo]
+        }
+
+        return mailReq;
+      });
+
+      mailRequests.forEach( mailRequest => {
+        this.emailService.sendEmail(mailRequest).subscribe(
+          (ok: any) => {
+            console.log(ok);
+            this.sendingMail = false;
+            if(!ok.msg) {
+              this.errorDescriptions.push(JSON.stringify(ok.error));
+              this.mailSent = false;
+              this.mailError = true;
+            } else {
+              this.mailSent = true;
+              this.mailError = false;
+            }
+
+          },
+          (error) => {
+            console.log("sendingMail ERROR", error);
+            this.sendingMail = false;
+            this.mailError = true;
+            this.mailSent = false;
+            this.errorDescriptions.push(JSON.stringify(error));
+          }
+        )
+      });
+
+      // const mailRequest: MailRequest = {
+      //   subject,
+      //   recipients: ['luigicapizzano86@gmail.com'], //'campusscherma@gmail.com',
+      //   mailText: `
+      //       ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
+      //           `In allegato i documenti di iscrizione per il campo estivo dell'atleta: ${subject}.
+      //           Questa mail è stata inviata dalla mail: ${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}.`
+      //         }
+      //           Questa mail è stata generata automaticamente. Si prega di non rispondere.`,
+      //   files: Object.keys(this.attachmentsDict).map(fileName => {
+      //     const fo: FileObject = {
+      //       filename: fileName + "." + this.attachmentsDict[fileName][1],
+      //       data: this.attachmentsDict[fileName][0],
+      //       contentType: this.attachmentsDict[fileName][5]
+      //     }
+      //     return fo;
+      //   })
+
+      // }
+      // this.emailService.sendEmail(mailRequest).subscribe(
+      //   (ok: any) => {
+      //     console.log(ok);
+      //     this.sendingMail = false;
+      //     if(!ok.msg) {
+      //       this.errorDescriptions.push(JSON.stringify(ok.error));
+      //       this.mailSent = false;
+      //       this.mailError = true;
+      //     } else {
+      //       this.mailSent = true;
+      //       this.mailError = false;
+      //     }
+
+      //   },
+      //   (error) => {
+      //     console.log("sendingMail ERROR", error);
+      //     this.sendingMail = false;
+      //     this.mailError = true;
+      //     this.mailSent = false;
+      //     this.errorDescriptions.push(JSON.stringify(error));
+      //   }
+      // )
+
+    } else {
+      alert("Caricare tutti i file richiesti");
+    }
+
   }
 
 }
