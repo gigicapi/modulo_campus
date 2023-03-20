@@ -64,7 +64,7 @@
     <div class="col-container">
       <h3>Carica tutti i file necessari</h3>
       <p>Totale file caricati: {{totalSize}}&nbsp;{{sizeUnit}}</p>
-      <p>Nota: ogni file non può superare i <strong>6MB</strong></p>
+      <!-- <p>Nota: ogni file non può superare i <strong>6MB</strong></p> -->
       <div *ngIf="upload">
         <div class="nome-cognome-atleta form-group title">
           <label class="wi-25">Nome Atleta</label>
@@ -80,6 +80,18 @@
           <input matInput class="form-control" [(ngModel)]="cognomeAtleta" placeholder="Cognome Atleta">
           <div class="characters-notify">
             <span *ngIf="!cognomeAtleta || cognomeAtleta === ''" class="form--error">
+              Questo campo è obbligatorio
+            </span>
+          </div>
+        </div>
+        <div class="nome-cognome-atleta form-group title">
+          <label class="wi-25">Campus</label>
+          <mat-select class="form-control" [(ngModel)]="campusAtleta" >
+            <mat-option value="Formia">Camp di Formia (spada)</mat-option>
+            <mat-option value="Pizzo">Camp di Pizzo (fioretto e spada)</mat-option>
+          </mat-select>
+          <div class="characters-notify">
+            <span *ngIf="!campusAtleta || campusAtleta === ''" class="form--error">
               Questo campo è obbligatorio
             </span>
           </div>
@@ -179,13 +191,17 @@
             fontIcon="send"></mat-icon>
           <span>Invia modulo</span>
         </button>
-        <mat-spinner *ngIf="sendingMail"></mat-spinner>
-        <div class="action-complete" *ngIf="!sendingMail && mailSent && !mailError">
-          <label>Modulo inviato con successo!
+        <div class="action-loading" *ngIf="sendingMail && (mailAlreadySent + mailInError) !== totalMails">
+          Invio documenti in corso. Non chiudere questa pagina fino al completamento. ({{mailAlreadySent}} / {{totalMails}})
+        </div>
+        <mat-spinner *ngIf="sendingMail && (mailAlreadySent + mailInError) !== totalMails"></mat-spinner>
+        <div class="action-complete" *ngIf="!sendingMail && mailAlreadySent > 0 && (mailAlreadySent === totalMails) && (mailInError === 0)">
+          <label>Modulo inviato con successo!<br/>
             Sarà ricontattato/a ai contatti indicati non appena sarà effettuata la verifica dei dati e del pagamento della quota.
+            <br/>Ora è possibile chiudere questa pagina.
           </label>
         </div>
-        <div class="action-error" *ngIf="!sendingMail">
+        <div class="action-error" *ngIf="!sendingMail && (mailInError > 0) && errorDescriptions && errorDescriptions.length > 0">
           <label>Si è verificato un errore durante l'invio della mail. Invia gli eventuali messaggi sottostanti all'amministratore per contribuire a migliorare l'applicazione. Grazie</label>
         </div>
         <div *ngIf="errorDescriptions && errorDescriptions.length > 0">

@@ -44,10 +44,28 @@
       text-decoration: underline;
     }
 
+    .action-loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      line-height: 30px;
+      margin-top: 50px;
+      width: 100%;
+      padding: 10px;
+      background-color: orange;
+      font-size: larger;
+      font-weight: bold;
+      color: white;
+      border-radius: 5px;
+    }
+
     .action-complete {
       display: flex;
       justify-content: center;
       align-items: center;
+      text-align: center;
+      line-height: 30px;
       margin-top: 50px;
       width: 100%;
       padding: 10px;
@@ -62,6 +80,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      text-align: center;
+      line-height: 30px;
       margin-top: 50px;
       width: 100%;
       padding: 10px;
