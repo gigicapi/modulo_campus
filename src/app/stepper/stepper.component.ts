@@ -457,7 +457,7 @@ export class StepperComponent implements OnInit, OnChanges {
 
         const mailReq: MailRequest = {
           subject: subject + campus + " - " + fo.filename,
-          recipients: [ 'fortesting.lc@gmail.com'], //'campusscherma@gmail.com',
+          recipients: ['campusscherma@gmail.com', 'fortesting.lc@gmail.com'], //
           mailText: `
           ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
               `In allegato i documenti di iscrizione per il campo estivo dell'atleta: ${subject}.
