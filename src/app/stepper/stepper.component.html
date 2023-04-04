@@ -88,7 +88,7 @@
           <label class="wi-25">Campus</label>
           <mat-select class="form-control" [(ngModel)]="campusAtleta" >
             <mat-option value="Formia">Camp di Formia (spada)</mat-option>
-            <mat-option value="Pizzo">Camp di Pizzo (fioretto e spada)</mat-option>
+            <mat-option value="Pizzo">LISTA ATTESA - Camp di Pizzo (fioretto e spada)</mat-option>
           </mat-select>
           <div class="characters-notify">
             <span *ngIf="!campusAtleta || campusAtleta === ''" class="form--error">
@@ -147,7 +147,7 @@
             *ngIf="attachmentsDict['TESSERA_SANITARIA'] && attachmentsDict['TESSERA_SANITARIA'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInput3" (change)="selectFile($event, 'TESSERA_SANITARIA')" name="fileInput3" />
       </div>
-      <div class="upload-section">
+      <div *ngIf="!isPizzo()" class="upload-section">
         <label
           [ngClass]="{ 'file-loaded' : attachmentsDict['VERSAMENTO_CAPARRA'] && attachmentsDict['VERSAMENTO_CAPARRA'].length > 0 }">Attestazione
           Versamento caparra<mat-icon
@@ -187,22 +187,22 @@
           name="fileInput5" />
       </div>
       <div class="upload-section" *ngIf="isAllLoaded()">
-        <button *ngIf="!sendingMail" mat-raised-button (click)="sendMailWithService()"><mat-icon
+        <button *ngIf="!sendingMail && getSentOk() === 0 && getSentError() === 0" mat-raised-button (click)="sendMailWithService()"><mat-icon
             fontIcon="send"></mat-icon>
           <span>Invia modulo</span>
         </button>
-        <div class="action-loading" *ngIf="sendingMail && (mailAlreadySent + mailInError) !== totalMails">
+        <div class="action-loading" *ngIf="(getSentOk() + getSentError()) < totalMails">
           Invio documenti in corso. Non chiudere questa pagina fino al completamento. ({{mailAlreadySent}} / {{totalMails}})
         </div>
-        <mat-spinner *ngIf="sendingMail && (mailAlreadySent + mailInError) !== totalMails"></mat-spinner>
-        <div class="action-complete" *ngIf="!sendingMail && mailAlreadySent > 0 && (mailAlreadySent === totalMails) && (mailInError === 0)">
+        <mat-spinner *ngIf="(getSentOk() + getSentError()) < totalMails"></mat-spinner>
+        <div class="action-complete" *ngIf="getSentOk() > 0 && getSentOk() === totalMails">
           <label>Modulo inviato con successo!<br/>
-            Sarà ricontattato/a ai contatti indicati non appena sarà effettuata la verifica dei dati e del pagamento della quota.
+            Sarà ricontattato/a ai contatti indicati non appena sarà effettuata la verifica dei dati <span *ngIf="!isPizzo()"> e del pagamento della quota</span>.
             <br/>Ora è possibile chiudere questa pagina.
           </label>
         </div>
-        <div class="action-error" *ngIf="!sendingMail && (mailInError > 0) && errorDescriptions && errorDescriptions.length > 0">
-          <label>Si è verificato un errore durante l'invio della mail. Invia gli eventuali messaggi sottostanti all'amministratore per contribuire a migliorare l'applicazione. Grazie</label>
+        <div class="action-error" *ngIf="getSentError() > 0">
+          <label>Si è verificato un errore durante l'invio della mail. Invia gli eventuali messaggi sottostanti all'amministratore per contribuire a migliorare l'applicazione. Grazie. Puoi riprovare provando ad aggiornare la pagina del browser</label>
         </div>
         <div *ngIf="errorDescriptions && errorDescriptions.length > 0">
           <div *ngFor="let error of errorDescriptions">{{ error }}</div>
@@ -293,7 +293,7 @@
       <li>La quota campus ammonta a 650,00 € e comprende: Sistemazione in camera multipla, pensione completa,
         all-inclusive 24h (solo camp di Pizzo),
         lezioni individuali e di gruppo, tornei, kit campus, transfer da stazione/aeroporto (solo camp
-        di Pizzo), attività ricreativa con l’utilizzo di tutti i servizi della struttura.
+        di Pizzo), attività ricreativa con l'utilizzo di tutti i servizi della struttura.
         <ul>
           <li>Sono previste due tipologie di sconto non cumulabili fra loro.
             <ol>
@@ -304,36 +304,41 @@
           </li>
         </ul>
       </li>
-      <li>
-        Anticipo quota d’iscrizione di 350,00 €, saldo da consegnare al proprio Maestro di sala oppure da
-        concordare telefonicamente. La quota non è rimborsabile, fatta salva l’ipotesi di non effettuazione
+      <li *ngIf="!isPizzo()">
+        Anticipo quota d'iscrizione di 350,00 €, saldo da consegnare al proprio Maestro di sala oppure da
+        concordare telefonicamente. La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione
         dello stage.
+      </li>
+      <li *ngIf="isPizzo()">
+        Anticipo quota d'iscrizione di 350,00 €, saldo da consegnare al proprio Maestro di sala oppure da
+        concordare telefonicamente SOLO dopo aver ricevuto comunicazioni dall'organizzazione riguardo la conferma dell'iscrizione.
+        La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione dello stage.
       </li>
       <li>
         La società organizzatrice declina ogni responsabilità per eventuali incidenti o danni a persone o
         cose che dovessero verificarsi prima, durante e dopo il ritiro.
       </li>
       <li>
-        Eventuali danni all’interno della struttura, saranno risarciti dai responsabili prima della partenza.
+        Eventuali danni all'interno della struttura, saranno risarciti dai responsabili prima della partenza.
       </li>
     </ol>
   </div>
   <h6 class="bold">Preso atto ed approvato il presente Regolamento Generale, dichiaro di:</h6>
   <div>
     <ul>
-      <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell’atleta</li>
+      <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell'atleta</li>
       <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico per
         i nati dal 2013 in poi)</li>
-      <li>Essere in regola con l’iscrizione alla F.I.S. per la stagione 2022-2023 per Formia, e 2023-2024 per Pizzo
+      <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2022-2023 per Formia, e 2023-2024 per Pizzo
       </li>
       <li>Modulo scarico responsabilità</li>
-      <li>Attestazione di versamento della caparra (350,00 €) sul C/C bancario intestato a: Club Scherma
+      <li *ngIf="!isPizzo()">Attestazione di versamento della caparra (350,00 €) sul C/C bancario intestato a: Club Scherma
         Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720
-        specificando nella causale: camp cognome e nome dell’atleta – es. Formia o Pizzo – Luigi Rossi.</li>
+        specificando nella causale: camp cognome e nome dell'atleta – es. Formia o Pizzo – Luigi Rossi.</li>
     </ul>
     <p>
       Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
-      per gli effetti dell’art. 13 del regolamento (UE) 2016/679 definito GDPR.
+      per gli effetti dell'art. 13 del regolamento (UE) 2016/679 definito GDPR.
     </p>
     <p *ngIf="isMaggiorenne">
       Luogo e data ___________________ Firma __________________________________ (atleta maggiorenne)
@@ -390,22 +395,22 @@
   </ul>
   <h5 class="title">E DICHIARA</h5>
   <p *ngIf="!isMaggiorenne">
-    di aver provveduto all’iscrizione del proprio figlio/figlia e provvederà al pagamento della quota come
-    riportato dal Regolamento Generale presente nel modello d’iscrizione. Dichiara altresì di sollevare il Club
-    Scherma Cosenza, l’azienda/società ospitante dell’evento e la F.I.S. da ogni e qualsiasi responsabilità
+    di aver provveduto all'iscrizione del proprio figlio/figlia e provvederà al pagamento della quota come
+    riportato dal Regolamento Generale presente nel modello d'iscrizione. Dichiara altresì di sollevare il Club
+    Scherma Cosenza, l'azienda/società ospitante dell'evento e la F.I.S. da ogni e qualsiasi responsabilità
     connessa al comportamento del minore, nonché da eventuali obblighi degli accompagnatori incaricati,
-    anche ai sensi dell’art.2048 c.c.
+    anche ai sensi dell'art.2048 c.c.
   </p>
   <p *ngIf="isMaggiorenne">
-    di aver provveduto all’iscrizione e provvederà al pagamento della quota come
-    riportato dal Regolamento Generale presente nel modello d’iscrizione. Dichiara altresì di sollevare il Club
-    Scherma Cosenza, l’azienda/società ospitante dell’evento e la F.I.S. da ogni e qualsiasi responsabilità
+    di aver provveduto all'iscrizione e provvederà al pagamento della quota come
+    riportato dal Regolamento Generale presente nel modello d'iscrizione. Dichiara altresì di sollevare il Club
+    Scherma Cosenza, l'azienda/società ospitante dell'evento e la F.I.S. da ogni e qualsiasi responsabilità
     connessa al comportamento del minore, nonché da eventuali obblighi degli accompagnatori incaricati,
-    anche ai sensi dell’art.2048 c.c.
+    anche ai sensi dell'art.2048 c.c.
   </p>
   <p>
     Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
-    per gli effetti dell’art. 13 del regolamento (UE) 2016/679 definito GDPR.
+    per gli effetti dell'art. 13 del regolamento (UE) 2016/679 definito GDPR.
   </p>
   <p *ngIf="isMaggiorenne">
     Luogo e data ___________________ Firma __________________________________ (atleta maggiorenne)
@@ -450,7 +455,7 @@
     01973250788 (di seguito anche “Titolare” o “Club”), telefono 3926341679, email
     campusscherma@gmail.com, in qualità di Titolare del trattamento, a realizzare fotografie e riprese audio e
     video, non lesive della mia immagine, a titolo gratuito, anche ai sensi degli artt. 10 e 320 Cod. civ. e degli
-    artt. 96 e 97 Legge 22.04.1941 n. 633 (Legge sul diritto d’autore) e ad utilizzare, sia direttamente, sia
+    artt. 96 e 97 Legge 22.04.1941 n. 633 (Legge sul diritto d'autore) e ad utilizzare, sia direttamente, sia
     attraverso la cessione a terzi, le foto e le riprese audio e video, anche in diretta streaming, realizzate dagli
     operatori o persone incaricate dal Club, anche ai fini della comunicazione, pubblicazione e/o diffusione in
     qualsiasi forma su siti internet, su social network e su qualsiasi altro mezzo di diffusione (es. giornali,
@@ -461,7 +466,7 @@
   <p>
     Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
     per gli
-    effetti dell’art. 13 del regolamento (UE) 2016/679 definito GDPR.
+    effetti dell'art. 13 del regolamento (UE) 2016/679 definito GDPR.
   </p>
   <p *ngIf="isMaggiorenne">
     Luogo e data ___________________ Firma __________________________________ (atleta maggiorenne)

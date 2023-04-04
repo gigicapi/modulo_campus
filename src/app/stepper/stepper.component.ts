@@ -158,6 +158,18 @@ export class StepperComponent implements OnInit, OnChanges {
     }
   }
 
+  isPizzo() {
+    if(this.upload) {
+      return this.campusAtleta.toLowerCase().includes("pizzo");
+    } else {
+      if (this.isMaggiorenne === 0) {
+        return this.datiAtletaMinorenne.value['iscrizione'].toLowerCase().includes("pizzo");
+      } else {
+        return this.datiAtletaMaggiorenne.value['iscrizione'].toLowerCase().includes("pizzo");
+      }
+    }
+  }
+
   public exportPDF() {
     const pdfTable = document.getElementById("firstPage") as HTMLElement;
     const pdfTable2 = document.getElementById("secondPage") as HTMLElement;
@@ -286,7 +298,10 @@ export class StepperComponent implements OnInit, OnChanges {
   isAllLoaded() {
     const keys = Object.keys(this.attachmentsDict);
     const documentiFirmati = keys.includes("MODULO_ISCRIZIONE") && keys.includes("ESONERO_RESPONSABILITA") && keys.includes("LIBERATORIA");
-    this.allFilesLoaded = documentiFirmati && keys.includes("CI_FRONTE") && keys.includes("CI_RETRO") && keys.includes("CERTIFICATO_MEDICO") && keys.includes("TESSERA_SANITARIA") && keys.includes("VERSAMENTO_CAPARRA");
+    this.allFilesLoaded = documentiFirmati && keys.includes("CI_FRONTE") && keys.includes("CI_RETRO") && keys.includes("CERTIFICATO_MEDICO") && keys.includes("TESSERA_SANITARIA");
+    if(!this.isPizzo()) {
+      this.allFilesLoaded = this.allFilesLoaded && keys.includes("VERSAMENTO_CAPARRA");
+    }
     let isAllergie = this.upload ? this.allergie : this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['allergie'] : this.datiAtletaMinorenne.value['allergie'];
     if (isAllergie) {
       this.allFilesLoaded = this.allFilesLoaded && keys.includes("ALLERGIE_INTOLLERANZE");
@@ -442,7 +457,7 @@ export class StepperComponent implements OnInit, OnChanges {
 
         const mailReq: MailRequest = {
           subject: subject + campus + " - " + fo.filename,
-          recipients: ['campusscherma@gmail.com', 'fortesting.lc@gmail.com'],
+          recipients: [ 'fortesting.lc@gmail.com'], //'campusscherma@gmail.com',
           mailText: `
           ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
               `In allegato i documenti di iscrizione per il campo estivo dell'atleta: ${subject}.
@@ -549,6 +564,15 @@ export class StepperComponent implements OnInit, OnChanges {
       alert("Caricare tutti i file richiesti");
     }
 
+  }
+
+  getSentOk() {
+    const count = Object.values(this.mailSent).filter(x => x).length;
+    return count;
+  }
+  getSentError() {
+    const count = Object.values(this.mailError).filter(x => x).length;
+    return count;
   }
 
 }
