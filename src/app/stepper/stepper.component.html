@@ -387,11 +387,8 @@
   <h5 class="title">CON LA PRESENTE AUTORIZZA</h5>
   <p *ngIf="!isMaggiorenne">Il/La proprio/a figlio/figlia a prendere parte al camp:</p>
   <p *ngIf="isMaggiorenne">la sua iscrizione al camp:</p>
-  <ul *ngIf="!isMaggiorenne">
-    <li *ngFor="let item of datiAtletaMinorenne.value['iscrizione']">{{ item }}</li>
-  </ul>
-  <ul *ngIf="isMaggiorenne">
-    <li *ngFor="let item of datiAtletaMaggiorenne.value['iscrizione']">{{ item }}</li>
+  <ul>
+    <li>{{isMaggiorenne ? datiAtletaMaggiorenne.value['iscrizione'] : datiAtletaMinorenne.value['iscrizione']}}</li>
   </ul>
   <h5 class="title">E DICHIARA</h5>
   <p *ngIf="!isMaggiorenne">
