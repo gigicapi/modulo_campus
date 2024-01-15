@@ -21,15 +21,19 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { StartComponent } from './start/start.component';
+import { WrapperComponent } from './wrapper/wrapper.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    StartComponent,
     HomeComponent,
     HeaderComponent,
     StepperComponent,
     MinorenneComponent,
-    MaggiorenneComponent
+    MaggiorenneComponent,
+    WrapperComponent
   ],
   imports: [
     BrowserModule,

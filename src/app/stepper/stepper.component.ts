@@ -1,6 +1,6 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { HttpClient } from '@angular/common/http';
-import { AfterContentInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper/index.js';
 import jsPDF from 'jspdf';
@@ -32,6 +32,8 @@ export class StepperComponent implements OnInit, OnChanges {
   stepper!: MatStepper;
 
   @Input() upload!: boolean;
+
+  @Output() completed = new EventEmitter<boolean>();
 
   isMaggiorenne: number = -1;
   datiAtletaMinorenne: FormGroup;
@@ -87,6 +89,7 @@ export class StepperComponent implements OnInit, OnChanges {
       arma: ['', Validators.required],
       numeroFIS: ['', Validators.required],
       allergie: [''],
+      iscritto: [''],
       preferenzaCamera: [''],
       telefonoAtleta: [''],
       telefonoPadre: ['', Validators.required],
@@ -108,6 +111,7 @@ export class StepperComponent implements OnInit, OnChanges {
       arma: ['', Validators.required],
       numeroFIS: ['', Validators.required],
       allergie: [''],
+      iscritto: [''],
       preferenzaCamera: [''],
       telefonoAtleta: ['', Validators.required],
       telefonoPadre: [''],
@@ -159,7 +163,7 @@ export class StepperComponent implements OnInit, OnChanges {
   }
 
   isPizzo() {
-    if(this.upload) {
+    if (this.upload) {
       return this.campusAtleta.toLowerCase().includes("pizzo");
     } else {
       if (this.isMaggiorenne === 0) {
@@ -299,7 +303,7 @@ export class StepperComponent implements OnInit, OnChanges {
     const keys = Object.keys(this.attachmentsDict);
     const documentiFirmati = keys.includes("MODULO_ISCRIZIONE") && keys.includes("ESONERO_RESPONSABILITA") && keys.includes("LIBERATORIA");
     this.allFilesLoaded = documentiFirmati && keys.includes("CI_FRONTE") && keys.includes("CI_RETRO") && keys.includes("CERTIFICATO_MEDICO") && keys.includes("TESSERA_SANITARIA");
-    if(!this.isPizzo()) {
+    if (!this.isPizzo()) {
       this.allFilesLoaded = this.allFilesLoaded && keys.includes("VERSAMENTO_CAPARRA");
     }
     let isAllergie = this.upload ? this.allergie : this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['allergie'] : this.datiAtletaMinorenne.value['allergie'];
@@ -457,7 +461,7 @@ export class StepperComponent implements OnInit, OnChanges {
 
         const mailReq: MailRequest = {
           subject: subject + campus + " - " + fo.filename,
-          recipients: ['campusscherma@gmail.com', 'fortesting.lc@gmail.com'], //
+          recipients: ['fortesting.lc@gmail.com'], //'campusscherma@gmail.com', 
           mailText: `
           ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
               `In allegato i documenti di iscrizione per il campo estivo dell'atleta: ${subject}.
@@ -493,7 +497,7 @@ export class StepperComponent implements OnInit, OnChanges {
                 this.mailAlreadySent++;
                 this.mailError[index] = false;
               }
-              if(index === mailRequests.length-1) {
+              if (index === mailRequests.length - 1) {
                 this.sendingMail = false;
               }
             },
@@ -503,15 +507,17 @@ export class StepperComponent implements OnInit, OnChanges {
               this.mailSent[index] = false;
               this.mailError[index] = true;
               this.mailInError++;
-              if(index === mailRequests.length-1) {
+              if (index === mailRequests.length - 1) {
                 this.sendingMail = false;
               }
             },
             complete: () => {
               console.log("COMPLETE");
-              if(index === mailRequests.length-1) {
+              if (index === mailRequests.length - 1) {
                 this.sendingMail = false;
               }
+
+              this.checkRedirect();
             }
           }
         )
@@ -564,6 +570,14 @@ export class StepperComponent implements OnInit, OnChanges {
       alert("Caricare tutti i file richiesti");
     }
 
+  }
+
+  checkRedirect() {
+    if ((this.getSentOk() > 0 && this.getSentOk() === this.totalMails)) {
+      this.completed.emit(true);
+    } else if (this.getSentOk() + this.getSentError() === this.totalMails) {
+      this.completed.emit(false);
+    }
   }
 
   getSentOk() {

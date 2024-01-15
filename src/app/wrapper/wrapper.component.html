@@ -1,0 +1,18 @@
+<div *ngIf="!isCompleted">
+    <div *ngFor="let item of steps">
+        <h4 *ngIf="currentStep === item">Modulo {{item + 1}} su {{ steps.length }}</h4>
+        <app-stepper *ngIf="currentStep === item" [upload]="upload" (completed)="increaseStepCompleted($event)"></app-stepper>
+    </div>
+</div>
+
+<div *ngIf="isCompleted">
+    <h4>Tutte le iscrizioni sono state completate!</h4>
+    
+    <div *ngFor="let item of errors | keyvalue">
+        <li *ngIf="item.value">Modulo {{ item.key }} inviato correttamente</li>
+        <li *ngIf="!item.value">Modulo {{ item.key }} inviato, ma con qualche warning, verificare con l'amministratore se tutti i documenti sono stati ricevuti correttamente</li>
+    </div>
+
+    <br />Ora è possibile chiudere questa pagina o torna alla <a href="">home</a>
+    
+</div>

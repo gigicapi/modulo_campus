@@ -88,7 +88,7 @@
           <label class="wi-25">Campus</label>
           <mat-select class="form-control" [(ngModel)]="campusAtleta" >
             <mat-option value="Formia">Camp di Formia (spada)</mat-option>
-            <mat-option value="Pizzo">LISTA ATTESA - Camp di Pizzo (fioretto e spada)</mat-option>
+            <mat-option value="Pizzo">Camp di Pizzo (fioretto e spada)</mat-option>
           </mat-select>
           <div class="characters-notify">
             <span *ngIf="!campusAtleta || campusAtleta === ''" class="form--error">
@@ -198,7 +198,6 @@
         <div class="action-complete" *ngIf="getSentOk() > 0 && getSentOk() === totalMails">
           <label>Modulo inviato con successo!<br/>
             Sarà ricontattato/a ai contatti indicati non appena sarà effettuata la verifica dei dati <span *ngIf="!isPizzo()"> e del pagamento della quota</span>.
-            <br/>Ora è possibile chiudere questa pagina.
           </label>
         </div>
         <div class="action-error" *ngIf="getSentError() > 0">

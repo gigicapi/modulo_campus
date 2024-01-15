@@ -235,10 +235,21 @@
       </div>
     </div>
     <div class="form-group title">
+      <label>Ti sei già iscritto ad un evento Heraclea del 2024?</label>
+      <mat-checkbox matInput formControlName="iscritto" placeholder="iscritto"></mat-checkbox>
+      <div class="characters-notify">
+        <span *ngIf="formControl['iscritto'].touched && formControl['iscritto'].errors" class="form--error">
+          <span *ngIf="formControl['iscritto'].errors['required']">
+            Questo campo è obbligatorio
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group title">
       <label>Richiede iscrizione a:</label>
       <mat-select class="form-control" formControlName="iscrizione">
-        <mat-option value="Heraclea Fencing Camp di Formia (spada) - da giovedì 20 luglio a mercoledì 26 luglio 2023">Heraclea Fencing Camp di Formia (spada) - da giovedì 20 luglio a mercoledì 26 luglio 2023</mat-option>
-        <mat-option value="LISTA ATTESA - Heraclea Fencing Camp di Pizzo (fioretto e spada) - da sabato 26 agosto a sabato 2 settembre 2023">LISTA ATTESA - Heraclea Fencing Camp di Pizzo (fioretto e spada) - da sabato 26 agosto a sabato 2 settembre 2023</mat-option>
+        <mat-option value="Heraclea Fencing Camp di Formia (spada)">Heraclea Fencing Camp di Formia (spada)</mat-option>
+        <mat-option value="Heraclea Fencing Camp di Pizzo (fioretto e spada)">Heraclea Fencing Camp di Pizzo (fioretto e spada)</mat-option>
       </mat-select>
       <div class="characters-notify">
         <span *ngIf="formControl['iscrizione'].touched && formControl['iscrizione'].errors" class="form--error">
