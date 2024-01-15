@@ -1,0 +1,187 @@
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.h-space {
+  display: inline-flex;
+  width: 5px;
+}
+
+.full-width {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 50px;
+}
+
+.col-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  .warning-text {
+    color: orange;
+    font-size: small;
+    text-decoration: underline;
+  }
+
+  .upload-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+
+    .file-loaded {
+      color: green;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .action-loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      line-height: 30px;
+      margin-top: 50px;
+      width: 100%;
+      padding: 10px;
+      background-color: orange;
+      font-size: larger;
+      font-weight: bold;
+      color: white;
+      border-radius: 5px;
+    }
+
+    .action-complete {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      line-height: 30px;
+      margin-top: 50px;
+      width: 100%;
+      padding: 10px;
+      background-color: green;
+      font-size: larger;
+      font-weight: bold;
+      color: white;
+      border-radius: 5px;
+    }
+
+    .action-error {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      line-height: 30px;
+      margin-top: 50px;
+      width: 100%;
+      padding: 10px;
+      background-color: red;
+      font-size: larger;
+      font-weight: bold;
+      color: white;
+      border-radius: 5px;
+    }
+  }
+}
+
+.pdf_section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 10px;
+
+
+}
+
+.page {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  visibility: hidden;
+
+  .logo_header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .logoBG {}
+  }
+
+  .title {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .dati_atleta {}
+
+  .regolamento {
+
+    .center {
+      text-align: center;
+    }
+
+    .underline {
+      text-decoration: underline;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+  }
+
+}
+
+.nome-cognome-atleta {
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+
+  .wi-25 {
+    width: 25%;
+  }
+
+  .form-control {
+    box-sizing: border-box;
+    border: 1px solid #d6d6d6;
+    background-color: white;
+    padding: 10px 10px;
+    position: relative;
+    width: 60%;
+  }
+
+  .form--error {
+    color: #d0021b;
+    font-size: 12px;
+    font-style: italic;
+    padding-top: 0.25rem;
+    padding-left: 0.25rem;
+  }
+
+  .characters-notify {
+    font-size: 12px;
+    line-height: 15px;
+    width: 20%;
+    margin-left: 5px;
+
+    .error {
+      color: #d0021b;
+    }
+  }
+}
+
+.text-center {
+  text-align: center;
+}

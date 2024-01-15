@@ -1,0 +1,28 @@
+<app-header></app-header>
+<div class="container">
+  <h2>Benvenuto nel sistema di prenotazione eventi Heraclea 2024</h2>
+  <h4>Cosa vuoi fare?</h4>
+  <ul>
+    <li><a href="/home">Iscrizione campus atleti</a></li>
+    <li><a href="/home">Iscrizione Evento Gara (SOLO ATLETI)</a></li>
+    <li class="link" (click)="selectPeople = true">Iscrizione Evento Gara (SOLO Famiglia o Genitori + atleta)</li>
+  </ul>
+
+  <br />
+
+  <div class="form-group" *ngIf="selectPeople">
+    <div>
+      <label>Per quante persone vuoi prenotare? Il minimo di persone prenotabili è 3, in quanto le camere disponibili sono delle triple</label>
+      <input matInput type="number" [(ngModel)]="numeroPersone" class="form-control" min="3">  
+    </div>
+    
+    <div>
+      <label>Quanti si sono già iscritti ad un campus Heraclea 2024?</label>
+      <input matInput type="number" [(ngModel)]="numeroPersoneIscritte" class="form-control" min="0">
+    </div>
+
+    <button mat-raised-button color="primary" (click)="goToReservation()">
+      Conferma
+    </button>
+  </div>
+</div>
