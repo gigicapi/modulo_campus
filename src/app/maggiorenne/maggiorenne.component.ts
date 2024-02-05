@@ -9,6 +9,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 })
 export class MaggiorenneComponent implements OnInit {
   @Input() datiAtleta!: FormGroup;
+  @Input() isGara!: boolean;
   @Output() formCompleteEvent: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private _formBuilder: FormBuilder) {
@@ -39,12 +40,14 @@ export class MaggiorenneComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
     this.datiAtleta.valueChanges
       .pipe(
         debounceTime(500),
         distinctUntilChanged(),
       ).subscribe(
         formValues => {
+          console.log("FORM VALUES", formValues);
           this.formCompleteEvent.emit(this.datiAtleta.valid);
         }
       );

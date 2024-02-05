@@ -23,6 +23,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { StartComponent } from './start/start.component';
 import { WrapperComponent } from './wrapper/wrapper.component';
+import { MultipleReservationComponent } from './multiple-reservation/multiple-reservation.component';
+import { CdkAccordionModule } from '@angular/cdk/accordion';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { WrapperComponent } from './wrapper/wrapper.component';
     StepperComponent,
     MinorenneComponent,
     MaggiorenneComponent,
-    WrapperComponent
+    WrapperComponent,
+    MultipleReservationComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,8 @@ import { WrapperComponent } from './wrapper/wrapper.component';
     MatSelectModule,
     MatIconModule,
     HttpClientModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    CdkAccordionModule
   ],
   providers: [],
   bootstrap: [AppComponent]

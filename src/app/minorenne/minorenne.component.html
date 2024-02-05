@@ -85,6 +85,21 @@
       </div>
     </div>
     <div class="form-group title">
+      <label>Email Genitore</label>
+      <input matInput type="email" class="form-control"  formControlName="email"
+        placeholder="...">
+      <div class="characters-notify">
+        <span *ngIf="formControl['email'].touched && formControl['email'].errors" class="form--error">
+          <span *ngIf="formControl['email'].errors['required']">
+            Questo campo è obbligatorio
+          </span>
+          <span *ngIf="formControl['email'].errors['email']">
+            Inserire una mail valida
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group title">
       <label>Nome Atleta</label>
       <input matInput class="form-control"  formControlName="nome"
         placeholder="Nome Atleta">
@@ -180,7 +195,7 @@
         </span>
       </div>
     </div>
-    <div class="form-group title">
+    <!--<div class="form-group title">
       <label>Arma</label>
       <mat-select class="form-control" formControlName="arma">
         <mat-option value="FIORETTO">FIORETTO</mat-option>
@@ -193,7 +208,7 @@
           </span>
         </span>
       </div>
-    </div>
+    </div>-->
     <div class="form-group title">
       <label>Numero F.I.S</label>
       <input matInput class="form-control" formControlName="numeroFIS"
@@ -243,21 +258,6 @@
       </div>
     </div>
     <div class="form-group title">
-      <label>Email</label>
-      <input matInput type="email" class="form-control"  formControlName="email"
-        placeholder="...">
-      <div class="characters-notify">
-        <span *ngIf="formControl['email'].touched && formControl['email'].errors" class="form--error">
-          <span *ngIf="formControl['email'].errors['required']">
-            Questo campo è obbligatorio
-          </span>
-          <span *ngIf="formControl['email'].errors['email']">
-            Inserire una mail valida
-          </span>
-        </span>
-      </div>
-    </div>
-    <div class="form-group title">
       <label>Taglia T-Shirt</label>
       <mat-select class="form-control" formControlName="tShirt">
         <mat-option value="XXXS">XXXS</mat-option>
@@ -276,7 +276,7 @@
         </span>
       </div>
     </div>
-    <div class="form-group title">
+    <div *ngIf="!isGara" class="form-group title">
       <label>Taglia pantaloncino</label>
       <mat-select class="form-control" formControlName="pantaloncino">
         <mat-option value="XXXS">XXXS</mat-option>
@@ -318,26 +318,26 @@
         </span>
       </div>
     </div>
-    <div class="form-group title">
-      <label>Ti sei già iscritto ad un evento Heraclea del 2024?</label>
-      <mat-checkbox matInput formControlName="iscritto" placeholder="iscritto"></mat-checkbox>
+    <div *ngIf="!isGara" class="form-group title">
+      <label>Richiede iscrizione a:</label>
+      <mat-select class="form-control" formControlName="iscrizione" >
+        <mat-option value="Heraclea Fencing Camp di Formia (spada)">Heraclea Fencing Camp di Formia (spada)</mat-option>
+        <mat-option value="Heraclea Fencing Camp di Pizzo (spada)">Heraclea Fencing Camp di Pizzo (spada)</mat-option>
+      </mat-select>
       <div class="characters-notify">
-        <span *ngIf="formControl['iscritto'].touched && formControl['iscritto'].errors" class="form--error">
-          <span *ngIf="formControl['iscritto'].errors['required']">
+        <span *ngIf="formControl['iscrizione'].touched && formControl['iscrizione'].errors" class="form--error">
+          <span *ngIf="formControl['iscrizione'].errors['required']">
             Questo campo è obbligatorio
           </span>
         </span>
       </div>
     </div>
-    <div class="form-group title">
-      <label>Richiede iscrizione a:</label>
-      <mat-select class="form-control" formControlName="iscrizione" >
-        <mat-option value="Heraclea Fencing Camp di Formia (spada)">Heraclea Fencing Camp di Formia (spada)</mat-option>
-        <mat-option value="Heraclea Fencing Camp di Pizzo (fioretto e spada)">Heraclea Fencing Camp di Pizzo (fioretto e spada)</mat-option>
-      </mat-select>
+    <div *ngIf="!isGara" class="form-group title">
+      <label>Vuoi iscriverti anche all'evento gara di Pizzo (02/09 - 04/09)?</label>
+      <mat-checkbox matInput formControlName="iscrizioneGara" placeholder="iscrizione gara"></mat-checkbox>
       <div class="characters-notify">
-        <span *ngIf="formControl['iscrizione'].touched && formControl['iscrizione'].errors" class="form--error">
-          <span *ngIf="formControl['iscrizione'].errors['required']">
+        <span *ngIf="formControl['iscrizioneGara'].touched && formControl['iscrizioneGara'].errors" class="form--error">
+          <span *ngIf="formControl['iscrizioneGara'].errors['required']">
             Questo campo è obbligatorio
           </span>
         </span>

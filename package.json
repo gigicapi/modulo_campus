@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "homepage": "https://gigicapi.github.io/modulo_campus",
-    "publish": "gh-pages -d src"
+    "publish": "gh-pages -d src",
+    "deploy_to_gh": "ng deploy --base-href=https://gigicapi.github.io/modulo_campus/"
   },
   "private": true,
   "dependencies": {

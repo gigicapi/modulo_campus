@@ -1,0 +1,272 @@
+<mat-stepper #stepperM [linear]="true">
+    <mat-step label="Intestatario prenotazione" [completed]="isStepCompleted('Intestatario prenotazione')">
+        <h3>Inserisci i dati dell'intestatario della prenotazione</h3>
+        <!-- INTESTATARIO CAMERA -->
+        <div [formGroup]="intestatario" id="english-form" class="content">
+            <div class="form-group title">
+                <label>Nome</label>
+                <input matInput class="form-control" formControlName="nome" placeholder="Nome">
+                <div class="characters-notify">
+                    <span *ngIf="intestatarioFormControl['nome'].touched && intestatarioFormControl['nome'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['nome'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group title">
+                <label>Cognome</label>
+                <input matInput class="form-control" formControlName="cognome" placeholder="Cognome">
+                <div class="characters-notify">
+                    <span
+                        *ngIf="intestatarioFormControl['cognome'].touched && intestatarioFormControl['cognome'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['cognome'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group title">
+                <label>Residenza</label>
+                <input matInput class="form-control" formControlName="residenza" placeholder="Residente in">
+                <div class="characters-notify">
+                    <span
+                        *ngIf="intestatarioFormControl['residenza'].touched && intestatarioFormControl['residenza'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['residenza'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group title">
+                <label>in via</label>
+                <input matInput class="form-control" formControlName="viaResidenza" placeholder="Via">
+                <div class="characters-notify">
+                    <span
+                        *ngIf="intestatarioFormControl['viaResidenza'].touched && intestatarioFormControl['viaResidenza'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['viaResidenza'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group title">
+                <label>n°</label>
+                <input matInput class="form-control" formControlName="nResidenza" placeholder="n°">
+                <div class="characters-notify">
+                    <span
+                        *ngIf="intestatarioFormControl['nResidenza'].touched && intestatarioFormControl['nResidenza'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['nResidenza'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group title">
+                <label>Telefono</label>
+                <input matInput type="number" class="form-control" formControlName="telefono" placeholder="...">
+                <div class="characters-notify">
+                    <span
+                        *ngIf="intestatarioFormControl['telefono'].touched && intestatarioFormControl['telefono'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['telefono'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group title">
+                <label>Email</label>
+                <input matInput type="email" class="form-control" formControlName="email" placeholder="...">
+                <div class="characters-notify">
+                    <span *ngIf="intestatarioFormControl['email'].touched && intestatarioFormControl['email'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['email'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
+                        <span *ngIf="intestatarioFormControl['email'].errors['email']">
+                            Inserire una mail valida
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group title">
+                <label>Partecipi alla gara?</label>
+                <mat-checkbox matInput formControlName="gara" placeholder="gara"></mat-checkbox>
+                <div class="characters-notify">
+                  <span *ngIf="intestatarioFormControl['gara'].touched && intestatarioFormControl['gara'].errors" class="form--error">
+                    <span *ngIf="intestatarioFormControl['gara'].errors['required']">
+                      Questo campo è obbligatorio
+                    </span>
+                  </span>
+                </div>
+              </div>
+            <div *ngIf="intestatario.value['gara']" class="form-group title">
+                <label>Taglia T-Shirt</label>
+                <mat-select class="form-control" formControlName="tShirt">
+                  <mat-option value="XXXS">XXXS</mat-option>
+                  <mat-option value="XXS">XXS</mat-option>
+                  <mat-option value="XS">XS</mat-option>
+                  <mat-option value="S">S</mat-option>
+                  <mat-option value="M">M</mat-option>
+                  <mat-option value="L">L</mat-option>
+                  <mat-option value="XL">XL</mat-option>
+                </mat-select>
+                <div class="characters-notify">
+                  <span *ngIf="intestatarioFormControl['tShirt'].touched && intestatarioFormControl['tShirt'].errors" class="form--error">
+                    <span *ngIf="intestatarioFormControl['tShirt'].errors['required']">
+                      Questo campo è obbligatorio
+                    </span>
+                  </span>
+                </div>
+              </div>
+        </div>
+        <br />
+        <br />
+        <div class="button-container">
+            <button *ngIf="intestatario.valid && (!intestatario.value['gara'] || (intestatario.value['gara'] && intestatario.value['tShirt']))" mat-raised-button color="primary" matStepperNext>
+                <span>Avanti</span> <mat-icon fontIcon="arrow_forward"></mat-icon>
+            </button>
+        </div>
+    </mat-step>
+
+    <mat-step label="Altri ospiti" [completed]="isStepCompleted('Altri ospiti')">
+        <h4>Inserisci i nomi delle persone incluse nella prenotazione</h4>
+        <div class="accordion-container">
+            <cdk-accordion class="example-accordion">
+                <cdk-accordion-item *ngFor="let n of steps; let index = index" #accordionItem="cdkAccordionItem"
+                    class="example-accordion-item" role="button" tabindex="0" [attr.id]="'accordion-header-' + index"
+                    [attr.aria-expanded]="accordionItem.expanded" [attr.aria-controls]="'accordion-body-' + index">
+                    <div class="example-accordion-item-header" [ngClass]="{'success': isSubStepCompleted(n)}"
+                        (click)="accordionItem.toggle()">
+                        {{ index + 1}}
+                        <span class="example-accordion-item-description">
+                            Click per {{ accordionItem.expanded ? 'chiudere' : 'aprire' }}
+                        </span>
+                    </div>
+                    <div class="example-accordion-item-body" role="region"
+                        [style.display]="accordionItem.expanded ? '' : 'none'" [attr.id]="'accordion-body-' + index"
+                        [attr.aria-labelledby]="'accordion-header-' + index">
+
+
+                        <div class="nome-cognome-atleta form-group title">
+                            <label class="wi-25">Nome</label>
+                            <input matInput class="form-control" [(ngModel)]="nomiECognomi[n].nome" placeholder="Nome">
+                            <div class="characters-notify">
+                                <span *ngIf="!nomiECognomi[n].nome || nomiECognomi[n].nome === ''" class="form--error">
+                                    Questo campo è obbligatorio
+                                </span>
+                            </div>
+                        </div>
+                        <div class="nome-cognome-atleta form-group title">
+                            <label class="wi-25">Cognome</label>
+                            <input matInput class="form-control" [(ngModel)]="nomiECognomi[n].cognome"
+                                placeholder="Cognome">
+                            <div class="characters-notify">
+                                <span *ngIf="!nomiECognomi[n].cognome || nomiECognomi[n].cognome === ''"
+                                    class="form--error">
+                                    Questo campo è obbligatorio
+                                </span>
+                            </div>
+                        </div>
+                        <div class="nome-cognome-atleta form-group title">
+                            <label class="wi-25">Partecipa alla gara?</label>
+                            <mat-checkbox matInput [(ngModel)]="nomiECognomi[n].gara"
+                                placeholder="iscrizione gara"></mat-checkbox>
+                        </div>
+                        <div *ngIf="nomiECognomi[n].gara" class="nome-cognome-atleta form-group title">
+                            <label>Taglia T-Shirt</label>
+                            <mat-select class="form-control" [(ngModel)]="nomiECognomi[n].tShirt">
+                                <mat-option value="XXXS">XXXS</mat-option>
+                                <mat-option value="XXS">XXS</mat-option>
+                                <mat-option value="XS">XS</mat-option>
+                                <mat-option value="S">S</mat-option>
+                                <mat-option value="M">M</mat-option>
+                                <mat-option value="L">L</mat-option>
+                                <mat-option value="XL">XL</mat-option>
+                            </mat-select>
+                            <div class="characters-notify">
+                                <span *ngIf="nomiECognomi[n].gara && nomiECognomi[n].tShirt === ''" class="form--error">
+                                    Questo campo è obbligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </cdk-accordion-item>
+            </cdk-accordion>
+        </div>
+
+        <div class="button-container">
+            <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+                <span>Indietro</span></button>
+            <button *ngIf="isAllSubStepsCompleted()" mat-raised-button color="primary" matStepperNext>
+                <span>Avanti</span> <mat-icon fontIcon="arrow_forward"></mat-icon>
+            </button>
+        </div>
+
+    </mat-step>
+
+    <mat-step label="Carica documenti" [completed]="isStepCompleted('Carica documenti')">
+        <h4>Carica i documenti di tutte le persone della prenotazione</h4>
+
+        <div class="upload-section">
+            <label [ngClass]="{ 'file-loaded': docIntestatario }">
+                Documento Intestatario
+                <mat-icon *ngIf="docIntestatario">check</mat-icon></label>
+            <input type="file" id="documento_intestatario" (change)="selectFile($event, -1)" name="documento_intestatario" />
+        </div>
+
+        <div *ngFor="let doc of steps" class="upload-section">
+            <label [ngClass]="{ 'file-loaded': nomiECognomi[doc].doc }">
+                Documento {{doc + 1}}
+                <mat-icon *ngIf="nomiECognomi[doc].doc">check</mat-icon></label>
+            <input type="file" id="documento_{{doc}}" (change)="selectFile($event, doc)" name="documento_{{doc}}" />
+        </div>
+
+        <div class="button-container">
+            <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+                <span>Indietro</span></button>
+            <button *ngIf="allFilesUploaded()" mat-raised-button color="primary" matStepperNext>
+                <span>Avanti</span> <mat-icon fontIcon="arrow_forward"></mat-icon>
+            </button>
+        </div>
+
+    </mat-step>
+
+    <mat-step label="Invia">
+        <h4>Confermi i dati inseriti per inviare la richiesta di iscrizione?</h4>
+
+        <div *ngIf="!sendingMail" class="confirm-container">
+            <button *ngIf="isAllSubStepsCompleted() && intestatario.valid && allFilesUploaded()" mat-raised-button
+                color="primary" (click)="sendMail()">
+                <mat-icon fontIcon="send"></mat-icon>
+                <span>Invia iscrizione</span>
+            </button>
+        </div>
+        <br />
+        <div class="action-loading" *ngIf="(getSentOk() + getSentError()) < totalMails">
+            Invio documenti in corso. Non chiudere questa pagina fino al completamento. ({{getSentOk()}} /
+            {{totalMails}})
+        </div>
+        <mat-spinner class="text-center" *ngIf="(getSentOk() + getSentError()) < totalMails"></mat-spinner>
+        <div class="action-complete" *ngIf="getSentOk() > 0 && getSentOk() === totalMails">
+            <label>Modulo inviato con successo!</label>
+        </div>
+        <div class="action-error" *ngIf="getSentError() > 0">
+            <label>Si è verificato un errore durante l'invio della mail. Invia gli eventuali messaggi sottostanti
+                all'amministratore per contribuire a migliorare l'applicazione. Grazie. Puoi riprovare provando ad
+                aggiornare la pagina del browser</label>
+        </div>
+        <br />
+        <div class="button-container" *ngIf="!sendingMail">
+            <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+                <span>Indietro</span></button>
+        </div>
+    </mat-step>
+
+</mat-stepper>

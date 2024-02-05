@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SharedService } from '../shared.service';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-wrapper',
@@ -11,44 +12,73 @@ export class WrapperComponent implements OnInit {
   isCompleted: boolean = false;
   currentStep: number = 0;
   numberOfStepper: number = 1;
+  isCompletedAlreadySigned: boolean = false;
+  currentStepAlreadySigned: number = 0;
+  numberOfAlreadySigned: number = 0;
 
   steps: number[] = [];
+  stepsAlreadySigned: number[] = [];
+
+  nomiECognomi: { nome: string, cognome: string }[] = [];
 
   errors: any;
 
   constructor(private shared: SharedService) { }
 
   ngOnInit(): void {
-    this.shared.getNReservation$().subscribe(
-      (num) => {
-        this.numberOfStepper = num;
-        this.steps = [...Array(this.numberOfStepper).keys()];
-        console.log("STEPS", this.steps);
-        if(!this.errors) {
-          this.errors = {};
+    combineLatest([this.shared.getNReservation$(), this.shared.getNSigned$()])
+      .subscribe(
+        ([num, numAlreadySigned]) => {
+          this.numberOfStepper = num;
+          this.numberOfAlreadySigned = numAlreadySigned;
+          this.steps = [...Array(this.numberOfStepper).keys()];
+          this.stepsAlreadySigned = [...Array(this.numberOfAlreadySigned).keys()];
+          this.nomiECognomi = [];
+          for (let i = 0; i < this.numberOfAlreadySigned; i++) {
+            this.nomiECognomi[i] = {
+              nome: "",
+              cognome: ""
+            }
+          };
+          if (!this.errors) {
+            this.errors = {};
+          }
+          for (let i = 0; i < this.numberOfStepper; i++) {
+            this.errors[i + 1] = false;
+          }
         }
-        for(let i = 0; i<this.numberOfStepper; i++) {
-          this.errors[i+1] = false;
-        }
-      }
-    );
+      );
   }
 
   increaseStepCompleted($event: boolean) {
-    console.log("INCREASESTEP", $event);
-    if(!this.errors) {
+    if (!this.errors) {
       this.errors = {};
     }
-    this.errors[this.currentStep+1] = $event;
+    this.errors[this.currentStep + 1] = $event;
     this.currentStep++;
-    console.log("this.errors", this.errors);
-    console.log("this.currentStep", this.currentStep);
-    console.log("this.numberOfStepper", this.numberOfStepper);
-    if(this.currentStep >= this.numberOfStepper) {
+    if (this.currentStep >= this.numberOfStepper) {
       this.isCompleted = true;
-    } else {
 
+      // MANDARE MAIL CON I NOMI DEI GIà ISCRITTI
+    } 
+  }
+
+  isAllAlreadySignStepCompleted() {
+    if(this.numberOfAlreadySigned === 0) return true;
+    for (let i = 0; i < this.numberOfAlreadySigned; i++) {
+      if(!this.isAlreadySignStepCompleted(i)) {
+        return false;
+      }
     }
+    return true;
+  }
+
+  isAlreadySignStepCompleted(n: number) {
+    return this.nomiECognomi[n].nome && this.nomiECognomi[n].nome !== '' && this.nomiECognomi[n].cognome && this.nomiECognomi[n].cognome !== '';
+  }
+
+  isAllCompleted() {
+    return this.isAllAlreadySignStepCompleted() && this.isCompleted;
   }
 
 }

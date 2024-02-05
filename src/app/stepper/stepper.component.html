@@ -20,10 +20,10 @@
     [completed]="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid">
     <p style="color: red; font-weight: bold;" *ngIf="isMaggiorenne < 0">Devi prima selezionare se atleta maggiorenne o
       minorenne allo step precedente</p>
-    <app-minorenne *ngIf="!isMaggiorenne && isMaggiorenne !== -1" [datiAtleta]="datiAtletaMinorenne"
+    <app-minorenne *ngIf="!isMaggiorenne && isMaggiorenne !== -1" [datiAtleta]="datiAtletaMinorenne" [isGara]="isGara"
       (formCompleteEvent)="isFormComplete($event)"></app-minorenne>
     <app-maggiorenne *ngIf="isMaggiorenne && isMaggiorenne !== -1" [datiAtleta]="datiAtletaMaggiorenne"
-      (formCompleteEvent)="isFormComplete($event)"></app-maggiorenne>
+      [isGara]="isGara" (formCompleteEvent)="isFormComplete($event)"></app-maggiorenne>
     <div class="button-container">
       <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
         <span>Indietro</span></button>
@@ -44,10 +44,15 @@
       *ngIf="isMaggiorenne ? !datiAtletaMaggiorenne.valid : !datiAtletaMinorenne.valid">
       Devi prima compilare il modulo allo step precedente
     </p>
-    <div>
+    <div class="button-container">
       <button mat-raised-button *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid"
         (click)="exportPDF()" color="primary">
         <span>Scarica PDF</span> <mat-icon fontIcon="download"></mat-icon>
+      </button>
+
+      <button mat-raised-button *ngIf="isGara && (isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid)"
+        (click)="exportPDFForGara()" color="primary">
+        <span>Scarica Modulo Responsabilità</span> <mat-icon fontIcon="download"></mat-icon>
       </button>
     </div>
     <div class="button-container">
@@ -86,9 +91,9 @@
         </div>
         <div class="nome-cognome-atleta form-group title">
           <label class="wi-25">Campus</label>
-          <mat-select class="form-control" [(ngModel)]="campusAtleta" >
+          <mat-select class="form-control" [(ngModel)]="campusAtleta">
             <mat-option value="Formia">Camp di Formia (spada)</mat-option>
-            <mat-option value="Pizzo">Camp di Pizzo (fioretto e spada)</mat-option>
+            <mat-option value="Pizzo">Camp di Pizzo (spada)</mat-option>
           </mat-select>
           <div class="characters-notify">
             <span *ngIf="!campusAtleta || campusAtleta === ''" class="form--error">
@@ -96,6 +101,10 @@
             </span>
           </div>
         </div>
+        <!--<div *ngIf="isGara" class="nome-cognome-atleta form-group title">
+          <label>Ti sei già iscritto ad un evento Heraclea 2024?</label>
+          <mat-checkbox matInput [(ngModel)]="iscrizioneGara" placeholder="iscrizione gara"></mat-checkbox>
+        </div>-->
       </div>
       <!-- <p *ngIf="isOverSize()" class="warning-text">NOTA: il totale dei file non deve superare i 10MB per l'invio via mail</p> -->
       <div class="upload-section">
@@ -171,6 +180,14 @@
             *ngIf="attachmentsDict['ALLERGIE_INTOLLERANZE'] && attachmentsDict['ALLERGIE_INTOLLERANZE'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInput5" (change)="selectFile($event, 'ALLERGIE_INTOLLERANZE')" name="fileInput5" />
       </div>
+      <div *ngIf="isGara" class="upload-section">
+        <label
+          [ngClass]="{ 'file-loaded' : attachmentsDict['MODULO_RESPONSABILITA'] && attachmentsDict['MODULO_RESPONSABILITA'].length > 0 }">Modulo
+          di responsabilità per la gara<mat-icon
+            *ngIf="attachmentsDict['MODULO_RESPONSABILITA'] && attachmentsDict['MODULO_RESPONSABILITA'].length > 0">check</mat-icon></label>
+        <input type="file" id="fileInputModuloResponsabilitaGara" (change)="selectFile($event, 'MODULO_RESPONSABILITA')"
+          name="fileInputModuloResponsabilitaGara" />
+      </div>
 
       <div class="upload-section" *ngIf="upload">
 
@@ -187,21 +204,25 @@
           name="fileInput5" />
       </div>
       <div class="upload-section" *ngIf="isAllLoaded()">
-        <button *ngIf="!sendingMail && getSentOk() === 0 && getSentError() === 0" mat-raised-button (click)="sendMailWithService()"><mat-icon
-            fontIcon="send"></mat-icon>
+        <button *ngIf="!sendingMail && getSentOk() === 0 && getSentError() === 0" mat-raised-button
+          (click)="sendMailWithService()"><mat-icon fontIcon="send"></mat-icon>
           <span>Invia modulo</span>
         </button>
         <div class="action-loading" *ngIf="(getSentOk() + getSentError()) < totalMails">
-          Invio documenti in corso. Non chiudere questa pagina fino al completamento. ({{mailAlreadySent}} / {{totalMails}})
+          Invio documenti in corso. Non chiudere questa pagina fino al completamento. ({{mailAlreadySent}} /
+          {{totalMails}})
         </div>
         <mat-spinner *ngIf="(getSentOk() + getSentError()) < totalMails"></mat-spinner>
         <div class="action-complete" *ngIf="getSentOk() > 0 && getSentOk() === totalMails">
-          <label>Modulo inviato con successo!<br/>
-            Sarà ricontattato/a ai contatti indicati non appena sarà effettuata la verifica dei dati <span *ngIf="!isPizzo()"> e del pagamento della quota</span>.
+          <label>Modulo inviato con successo!<br />
+            Sarà ricontattato/a ai contatti indicati non appena sarà effettuata la verifica dei dati <span
+              *ngIf="!isPizzo()"> e del pagamento della quota</span>.
           </label>
         </div>
         <div class="action-error" *ngIf="getSentError() > 0">
-          <label>Si è verificato un errore durante l'invio della mail. Invia gli eventuali messaggi sottostanti all'amministratore per contribuire a migliorare l'applicazione. Grazie. Puoi riprovare provando ad aggiornare la pagina del browser</label>
+          <label>Si è verificato un errore durante l'invio della mail. Invia gli eventuali messaggi sottostanti
+            all'amministratore per contribuire a migliorare l'applicazione. Grazie. Puoi riprovare provando ad
+            aggiornare la pagina del browser</label>
         </div>
         <div *ngIf="errorDescriptions && errorDescriptions.length > 0">
           <div *ngFor="let error of errorDescriptions">{{ error }}</div>
@@ -310,7 +331,8 @@
       </li>
       <li *ngIf="isPizzo()">
         Anticipo quota d'iscrizione di 350,00 €, saldo da consegnare al proprio Maestro di sala oppure da
-        concordare telefonicamente SOLO dopo aver ricevuto comunicazioni dall'organizzazione riguardo la conferma dell'iscrizione.
+        concordare telefonicamente SOLO dopo aver ricevuto comunicazioni dall'organizzazione riguardo la conferma
+        dell'iscrizione.
         La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione dello stage.
       </li>
       <li>
@@ -331,7 +353,8 @@
       <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2022-2023 per Formia, e 2023-2024 per Pizzo
       </li>
       <li>Modulo scarico responsabilità</li>
-      <li *ngIf="!isPizzo()">Attestazione di versamento della caparra (350,00 €) sul C/C bancario intestato a: Club Scherma
+      <li *ngIf="!isPizzo()">Attestazione di versamento della caparra (350,00 €) sul C/C bancario intestato a: Club
+        Scherma
         Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720
         specificando nella causale: camp cognome e nome dell'atleta – es. Formia o Pizzo – Luigi Rossi.</li>
     </ul>

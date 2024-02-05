@@ -9,6 +9,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 })
 export class MinorenneComponent implements OnInit {
   @Input() datiAtleta!: FormGroup;
+  @Input() isGara!: boolean;
   @Output() formCompleteEvent: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private _formBuilder: FormBuilder) {

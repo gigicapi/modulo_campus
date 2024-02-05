@@ -8,12 +8,12 @@ declare var require: any;
 
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
-import { forkJoin } from 'rxjs';
 const htmlToPdfmake = require("html-to-pdfmake");
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
 import '../../assets/smtp.js';
 import { EmailService, FileObject, MailRequest } from '../email.service';
+import { SharedService } from '../shared.service'
 declare let Email: any;
 
 @Component({
@@ -64,12 +64,15 @@ export class StepperComponent implements OnInit, OnChanges {
   nomeAtleta: string = '';
   cognomeAtleta: string = '';
   campusAtleta: string = '';
+  iscrizioneGara: boolean = false;
 
   errorDescriptions: string[] = [];
 
   weTransferList: File[] = [];
 
-  constructor(private _formBuilder: FormBuilder, private http: HttpClient, private emailService: EmailService) {
+  isGara: boolean = false;
+
+  constructor(private _formBuilder: FormBuilder, private http: HttpClient, private emailService: EmailService, private shared: SharedService) {
     this.datiAtletaMinorenne = this._formBuilder.group({
       nomeGenitore: ['', Validators.required],
       cognomeGenitore: ['', Validators.required],
@@ -86,18 +89,17 @@ export class StepperComponent implements OnInit, OnChanges {
       viaResidenza: ['', Validators.required],
       nResidenza: ['', Validators.required],
       societa: ['', Validators.required],
-      arma: ['', Validators.required],
       numeroFIS: ['', Validators.required],
       allergie: [''],
-      iscritto: [''],
+      iscrizioneGara: [''],
       preferenzaCamera: [''],
       telefonoAtleta: [''],
       telefonoPadre: ['', Validators.required],
       telefonoMadre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       tShirt: ['', Validators.required],
-      pantaloncino: ['', Validators.required],
-      iscrizione: ['', Validators.required],
+      pantaloncino: [''],
+      iscrizione: [''],
     });
     this.datiAtletaMaggiorenne = this._formBuilder.group({
       nome: ['', Validators.required],
@@ -108,18 +110,17 @@ export class StepperComponent implements OnInit, OnChanges {
       viaResidenza: ['', Validators.required],
       nResidenza: ['', Validators.required],
       societa: ['', Validators.required],
-      arma: ['', Validators.required],
       numeroFIS: ['', Validators.required],
       allergie: [''],
-      iscritto: [''],
+      iscrizioneGara: [''],
       preferenzaCamera: [''],
       telefonoAtleta: ['', Validators.required],
       telefonoPadre: [''],
       telefonoMadre: [''],
       email: ['', [Validators.required, Validators.email]],
       tShirt: ['', Validators.required],
-      pantaloncino: ['', Validators.required],
-      iscrizione: ['', Validators.required],
+      pantaloncino: [''],
+      iscrizione: [''],
     });
   }
 
@@ -138,6 +139,17 @@ export class StepperComponent implements OnInit, OnChanges {
 
       });
 
+    this.shared.getIsGara$().subscribe(
+      (isGara) => {
+        this.isGara = isGara;
+        if(!this.isGara) {
+          this.datiAtletaMaggiorenne.controls["iscrizione"].addValidators(Validators.required);
+          this.datiAtletaMinorenne.controls["iscrizione"].addValidators(Validators.required);
+          this.datiAtletaMaggiorenne.controls["pantaloncino"].addValidators(Validators.required);
+          this.datiAtletaMinorenne.controls["pantaloncino"].addValidators(Validators.required);
+        }
+      }
+    );
 
   }
 
@@ -163,6 +175,7 @@ export class StepperComponent implements OnInit, OnChanges {
   }
 
   isPizzo() {
+    if(this.isGara) return true;
     if (this.upload) {
       return this.campusAtleta.toLowerCase().includes("pizzo");
     } else {
@@ -172,6 +185,10 @@ export class StepperComponent implements OnInit, OnChanges {
         return this.datiAtletaMaggiorenne.value['iscrizione'].toLowerCase().includes("pizzo");
       }
     }
+  }
+
+  public exportPDFForGara() {
+
   }
 
   public exportPDF() {
@@ -309,6 +326,9 @@ export class StepperComponent implements OnInit, OnChanges {
     let isAllergie = this.upload ? this.allergie : this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['allergie'] : this.datiAtletaMinorenne.value['allergie'];
     if (isAllergie) {
       this.allFilesLoaded = this.allFilesLoaded && keys.includes("ALLERGIE_INTOLLERANZE");
+    }
+    if (this.isGara) {
+      return this.allFilesLoaded && keys.includes("MODULO_RESPONSABILITA");
     }
     return this.allFilesLoaded;
   }
@@ -461,7 +481,7 @@ export class StepperComponent implements OnInit, OnChanges {
 
         const mailReq: MailRequest = {
           subject: subject + campus + " - " + fo.filename,
-          recipients: ['fortesting.lc@gmail.com'], //'campusscherma@gmail.com', 
+          recipients: ['fortesting.lc@gmail.com'], // this.datiAtletaMaggiorenne.value['email'] 'campusscherma@gmail.com', 
           mailText: `
           ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
               `In allegato i documenti di iscrizione per il campo estivo dell'atleta: ${subject}.
