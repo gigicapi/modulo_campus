@@ -333,8 +333,11 @@
       </div>
     </div>
     <div *ngIf="!isGara" class="form-group title">
-      <label>Vuoi iscriverti anche all'evento gara di Pizzo (02/09 - 04/09)?</label>
-      <mat-checkbox matInput formControlName="iscrizioneGara" placeholder="iscrizione gara"></mat-checkbox>
+      <label>Vuoi iscriverti anche all'evento gara di Pizzo (02/09/2024 - 04/09/2024)?</label>
+      <mat-select class="form-control" formControlName="iscrizioneGara">
+        <mat-option value="true">SI</mat-option>
+        <mat-option value="false">NO</mat-option>
+      </mat-select>
       <div class="characters-notify">
         <span *ngIf="formControl['iscrizioneGara'].touched && formControl['iscrizioneGara'].errors" class="form--error">
           <span *ngIf="formControl['iscrizioneGara'].errors['required']">
