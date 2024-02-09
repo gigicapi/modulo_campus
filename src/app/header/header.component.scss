@@ -18,20 +18,5 @@
   max-width: 70%;
   font-size: large;
   white-space: pre-wrap;
-}
-
-@media (min-width: 200px) {
-  .title {
-    font-size: 12px;
-  }
-}
-@media (min-width: 768px) {
-  .title {
-    font-size: 14px;
-  }
-}
-@media (min-width: 1000px) {
-  .title {
-    font-size: 20px;
-  }
+  font-size: 1.5rem;
 }

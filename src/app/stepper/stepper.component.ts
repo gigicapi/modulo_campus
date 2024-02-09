@@ -14,6 +14,7 @@ const htmlToPdfmake = require("html-to-pdfmake");
 import '../../assets/smtp.js';
 import { EmailService, FileObject, MailRequest } from '../email.service';
 import { SharedService } from '../shared.service'
+import { combineLatest } from 'rxjs';
 declare let Email: any;
 
 @Component({
@@ -71,6 +72,7 @@ export class StepperComponent implements OnInit, OnChanges {
   weTransferList: File[] = [];
 
   isGara: boolean = false;
+  alreadySigned: boolean = false;
 
   constructor(private _formBuilder: FormBuilder, private http: HttpClient, private emailService: EmailService, private shared: SharedService) {
     this.datiAtletaMinorenne = this._formBuilder.group({
@@ -139,15 +141,17 @@ export class StepperComponent implements OnInit, OnChanges {
 
       });
 
-    this.shared.getIsGara$().subscribe(
-      (isGara) => {
+    combineLatest([this.shared.getIsGara$(), this.shared.getNSigned$()]).subscribe(
+      ([isGara, alreadySigned]) => {
         this.isGara = isGara;
-        if(!this.isGara) {
+        if (!this.isGara) {
           this.datiAtletaMaggiorenne.controls["iscrizione"].addValidators(Validators.required);
           this.datiAtletaMinorenne.controls["iscrizione"].addValidators(Validators.required);
           this.datiAtletaMaggiorenne.controls["pantaloncino"].addValidators(Validators.required);
           this.datiAtletaMinorenne.controls["pantaloncino"].addValidators(Validators.required);
         }
+
+        this.alreadySigned = alreadySigned > 0;
       }
     );
 
@@ -160,6 +164,10 @@ export class StepperComponent implements OnInit, OnChanges {
       }, 100)
 
     }
+  }
+
+  isAlsoForGara() {
+    return this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['iscrizioneGara'] === 'SI' : this.datiAtletaMinorenne.value['iscrizioneGara'] === 'SI';
   }
 
   setIsMaggiorenne($event: any) {
@@ -175,7 +183,7 @@ export class StepperComponent implements OnInit, OnChanges {
   }
 
   isPizzo() {
-    if(this.isGara) return true;
+    if (this.isGara) return true;
     if (this.upload) {
       return this.campusAtleta.toLowerCase().includes("pizzo");
     } else {
@@ -187,14 +195,10 @@ export class StepperComponent implements OnInit, OnChanges {
     }
   }
 
-  public exportPDFForGara() {
-
-  }
-
   public exportPDF() {
-    const pdfTable = document.getElementById("firstPage") as HTMLElement;
-    const pdfTable2 = document.getElementById("secondPage") as HTMLElement;
-    const pdfTable3 = document.getElementById("thirdPage") as HTMLElement;
+    const pdfTable = document.getElementById(this.isGara ? "firstPageForGara" : "firstPage") as HTMLElement;
+    const pdfTable2 = document.getElementById(this.isGara ? "secondPageForGara" : "secondPage") as HTMLElement;
+    const pdfTable3 = document.getElementById(this.isGara ? "thirdPageForGara" : "thirdPage") as HTMLElement;
     this.generatePDF(pdfTable, true);
     this.generatePDF(pdfTable2, true);
     this.generatePDF(pdfTable3, false);
@@ -204,7 +208,7 @@ export class StepperComponent implements OnInit, OnChanges {
       alignment: 'justify'
     }
     const documentDefinition: any = { pageOrientation: 'portrait', pageSize: 'A4', content: this.allPDF, defaultStyle };
-    pdfMake.createPdf(documentDefinition).download('Modulo Iscrizione.pdf');
+    pdfMake.createPdf(documentDefinition).download(this.isGara ? 'Modulo Iscrizione Gara.pdf' : 'Modulo Iscrizione.pdf');
   }
 
   allPDF: any[] = [];
@@ -328,124 +332,10 @@ export class StepperComponent implements OnInit, OnChanges {
       this.allFilesLoaded = this.allFilesLoaded && keys.includes("ALLERGIE_INTOLLERANZE");
     }
     if (this.isGara) {
-      return this.allFilesLoaded && keys.includes("MODULO_RESPONSABILITA");
+      return this.alreadySigned ? documentiFirmati : this.allFilesLoaded;
     }
     return this.allFilesLoaded;
   }
-
-  // prepareAndSendMail() {
-  //   this.errorDescriptions = [];
-  //   if (this.isAllLoaded()) {
-  //     const whoIs = this.nomeAtleta && this.nomeAtleta !== '' && this.cognomeAtleta && this.cognomeAtleta !== '';
-  //     if (this.upload && !whoIs) {
-  //       alert("Inserire nome e cognome atleta");
-  //       return;
-  //     }
-  //     this.mailError = false;
-  //     this.mailSent = false;
-  //     this.sendingMail = true;
-  //     const subject = this.upload ? '' : this.isMaggiorenne ?
-  //       this.datiAtletaMaggiorenne.value['nome'] + " " + this.datiAtletaMaggiorenne.value['cognome'] :
-  //       this.datiAtletaMinorenne.value['nome'] + " " + this.datiAtletaMinorenne.value['cognome'];
-
-  //     if (this.isOverSize()) {
-  //       let differentAttachments = [];
-  //       const differentMails = [];
-  //       const files = Object.keys(this.attachmentsDict);
-  //       let actualSizes = [];
-  //       for (let i = 0; i < files.length; i++) {
-  //         actualSizes.push(parseFloat(this.attachmentsDict[files[i]][2]));
-  //         const { size, unit } = this.getPartialSize(actualSizes);
-  //         if (!this.isOverPartialSize(size, unit)) {
-  //           differentAttachments.push(
-  //             {
-  //               name: files[i] + "." + this.attachmentsDict[files[i]][1],
-  //               data: this.attachmentsDict[files[i]][0]
-  //             }
-  //           );
-  //         } else {
-  //           differentMails.push({ subject, differentAttachments });
-  //           differentAttachments = [];
-  //           differentAttachments.push(
-  //             {
-  //               name: files[i] + "." + this.attachmentsDict[files[i]][1],
-  //               data: this.attachmentsDict[files[i]][0]
-  //             }
-  //           );
-  //           actualSizes = [];
-  //           actualSizes.push(parseFloat(this.attachmentsDict[files[i]][2]));
-  //         }
-  //       }
-
-  //       if (differentAttachments.length > 0) {
-  //         differentMails.push({ subject, differentAttachments });
-  //         differentAttachments = [];
-  //         actualSizes = [];
-  //       }
-  //       let nMail = 0;
-  //       differentMails.forEach(el => {
-  //         this.sendEmail(this.upload ? this.nomeAtleta + " " + this.cognomeAtleta : el.subject, el.differentAttachments, nMail++);
-  //       });
-
-  //       setTimeout(() => {
-  //         if (!this.mailError) this.mailSent = true;
-  //       }, 5000);
-
-  //     } else {
-  //       const attachmentsList = Object.keys(this.attachmentsDict).map(fileName => {
-  //         return {
-  //           name: fileName + "." + this.attachmentsDict[fileName][1],
-  //           data: this.attachmentsDict[fileName][0]
-  //         }
-  //       });
-  //       this.sendEmail(this.upload ? this.nomeAtleta + " " + this.cognomeAtleta : subject, attachmentsList);
-  //     }
-
-  //   } else {
-  //     alert("Caricare tutti i file richiesti");
-  //   }
-  // }
-
-  // sendEmail(subject: string, attachmentsList: any[], numEmail?: number) {
-  //   const mailObject1 = (numEmail && numEmail >= 1) ? '[' + numEmail + ']' : '';
-  //   const mailObj = "Modulo Iscrizione Campo Estivo - " + subject + " " + mailObject1;
-  //   this.sendingMail = true;
-  //   Email.send({
-  //     Host: 'smtp.elasticemail.com',
-  //     Username: 'moduli-csc@gmail.com',
-  //     Password: '89CD18545D382C7A0B120B190A3FEE1B56E4',
-  //     To: 'campusscherma@gmail.com',
-  //     From: 'luigicapizzano86@gmail.com',
-  //     Subject: mailObj,
-  //     Body: `
-  //     ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
-  //         `In allegato i documenti di iscrizione per il campo estivo dell'atleta: <strong>${subject}</strong>.<br/>
-  //     Questa mail è stata inviata dalla mail: <strong>${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}</strong>. <br/>`
-  //       }
-  //     <br/>
-  //     <br/>
-  //     Questa mail è stata generata automaticamente. Si prega di non rispondere.`,
-  //     Attachments: attachmentsList
-  //   }).then(
-  //     (message: string) => {
-  //       this.sendingMail = false;
-  //       console.log("sendmail message", message);
-  //       if (message.toLowerCase().includes("ok")) {
-  //         if (!numEmail || numEmail === 0) this.mailSent = true;
-  //         return true;
-  //       } else {
-  //         this.mailError = true;
-  //         return false;
-  //       }
-  //     },
-  //     (error: any) => {
-  //       console.log("sendmail error", error);
-  //       this.mailError = true;
-  //       this.mailSent = false;
-  //       this.errorDescriptions.push("Errore durante l'invio della mail (" + numEmail + "): " + error);
-  //       return false;
-  //     });
-  // }
 
   sendMailWithService() {
     this.errorDescriptions = [];
@@ -466,7 +356,7 @@ export class StepperComponent implements OnInit, OnChanges {
         return "";
       }
 
-      const campus = this.upload ? " - campus: " + this.campusAtleta : ` - campus: ${this.isMaggiorenne ? getCampus(this.datiAtletaMaggiorenne.value['iscrizione']) : getCampus(this.datiAtletaMinorenne.value['iscrizione'])}`;
+      const campus = this.isGara ? " - EVENTO GARA PIZZO " : this.upload ? " - campus: " + this.campusAtleta : ` - campus: ${this.isMaggiorenne ? getCampus(this.datiAtletaMaggiorenne.value['iscrizione']) : getCampus(this.datiAtletaMinorenne.value['iscrizione'])}`;
 
       const subject = this.upload ? this.cognomeAtleta + " " + this.nomeAtleta : this.isMaggiorenne ?
         this.datiAtletaMaggiorenne.value['cognome'] + " " + this.datiAtletaMaggiorenne.value['nome'] :
@@ -481,12 +371,12 @@ export class StepperComponent implements OnInit, OnChanges {
 
         const mailReq: MailRequest = {
           subject: subject + campus + " - " + fo.filename,
-          recipients: ['fortesting.lc@gmail.com'], // this.datiAtletaMaggiorenne.value['email'] 'campusscherma@gmail.com', 
+          recipients: ['fortesting.lc@gmail.com', 'campusscherma@gmail.com'], 
           mailText: `
           ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
               `In allegato i documenti di iscrizione per il campo estivo dell'atleta: ${subject}.
-              Questa mail è stata inviata dalla mail: ${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}.`
-            }
+              Questa mail è stata inviata dalla mail: ${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}.`}
+              ${this.isGara && this.alreadySigned ? `L'iscrizione richiesta è per la gara di Pizzo e non ha caricato tutti i file, in quanto dichiara di essersi già iscritto.` : ``}
               Questa mail è stata generata automaticamente. Si prega di non rispondere.`,
           files: [fo]
         }

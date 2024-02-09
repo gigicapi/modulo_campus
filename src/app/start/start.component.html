@@ -5,6 +5,7 @@
     <li class="link" (click)="goToClassicReservation()">Iscrizione campus atleti</li>
     <br />
     <li class="link" (click)="selectOnePeople = true">Iscrizione Evento Gara (SOLO ATLETI)</li>
+    <p class="promo"> - al costo di <strong>170€</strong> in PROMO per le prenotazioni entro febbraio</p>
     <div class="form-group" *ngIf="selectOnePeople">
       <div>
         <mat-checkbox [(ngModel)]="alreadySigned" class="form-control">Ti sei già iscritto ad un campus Heraclea 2024?</mat-checkbox>
@@ -15,7 +16,7 @@
       </button>
     </div>
     <br />
-    <li class="link" (click)="selectPeople = true">Iscrizione Evento Gara (SOLO Famiglia o Genitori + atleta)</li>
+    <!--<li class="link" (click)="selectPeople = true">Iscrizione Evento Gara (da 3 a 5 persone)</li>-->
   </ul>
   <br />
 
@@ -24,16 +25,6 @@
       <label>Per quante persone vuoi prenotare? Il minimo di persone prenotabili è 3, in quanto le camere disponibili sono delle triple</label>
       <input matInput type="number" [(ngModel)]="numeroPersone" class="form-control" min="3" max="5">  
     </div>
-
-    <!--<div>
-      <label>Quanti parteciperanno alla gara di Pizzo dal 02/09 al 04/09?</label>
-      <input matInput type="number" [(ngModel)]="numeroPersoneGara" class="form-control" min="0" max="{{numeroPersone}}">
-    </div>
-    
-    <div>
-      <label>Quanti si sono già iscritti ad un campus Heraclea 2024?</label>
-      <input matInput type="number" [(ngModel)]="numeroPersoneIscritte" class="form-control" min="0" max="{{numeroPersone}}">
-    </div>-->
 
     <button mat-raised-button color="primary" (click)="goToReservation()">
       Conferma
