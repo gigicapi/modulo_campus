@@ -9,7 +9,7 @@
     </div>
     <div class="button-container">
       <div></div>
-      <button *ngIf="isMaggiorenne >= 0" mat-raised-button color="primary" matStepperNext>
+      <button *ngIf="isMaggiorenne >= 0" mat-raised-button color="primary" (click)="scroll()" matStepperNext>
         <span>Avanti</span>
         <mat-icon fontIcon="arrow_forward"></mat-icon>
       </button>
@@ -25,7 +25,7 @@
     <app-maggiorenne *ngIf="isMaggiorenne && isMaggiorenne !== -1" [datiAtleta]="datiAtletaMaggiorenne"
       [isGara]="isGara" (formCompleteEvent)="isFormComplete($event)"></app-maggiorenne>
     <div class="button-container">
-      <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+      <button mat-raised-button (click)="scroll()" matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
         <span>Indietro</span></button>
       <button mat-raised-button color="primary" (click)="scroll()"
         *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" matStepperNext>
@@ -54,7 +54,7 @@
       <button mat-raised-button (click)="scroll()" matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
         <span>Indietro</span></button>
       <button *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" mat-raised-button
-        color="primary" matStepperNext>
+        color="primary" (click)="scroll()" matStepperNext>
         <span>Avanti</span> <mat-icon fontIcon="arrow_forward"></mat-icon>
       </button>
     </div>
@@ -225,7 +225,7 @@
       </div>
     </div>
     <div class="button-container">
-      <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+      <button mat-raised-button (click)="scroll()" matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
         <span>Indietro</span></button>
     </div>
   </mat-step>
@@ -259,8 +259,7 @@
       <strong>{{datiAtletaMinorenne.value['nResidenza']}}</strong>
       <br />
       Tesserato con la Società <strong>{{datiAtletaMinorenne.value['societa']}}</strong>
-      Arma <strong>{{datiAtletaMinorenne.value['arma']}}</strong> Numero F.I.S.
-      <strong>{{datiAtletaMinorenne.value['numeroFIS']}}</strong>
+      Numero F.I.S. <strong>{{datiAtletaMinorenne.value['numeroFIS']}}</strong>
       <br />
       Allergie o intolleranze <strong>{{datiAtletaMinorenne.value['allergie'] ? 'SI' : 'NO'}}</strong>
       Desidererei, se possibile, essere sistemato/a in camera con
@@ -286,8 +285,7 @@
       <strong>{{datiAtletaMaggiorenne.value['nResidenza']}}</strong>
       <br />
       Tesserato con la Società <strong>{{datiAtletaMaggiorenne.value['societa']}}</strong>
-      Arma <strong>{{datiAtletaMaggiorenne.value['arma']}}</strong> Numero F.I.S.
-      <strong>{{datiAtletaMaggiorenne.value['numeroFIS']}}</strong>
+      Numero F.I.S. <strong>{{datiAtletaMaggiorenne.value['numeroFIS']}}</strong>
       <br />
       Allergie o intolleranze <strong>{{datiAtletaMaggiorenne.value['allergie'] ? 'SI' : 'NO'}}</strong>
       Desidererei, se possibile, essere sistemato/a in camera con
@@ -518,8 +516,7 @@
       <strong>{{datiAtletaMinorenne.value['nResidenza']}}</strong>
       <br />
       Tesserato con la Società <strong>{{datiAtletaMinorenne.value['societa']}}</strong>
-      Arma <strong>{{datiAtletaMinorenne.value['arma']}}</strong> Numero F.I.S.
-      <strong>{{datiAtletaMinorenne.value['numeroFIS']}}</strong>
+      Numero F.I.S. <strong>{{datiAtletaMinorenne.value['numeroFIS']}}</strong>
       <br />
       Allergie o intolleranze <strong>{{datiAtletaMinorenne.value['allergie'] ? 'SI' : 'NO'}}</strong>
       Desidererei, se possibile, essere sistemato/a in camera con
@@ -544,8 +541,7 @@
       <strong>{{datiAtletaMaggiorenne.value['nResidenza']}}</strong>
       <br />
       Tesserato con la Società <strong>{{datiAtletaMaggiorenne.value['societa']}}</strong>
-      Arma <strong>{{datiAtletaMaggiorenne.value['arma']}}</strong> Numero F.I.S.
-      <strong>{{datiAtletaMaggiorenne.value['numeroFIS']}}</strong>
+      Numero F.I.S. <strong>{{datiAtletaMaggiorenne.value['numeroFIS']}}</strong>
       <br />
       Allergie o intolleranze <strong>{{datiAtletaMaggiorenne.value['allergie'] ? 'SI' : 'NO'}}</strong>
       Desidererei, se possibile, essere sistemato/a in camera con

@@ -260,13 +260,13 @@
     <div class="form-group title">
       <label>Taglia T-Shirt</label>
       <mat-select class="form-control" formControlName="tShirt">
-        <mat-option value="XXXS">XXXS</mat-option>
-        <mat-option value="XXS">XXS</mat-option>
-        <mat-option value="XS">XS</mat-option>
-        <mat-option value="S">S</mat-option>
-        <mat-option value="M">M</mat-option>
-        <mat-option value="L">L</mat-option>
-        <mat-option value="XL">XL</mat-option>
+        <mat-option value="XXXS">XXXS (bimbo)</mat-option>
+        <mat-option value="XXS">XXS (bimbo)</mat-option>
+        <mat-option value="XS">XS (adulto)</mat-option>
+        <mat-option value="S">S (adulto)</mat-option>
+        <mat-option value="M">M (adulto)</mat-option>
+        <mat-option value="L">L (adulto)</mat-option>
+        <mat-option value="XL">XL (adulto)</mat-option>
       </mat-select>
       <div class="characters-notify">
         <span *ngIf="formControl['tShirt'].touched && formControl['tShirt'].errors" class="form--error">
