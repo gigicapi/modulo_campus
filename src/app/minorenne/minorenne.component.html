@@ -279,13 +279,13 @@
     <div *ngIf="!isGara" class="form-group title">
       <label>Taglia pantaloncino</label>
       <mat-select class="form-control" formControlName="pantaloncino">
-        <mat-option value="XXXS">XXXS</mat-option>
-        <mat-option value="XXS">XXS</mat-option>
-        <mat-option value="XS">XS</mat-option>
-        <mat-option value="S">S</mat-option>
-        <mat-option value="M">M</mat-option>
-        <mat-option value="L">L</mat-option>
-        <mat-option value="XL">XL</mat-option>
+        <mat-option value="XXXS">XXXS (bimbo)</mat-option>
+        <mat-option value="XXS">XXS (bimbo)</mat-option>
+        <mat-option value="XS">XS (adulto)</mat-option>
+        <mat-option value="S">S (adulto)</mat-option>
+        <mat-option value="M">M (adulto)</mat-option>
+        <mat-option value="L">L (adulto)</mat-option>
+        <mat-option value="XL">XL (adulto)</mat-option>
       </mat-select>
       <div class="characters-notify">
         <span *ngIf="formControl['pantaloncino'].touched && formControl['pantaloncino'].errors" class="form--error">
@@ -333,7 +333,7 @@
       </div>
     </div>
     <div *ngIf="!isGara" class="form-group title">
-      <label>Vuoi iscriverti anche all'evento gara di Pizzo (02/09/2024 - 04/09/2024)?</label>
+      <label>Vuoi iscriverti anche all'evento gara di Pizzo al prezzo in promozione di 170€ (02/09/2024 - 04/09/2024)?</label>
       <mat-select class="form-control" formControlName="iscrizioneGara">
         <mat-option value="SI">SI</mat-option>
         <mat-option value="NO">NO</mat-option>

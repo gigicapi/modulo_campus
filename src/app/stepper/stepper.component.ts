@@ -93,9 +93,9 @@ export class StepperComponent implements OnInit, OnChanges {
       societa: ['', Validators.required],
       numeroFIS: ['', Validators.required],
       allergie: [''],
-      iscrizioneGara: [''],
+      iscrizioneGara: ['', Validators.required],
       preferenzaCamera: [''],
-      telefonoAtleta: [''],
+      telefonoAtleta: ['', Validators.required],
       telefonoPadre: ['', Validators.required],
       telefonoMadre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -114,7 +114,7 @@ export class StepperComponent implements OnInit, OnChanges {
       societa: ['', Validators.required],
       numeroFIS: ['', Validators.required],
       allergie: [''],
-      iscrizioneGara: [''],
+      iscrizioneGara: ['', Validators.required],
       preferenzaCamera: [''],
       telefonoAtleta: ['', Validators.required],
       telefonoPadre: [''],
@@ -164,6 +164,11 @@ export class StepperComponent implements OnInit, OnChanges {
       }, 100)
 
     }
+  }
+
+  scroll() {
+    const el = document.getElementById("exportPDF_BUTTON");
+    el?.scrollIntoView({behavior: 'smooth'});
   }
 
   isAlsoForGara() {

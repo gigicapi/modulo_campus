@@ -9,7 +9,7 @@
     "test": "ng test",
     "homepage": "https://gigicapi.github.io/modulo_campus",
     "publish": "gh-pages -d src",
-    "deploy_to_gh": "ng deploy --base-href=https://gigicapi.github.io/modulo_campus/"
+    "deploy_to_gh": "ng deploy --base-href=https://www.heracleafencingcamp.it"
   },
   "private": true,
   "dependencies": {

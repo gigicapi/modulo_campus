@@ -27,14 +27,14 @@
     <div class="button-container">
       <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
         <span>Indietro</span></button>
-      <button mat-raised-button color="primary"
+      <button mat-raised-button color="primary" (click)="scroll()"
         *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" matStepperNext>
         <span>Avanti</span>
         <mat-icon fontIcon="arrow_forward"></mat-icon>
       </button>
     </div>
   </mat-step>
-  <mat-step>
+  <mat-step (click)="scroll()">
     <ng-template matStepLabel>Esporta PDF</ng-template>
     <p *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid">
       Scarica e stampa i moduli precompilati, firmali in originale e ricaricali nello step successivo per il
@@ -44,14 +44,14 @@
       *ngIf="isMaggiorenne ? !datiAtletaMaggiorenne.valid : !datiAtletaMinorenne.valid">
       Devi prima compilare il modulo allo step precedente
     </p>
-    <div class="button-container">
+    <div class="button-container" id="exportPDF_BUTTON">
       <button mat-raised-button *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid"
         (click)="exportPDF()" color="primary">
         <span>Scarica PDF</span> <mat-icon fontIcon="download"></mat-icon>
       </button>
     </div>
     <div class="button-container">
-      <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+      <button mat-raised-button (click)="scroll()" matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
         <span>Indietro</span></button>
       <button *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" mat-raised-button
         color="primary" matStepperNext>
@@ -305,7 +305,7 @@
   <h5 class="underline center">REGOLAMENTO GENERALE</h5>
   <div class="regolamento">
     <ol>
-      <li>La quota campus ammonta a 650,00 €<span *ngIf="isAlsoForGara()"> più 170,00 € per l'evento gara</span>. Le quote comprendono: Sistemazione in camera multipla, pensione completa,
+      <li>La quota campus ammonta a 650,00 €<span *ngIf="isAlsoForGara()"> più 170,00 € per l'evento gara. Le quote comprendono</span> <span>. La quota comprende </span>: Sistemazione in camera multipla, pensione completa,
         all-inclusive 24h (solo camp di Pizzo), lezioni individuali e di gruppo, tornei, kit campus, attività ricreativa con l'utilizzo di tutti i servizi della struttura.
         <ul>
           <li>Sono previste due tipologie di sconto non cumulabili fra loro.
