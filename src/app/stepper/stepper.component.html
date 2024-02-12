@@ -151,7 +151,7 @@
             *ngIf="attachmentsDict['TESSERA_SANITARIA'] && attachmentsDict['TESSERA_SANITARIA'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInput3" (change)="selectFile($event, 'TESSERA_SANITARIA')" name="fileInput3" />
       </div>
-      <div *ngIf="!isPizzo()" class="upload-section">
+      <div class="upload-section">
         <label
           [ngClass]="{ 'file-loaded' : attachmentsDict['VERSAMENTO_CAPARRA'] && attachmentsDict['VERSAMENTO_CAPARRA'].length > 0 }">Attestazione
           Versamento caparra<mat-icon
@@ -315,16 +315,10 @@
           </li>
         </ul>
       </li>
-      <li *ngIf="!isPizzo()">
+      <li>
         Anticipo quota d'iscrizione di 350,00 €, saldo da consegnare al proprio Maestro di sala oppure da
         concordare telefonicamente. La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione
         dello stage.
-      </li>
-      <li *ngIf="isPizzo()">
-        Anticipo quota d'iscrizione di 350,00 €, saldo da consegnare al proprio Maestro di sala oppure da
-        concordare telefonicamente SOLO dopo aver ricevuto comunicazioni dall'organizzazione riguardo la conferma
-        dell'iscrizione.
-        La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione dello stage.
       </li>
       <li>
         La società organizzatrice declina ogni responsabilità per eventuali incidenti o danni a persone o
@@ -346,10 +340,10 @@
         i nati dal 2014 in poi)</li>
       <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2023-2024 per Formia, e 2024-2025 per Pizzo
       </li>
-      <li *ngIf="!isPizzo()">Attestazione di versamento della caparra (350,00 €) sul C/C bancario intestato a: Club
+      <li>Attestazione di versamento della caparra (350,00 €) sul C/C bancario intestato a: Club
         Scherma
         Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720
-        specificando nella causale: camp cognome e nome dell'atleta – es. Formia o Pizzo – Luigi Rossi.</li>
+        specificando nella causale: camp cognome e nome dell'atleta - es. Formia o Pizzo - Luigi Rossi.</li>
     </ul>
     <p>
       Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
@@ -564,7 +558,7 @@
         </ul>
       </li>
       <li>
-        Anticipo quota d'iscrizione di 150,00 €, saldo da consegnare al proprio Maestro di sala oppure da concordare telefonicamente SOLO dopo aver ricevuto comunicazioni dall'organizzazione riguardo la conferma dell'iscrizione. La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione dello stage.
+        Anticipo quota d'iscrizione di 150,00 €, saldo da consegnare al proprio Maestro di sala oppure da concordare telefonicamente. La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione dello stage.
       </li>
       <li>
         La società organizzatrice declina ogni responsabilità per eventuali incidenti o danni a persone o cose che dovessero verificarsi prima, durante e dopo il ritiro. 
