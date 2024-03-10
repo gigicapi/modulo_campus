@@ -43,4 +43,8 @@ export class StartComponent implements OnInit {
     this.router.navigate(['reservations']);
   }
 
+  goToUpdateDocuments() {
+    this.router.navigate(['upload-docs']);
+  }
+
 }

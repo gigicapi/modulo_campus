@@ -13,10 +13,15 @@
 
 .full-width {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
   margin-top: 50px;
+
+  .pad-5 {
+    padding: 5px;
+  }
 }
 
 .col-container {

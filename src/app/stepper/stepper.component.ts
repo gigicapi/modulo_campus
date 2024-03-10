@@ -65,6 +65,7 @@ export class StepperComponent implements OnInit, OnChanges {
   nomeAtleta: string = '';
   cognomeAtleta: string = '';
   campusAtleta: string = '';
+  emailAtleta: string = '';
   iscrizioneGara: boolean = false;
 
   errorDescriptions: string[] = [];
@@ -383,7 +384,7 @@ export class StepperComponent implements OnInit, OnChanges {
           mailText: `
           ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
               `In allegato i documenti di iscrizione per il campo estivo dell'atleta: ${subject}.
-              Questa mail è stata inviata dalla mail: ${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}.`}
+              Questa mail è stata inviata dalla mail: ${this.upload ? this.emailAtleta : this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}.`}
               ${this.isGara && this.alreadySigned ? `L'iscrizione richiesta è per la gara di Pizzo e non ha caricato tutti i file, in quanto dichiara di essersi già iscritto.` : ``}
               Questa mail è stata generata automaticamente. Si prega di non rispondere.`,
           files: [fo]

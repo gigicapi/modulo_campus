@@ -29,6 +29,32 @@
                 </div>
             </div>
             <div class="form-group title">
+                <label>Luogo di nascita</label>
+                <input matInput class="form-control" formControlName="luogo" placeholder="Luogo di nascita">
+                <div class="characters-notify">
+                    <span *ngIf="intestatarioFormControl['luogo'].touched && intestatarioFormControl['luogo'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['luogo'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group title">
+                <label>Data di nascita</label>
+                <input matInput class="form-control" type="date" formControlName="dataNascita"
+                    placeholder="Data di nascita">
+                <div class="characters-notify">
+                    <span
+                        *ngIf="intestatarioFormControl['dataNascita'].touched && intestatarioFormControl['dataNascita'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['dataNascita'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group title">
                 <label>Residenza</label>
                 <input matInput class="form-control" formControlName="residenza" placeholder="Residente in">
                 <div class="characters-notify">
@@ -99,37 +125,41 @@
                 <label>Partecipi alla gara?</label>
                 <mat-checkbox matInput formControlName="gara" placeholder="gara"></mat-checkbox>
                 <div class="characters-notify">
-                  <span *ngIf="intestatarioFormControl['gara'].touched && intestatarioFormControl['gara'].errors" class="form--error">
-                    <span *ngIf="intestatarioFormControl['gara'].errors['required']">
-                      Questo campo è obbligatorio
+                    <span *ngIf="intestatarioFormControl['gara'].touched && intestatarioFormControl['gara'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['gara'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
                     </span>
-                  </span>
                 </div>
-              </div>
+            </div>
             <div *ngIf="intestatario.value['gara']" class="form-group title">
                 <label>Taglia T-Shirt</label>
                 <mat-select class="form-control" formControlName="tShirt">
-                  <mat-option value="XXXS">XXXS</mat-option>
-                  <mat-option value="XXS">XXS</mat-option>
-                  <mat-option value="XS">XS</mat-option>
-                  <mat-option value="S">S</mat-option>
-                  <mat-option value="M">M</mat-option>
-                  <mat-option value="L">L</mat-option>
-                  <mat-option value="XL">XL</mat-option>
+                    <mat-option value="XXXS">XXXS</mat-option>
+                    <mat-option value="XXS">XXS</mat-option>
+                    <mat-option value="XS">XS</mat-option>
+                    <mat-option value="S">S</mat-option>
+                    <mat-option value="M">M</mat-option>
+                    <mat-option value="L">L</mat-option>
+                    <mat-option value="XL">XL</mat-option>
                 </mat-select>
                 <div class="characters-notify">
-                  <span *ngIf="intestatarioFormControl['tShirt'].touched && intestatarioFormControl['tShirt'].errors" class="form--error">
-                    <span *ngIf="intestatarioFormControl['tShirt'].errors['required']">
-                      Questo campo è obbligatorio
+                    <span *ngIf="intestatarioFormControl['tShirt'].touched && intestatarioFormControl['tShirt'].errors"
+                        class="form--error">
+                        <span *ngIf="intestatarioFormControl['tShirt'].errors['required']">
+                            Questo campo è obbligatorio
+                        </span>
                     </span>
-                  </span>
                 </div>
-              </div>
+            </div>
         </div>
         <br />
         <br />
         <div class="button-container">
-            <button *ngIf="intestatario.valid && (!intestatario.value['gara'] || (intestatario.value['gara'] && intestatario.value['tShirt']))" mat-raised-button color="primary" matStepperNext>
+            <button
+                *ngIf="intestatario.valid && (!intestatario.value['gara'] || (intestatario.value['gara'] && intestatario.value['tShirt']))"
+                mat-raised-button color="primary" matStepperNext>
                 <span>Avanti</span> <mat-icon fontIcon="arrow_forward"></mat-icon>
             </button>
         </div>
@@ -175,6 +205,17 @@
                             </div>
                         </div>
                         <div class="nome-cognome-atleta form-group title">
+                            <label class="wi-25">Data di nascita</label>
+                            <input matInput class="form-control" type="date" [(ngModel)]="nomiECognomi[n].dataNascita"
+                                placeholder="Data di nascita">
+                            <div class="characters-notify">
+                                <span *ngIf="!nomiECognomi[n].dataNascita || nomiECognomi[n].dataNascita === ''"
+                                    class="form--error">
+                                    Questo campo è obbligatorio
+                                </span>
+                            </div>
+                        </div>
+                        <div class="nome-cognome-atleta form-group title">
                             <label class="wi-25">Partecipa alla gara?</label>
                             <mat-checkbox matInput [(ngModel)]="nomiECognomi[n].gara"
                                 placeholder="iscrizione gara"></mat-checkbox>
@@ -212,13 +253,37 @@
     </mat-step>
 
     <mat-step label="Carica documenti" [completed]="isStepCompleted('Carica documenti')">
+
+        <div class="upload-section">
+            <label>Scarica, stampa e firma il file modulo di iscrizione</label>
+            <button mat-raised-button *ngIf="intestatario.valid" (click)="exportPDF()" color="primary">
+                <span>Scarica PDF</span> <mat-icon fontIcon="download"></mat-icon>
+            </button>
+        </div>
+
         <h4>Carica i documenti di tutte le persone della prenotazione</h4>
 
         <div class="upload-section">
+            <label [ngClass]="{ 'file-loaded': moduloIscrizione }">
+                Modulo Iscrizione
+                <mat-icon *ngIf="moduloIscrizione">check</mat-icon></label>
+            <input type="file" id="moduloIscrizione" (change)="selectFile($event, -2)" name="moduloIscrizione" />
+        </div>
+
+        <div class="upload-section">
             <label [ngClass]="{ 'file-loaded': docIntestatario }">
-                Documento Intestatario
+                Documento Intestatario (FRONTE)
                 <mat-icon *ngIf="docIntestatario">check</mat-icon></label>
-            <input type="file" id="documento_intestatario" (change)="selectFile($event, -1)" name="documento_intestatario" />
+            <input type="file" id="documento_intestatario" (change)="selectFile($event, -1)"
+                name="documento_intestatario" />
+        </div>
+
+        <div class="upload-section">
+            <label [ngClass]="{ 'file-loaded': docIntestatario_1 }">
+                Documento Intestatario (RETRO)
+                <mat-icon *ngIf="docIntestatario_1">check</mat-icon></label>
+            <input type="file" id="documento_intestatario_1" (change)="selectFile($event, -1, true)"
+                name="documento_intestatario_1" />
         </div>
 
         <div *ngFor="let doc of steps" class="upload-section">
@@ -226,6 +291,11 @@
                 Documento {{doc + 1}}
                 <mat-icon *ngIf="nomiECognomi[doc].doc">check</mat-icon></label>
             <input type="file" id="documento_{{doc}}" (change)="selectFile($event, doc)" name="documento_{{doc}}" />
+
+            <label [ngClass]="{ 'file-loaded': nomiECognomi[doc].doc_1 }">
+                Documento {{doc + 1}}
+                <mat-icon *ngIf="nomiECognomi[doc].doc_1">check</mat-icon></label>
+            <input type="file" id="documento_{{doc}}_1" (change)="selectFile($event, doc, true)" name="documento_{{doc}}_1" />
         </div>
 
         <div class="button-container">
@@ -270,3 +340,148 @@
     </mat-step>
 
 </mat-stepper>
+
+
+<div *ngIf="intestatario.valid" id="firstPageMultiple" class="page">
+    <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />MODULO D'ISCRIZIONE EVENTO GARA HERACLEA
+        FENCING CAMP</h3>
+    <div class="dati_atleta">
+        <p>
+            il/la sottoscritto/a
+            <strong>{{intestatario.value['nome']}}</strong>&nbsp;<strong>{{intestatario.value['cognome']}}</strong>
+            nato/a a <strong>{{intestatario.value['luogo']}}</strong> il
+            <strong>{{intestatario.value['dataNascita']}}</strong> Residente a
+            <strong>{{intestatario.value['residenza']}}</strong> in Via
+            <strong>{{intestatario.value['viaResidenza']}}</strong> n°
+            <strong>{{intestatario.value['nResidenza']}}</strong>
+            <br />
+            Cell <strong>{{intestatario.value['telefono']}}</strong>
+            Email <strong>{{intestatario.value['email']}}</strong>
+            <br />
+        </p>
+        <h5 class="bold">CHIEDE</h5>
+        <p>
+            l'iscrizione all'evento gara (individuale o squadre) dal 2 al 4 settembre 2024 per il seguente gruppo:
+        </p>
+        <ul>
+            <li>Intestatario Camera: {{intestatario.value['nome']}} {{intestatario.value['cognome']}} <span
+                    *ngIf="intestatario.value['gara']">T-Shirt <strong>{{intestatario.value['tShirt']}}</strong></span>
+            </li>
+            <li *ngFor="let item of nomiECognomi">{{ item.nome }} {{ item.cognome }} {{ item.dataNascita }} <span
+                    *ngIf="item.gara">T-Shirt: <strong>{{item.tShirt}}</strong></span></li>
+        </ul>
+    </div>
+    <h5 class="underline center">REGOLAMENTO GENERALE</h5>
+    <div class="regolamento">
+        <ol>
+            <li>La quota per l'evento gara ammonta a 170,00€ a persona. La quota comprende: Sistemazione in camera
+                multipla, pensione completa, all- inclusive 24h (solo camp di Pizzo), t-shirt (per chi partecipa alla
+                gara), attività ricreativa con l'utilizzo di tutti i servizi della struttura.
+            </li>
+            <li>Anticipo quota d'iscrizione di 100,00 € a persona, saldo da consegnare al proprio Maestro di sala oppure
+                da concordare telefonicamente solo dopo aver ricevuto comunicazioni dall'organizzazione riguardo la
+                conferma dell'iscrizione. La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione
+                dell'evento.
+            </li>
+            <li>La società organizzatrice declina ogni responsabilità per eventuali incidenti o danni a persone o cose
+                che dovessero verificarsi prima, durante e dopo il ritiro.
+            </li>
+            <li>Eventuali danni all'interno della struttura, saranno risarciti dai responsabili prima della partenza.
+            </li>
+        </ol>
+    </div>
+    <h6 class="bold">Preso atto ed approvato il presente Regolamento Generale, dichiaro di:</h6>
+    <div>
+        <ul>
+            <li>Allegare modulo di iscrizione</li>
+            <li>Allegare la dichiarazione di esonero delle responsabilità</li>
+            <li>Allegare la liberatoria di utilizzo immagini e video</li>
+            <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell'atleta</li>
+            <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico
+                per
+                i nati dal 2014 in poi)</li>
+            <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2024-2025 (solo per i partecipanti alla
+                gara)
+            </li>
+        </ul>
+        <p>
+            Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai
+            sensi e
+            per gli effetti dell'art. 13 del regolamento (UE) 2016/679 definito GDPR.
+        </p>
+        <p>Luogo e data ___________________ Firma Intestatario________________________________</p>
+        <p>Firma di tutti i maggiorenni presenti nel gruppo</p>
+        <p *ngFor="let item of nomiECognomi">Firma __________________________________</p>
+    </div>
+</div>
+
+<div *ngIf="intestatario.valid" id="secondPageMultiple" class="page">
+    <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />DICHIARAZIONE DI ESONERO DA
+        OGNI RESPONSABILITA'</h3>
+    <p>
+        il/la sottoscritto/a <strong>{{intestatario.value['nome']}}</strong>&nbsp;
+        <strong>{{intestatario.value['cognome']}}</strong>
+        nato/a a <strong>{{intestatario.value['luogo']}}</strong> il
+        <strong>{{intestatario.value['dataNascita']}}</strong>
+        Residente <strong>{{intestatario.value['residenza']}}</strong> in Via
+        <strong>{{intestatario.value['viaResidenza']}}</strong> n°
+        <strong>{{intestatario.value['nResidenza']}}</strong>
+        Email <strong>{{intestatario.value['email']}}</strong> Cell
+        <strong>{{intestatario.value['telefono']}}</strong> in qualità di referente del proprio nucleo familiare,
+    </p>
+    <h5 class="title">CON LA PRESENTE AUTORIZZA</h5>
+    <p>il proprio gruppo a prendere parte all’ Evento Gara dal 2 al 4 settembre 2024</p>
+    <h5 class="title">E DICHIARA</h5>
+    <p>
+        di aver provveduto all'iscrizione del proprio gruppo/nucleo familiare, e provvederà al pagamento della quota
+        come riportato dal Regolamento Generale presente nel modello d'iscrizione. Dichiara altresì di sollevare il
+        Club Scherma Cosenza, l'azienda/società ospitante dell'evento e la F.I.S. da ogni e qualsiasi responsabilità̀
+        connessa al comportamento del minore, nonché da eventuali obblighi degli accompagnatori incaricati, anche ai
+        sensi dell'art.2048 c.c.
+    </p>
+    <p>Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
+        per gli effetti dell'art. 13 del regolamento (UE) 2016/679 definito GDPR. </p>
+    <p>
+        Luogo e data ___________________ Firma Intestatario________________________________
+    </p>
+    <p>Firma di tutti i maggiorenni presenti nel gruppo </p>
+    <p *ngFor="let item of nomiECognomi">Firma __________________________________ </p>
+
+</div>
+
+<div *ngIf="intestatario.valid" id="thirdPageMultiple" class="page">
+    <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />LIBERATORIA DI UTILIZZO DELLE IMMAGINI E
+        DEI VIDEO</h3>
+    <p>
+        il/la sottoscritto/a <strong>{{intestatario.value['nome']}}</strong>&nbsp;
+        <strong>{{intestatario.value['cognome']}}</strong>
+        nato/a a <strong>{{intestatario.value['luogo']}}</strong> il
+        <strong>{{intestatario.value['dataNascita']}}</strong>
+        Residente <strong>{{intestatario.value['residenza']}}</strong> in Via
+        <strong>{{intestatario.value['viaResidenza']}}</strong> n°
+        <strong>{{intestatario.value['nResidenza']}}</strong>
+    </p>
+    <h5 class="title">AUTORIZZA</h5>
+    <p>
+        Il Club Scherma Cosenza, con sede legale in via degli stadi snc, 87100 Cosenza C.F. 98026430789 P.iva
+        01973250788 (di seguito anche “Titolare” o “Club”), telefono 3926341679, email campusscherma@gmail.com, in
+        qualità di Titolare del trattamento, a realizzare fotografie e riprese audio e video, non lesive della mia
+        immagine, a titolo gratuito, anche ai sensi degli artt. 10 e 320 Cod. civ. e degli artt. 96 e 97 Legge
+        22.04.1941 n. 633 (Legge sul diritto d'autore) e ad utilizzare, sia direttamente, sia attraverso la cessione a
+        terzi, le foto e le riprese audio e video, anche in diretta streaming, realizzate dagli operatori o persone
+        incaricate dal Club, anche ai fini della comunicazione, pubblicazione e/o diffusione in qualsiasi forma su siti
+        internet, su social network e su qualsiasi altro mezzo di diffusione (es. giornali, brochure o quotidiani).
+        Autorizza, inoltre, la conservazione delle foto e dei video stessi negli archivi informatici dello stesso
+        Titolare e prende atto che le finalità di tali pubblicazioni sono meramente di carattere istituzionale,
+        informativo e promozionale.
+    </p>
+    <p>
+        Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
+        per gli effetti dell'art. 13 del regolamento (UE) 2016/679 definito GDPR.
+    </p>
+    <p>
+        Luogo e data ___________________ Firma Intestatario________________________________
+    </p>
+    <p>Firma di tutti i maggiorenni presenti nel gruppo</p>
+    <p>Firma __________________________________</p>
+</div>

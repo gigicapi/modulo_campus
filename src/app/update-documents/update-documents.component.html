@@ -1,0 +1,108 @@
+<h4>Inserisci i tuoi dati</h4>
+<div [formGroup]="intestatario" id="english-form" class="content">
+    <div class="form-group title">
+        <label>Nome</label>
+        <input matInput class="form-control" formControlName="nome" placeholder="Nome">
+        <div class="characters-notify">
+            <span *ngIf="intestatarioFormControl['nome'].touched && intestatarioFormControl['nome'].errors"
+                class="form--error">
+                <span *ngIf="intestatarioFormControl['nome'].errors['required']">
+                    Questo campo è obbligatorio
+                </span>
+            </span>
+        </div>
+    </div>
+    <div class="form-group title">
+        <label>Cognome</label>
+        <input matInput class="form-control" formControlName="cognome" placeholder="Cognome">
+        <div class="characters-notify">
+            <span *ngIf="intestatarioFormControl['cognome'].touched && intestatarioFormControl['cognome'].errors"
+                class="form--error">
+                <span *ngIf="intestatarioFormControl['cognome'].errors['required']">
+                    Questo campo è obbligatorio
+                </span>
+            </span>
+        </div>
+    </div>
+    <div class="form-group title">
+        <label>Email</label>
+        <input matInput class="form-control" formControlName="email" placeholder="Email">
+        <div class="characters-notify">
+            <span *ngIf="intestatarioFormControl['email'].touched && intestatarioFormControl['email'].errors"
+                class="form--error">
+                <span *ngIf="intestatarioFormControl['email'].errors['required']">
+                    Questo campo è obbligatorio
+                </span>
+            </span>
+        </div>
+    </div>
+    <div class="nome-cognome-atleta form-group title">
+        <label>A quale campus sei iscritto?</label>
+        <mat-select class="form-control" formControlName="campus">
+            <mat-option value="Formia">Camp di Formia (spada) dal 14 al 20 luglio</mat-option>
+            <mat-option value="Pizzo">Camp di Pizzo (spada) dal 27 agosto al 2 settembre</mat-option>
+        </mat-select>
+        <div class="characters-notify">
+            <span *ngIf="intestatarioFormControl['campus'].touched && intestatarioFormControl['campus'].errors"
+                class="form--error">
+                <span *ngIf="intestatarioFormControl['campus'].errors['required']">
+                    Questo campo è obbligatorio
+                </span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="intestatario.valid">
+    <h4>Carica i documenti che vuoi rinnovare</h4>
+
+    <div class="upload-section">
+        <label [ngClass]="{ 'file-loaded': attachmentsDict['CI_FRONTE'] }">
+            Carta identità (FRONTE)
+            <mat-icon *ngIf="attachmentsDict['CI_FRONTE']">check</mat-icon></label>
+        <input type="file" id="cartaIdentitaFronte" (change)="selectFile($event, 'CI_FRONTE')" name="cartaIdentitaFronte" />
+    </div>
+
+    <div class="upload-section">
+        <label [ngClass]="{ 'file-loaded': attachmentsDict['CI_RETRO'] }">
+            Carta identità (RETRO)
+            <mat-icon *ngIf="attachmentsDict['CI_RETRO']">check</mat-icon></label>
+        <input type="file" id="cartaIdentitaRetro" (change)="selectFile($event, 'CI_RETRO')" name="cartaIdentitaRetro" />
+    </div>
+
+    <div class="upload-section">
+        <label [ngClass]="{ 'file-loaded': attachmentsDict['TESSERA_SANITARIA'] }">
+            Tessera Sanitaria
+            <mat-icon *ngIf="attachmentsDict['TESSERA_SANITARIA']">check</mat-icon></label>
+        <input type="file" id="tesseraSanitaria" (change)="selectFile($event, 'TESSERA_SANITARIA')" name="tesseraSanitaria" />
+    </div>
+
+    <div class="upload-section">
+        <label [ngClass]="{ 'file-loaded': attachmentsDict['CERTIFICATO_MEDICO'] }">
+            Certificato Medico
+            <mat-icon *ngIf="attachmentsDict['CERTIFICATO_MEDICO']">check</mat-icon></label>
+        <input type="file" id="certificatoMedico" (change)="selectFile($event, 'CERTIFICATO_MEDICO')" name="certificatoMedico" />
+    </div>
+
+    <div *ngIf="!sendingMail" class="confirm-container">
+        <button *ngIf="atLeastOneDoc()" mat-raised-button color="primary" (click)="sendMail()">
+            <mat-icon fontIcon="send"></mat-icon>
+            <span>Invia documenti</span>
+        </button>
+    </div>
+    <br />
+    <div class="action-loading" *ngIf="(getSentOk() + getSentError()) < totalMails">
+        Invio documenti in corso. Non chiudere questa pagina fino al completamento. ({{getSentOk()}} /
+        {{totalMails}})
+    </div>
+    <mat-spinner class="text-center" *ngIf="(getSentOk() + getSentError()) < totalMails"></mat-spinner>
+    <div class="action-complete" *ngIf="getSentOk() > 0 && getSentOk() === totalMails">
+        <label>Documenti inviati con successo!</label>
+    </div>
+    <div class="action-error" *ngIf="getSentError() > 0">
+        <label>Si è verificato un errore durante l'invio della mail. Invia gli eventuali messaggi sottostanti
+            all'amministratore per contribuire a migliorare l'applicazione. Grazie. Puoi riprovare provando ad
+            aggiornare la pagina del browser</label>
+    </div>
+
+</div>

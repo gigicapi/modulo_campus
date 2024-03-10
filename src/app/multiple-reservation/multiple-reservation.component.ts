@@ -4,6 +4,12 @@ import { SharedService } from '../shared.service';
 import { combineLatest } from 'rxjs';
 import { MatStepper } from '@angular/material/stepper';
 import { EmailService, FileObject, MailRequest } from '../email.service';
+import { HttpClient } from '@angular/common/http';
+import * as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfFonts from "pdfmake/build/vfs_fonts";
+import { Router } from '@angular/router';
+const htmlToPdfmake = require("html-to-pdfmake");
+(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-multiple-reservation',
@@ -25,9 +31,18 @@ export class MultipleReservationComponent implements OnInit {
   nomiECognomi: {
     nome: string,
     cognome: string,
+    dataNascita: string,
     gara: boolean,
     tShirt?: string,
     doc?: {
+      content: string,
+      name: string,
+      contentType: string,
+      completeFile: File,
+      extension: string,
+      size?: any,
+    },
+    doc_1?: {
       content: string,
       name: string,
       contentType: string,
@@ -46,6 +61,24 @@ export class MultipleReservationComponent implements OnInit {
     size?: any,
   };
 
+  docIntestatario_1!: {
+    content: string,
+    name: string,
+    contentType: string,
+    completeFile: File,
+    extension: string,
+    size?: any,
+  };
+
+  moduloIscrizione!: {
+    content: string,
+    name: string,
+    contentType: string,
+    completeFile: File,
+    extension: string,
+    size?: any,
+  };
+
   sendingMail: boolean = false;
   mailSentWithoutError: boolean = false;
   mailSent: { [index: number]: boolean } = {};
@@ -53,10 +86,14 @@ export class MultipleReservationComponent implements OnInit {
 
   totalMails: number = 0;
 
-  constructor(private _formBuilder: FormBuilder, private shared: SharedService, private emailService: EmailService) {
+  logoBase64!: string;
+
+  constructor(private _formBuilder: FormBuilder, private shared: SharedService, private emailService: EmailService, private http: HttpClient, private router: Router) {
     this.intestatario = this._formBuilder.group({
       nome: ['', Validators.required],
       cognome: ['', Validators.required],
+      luogo: ['', Validators.required],
+      dataNascita: ['', Validators.required],
       residenza: ['', Validators.required],
       viaResidenza: ['', Validators.required],
       nResidenza: ['', Validators.required],
@@ -68,9 +105,26 @@ export class MultipleReservationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.http.get('assets/heraclea.png', { responseType: 'blob' })
+      .subscribe(blob => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onload = (event: any) => {
+          this.logoBase64 = event.target.result;
+        };
+
+        reader.onerror = (event: any) => {
+          console.log("File could not be read: " + event.target.error.code);
+        };
+
+      });
     combineLatest([this.shared.getNReservation$(), this.shared.getNSigned$(), this.shared.getNForGara$()]).subscribe(
       {
         next: ([total, alreadySigned, forGara]) => {
+          if(!total || total < 3) {
+            this.router.navigate(['start']);
+            return;
+          }
           this.totalPeople = total;
           this.alreadySigned = alreadySigned;
           this.forGara = forGara;
@@ -80,13 +134,14 @@ export class MultipleReservationComponent implements OnInit {
             this.nomiECognomi[i] = {
               nome: "",
               cognome: "",
+              dataNascita: "",
               gara: false
             }
           };
 
         },
         error: (error) => {
-
+          this.router.navigate(['start']);
         }
       }
     )
@@ -133,7 +188,7 @@ export class MultipleReservationComponent implements OnInit {
     return this.docIntestatario?.size > 0 && allDocs;
   }
 
-  selectFile(event: any, index: number) {
+  selectFile(event: any, index: number, retro: boolean = false) {
     if (event.target.files && event.target.files[0]) {
       const file: File = event.target.files[0];
 
@@ -150,8 +205,8 @@ export class MultipleReservationComponent implements OnInit {
           let base64String = reader.result as string;
           base64String = base64String.replace('data:', '').replace(/^.+,/, '');
 
-          if (index === -1) {
-            this.docIntestatario = {
+          if (index === -2) {
+            this.moduloIscrizione = {
               content: base64String,
               name: file.name,
               extension: file.name.split(".").pop() || "",
@@ -159,15 +214,50 @@ export class MultipleReservationComponent implements OnInit {
               completeFile: file,
               size: "" + file.size
             }
+          } else if (index === -1) {
+
+            if(retro) {
+              this.docIntestatario_1 = {
+                content: base64String,
+                name: file.name,
+                extension: file.name.split(".").pop() || "",
+                contentType: contentType,
+                completeFile: file,
+                size: "" + file.size
+              }
+            } else {
+              this.docIntestatario = {
+                content: base64String,
+                name: file.name,
+                extension: file.name.split(".").pop() || "",
+                contentType: contentType,
+                completeFile: file,
+                size: "" + file.size
+              }
+            }
+            
           } else {
-            this.nomiECognomi[index].doc = {
-              content: base64String,
-              name: file.name,
-              extension: file.name.split(".").pop() || "",
-              contentType: contentType,
-              completeFile: file,
-              size: "" + file.size
-            };
+
+            if(retro) {
+              this.nomiECognomi[index].doc_1 = {
+                content: base64String,
+                name: file.name,
+                extension: file.name.split(".").pop() || "",
+                contentType: contentType,
+                completeFile: file,
+                size: "" + file.size
+              };
+            } else {
+              this.nomiECognomi[index].doc = {
+                content: base64String,
+                name: file.name,
+                extension: file.name.split(".").pop() || "",
+                contentType: contentType,
+                completeFile: file,
+                size: "" + file.size
+              };
+            }
+            
           }
 
         };
@@ -179,13 +269,52 @@ export class MultipleReservationComponent implements OnInit {
     }
   }
 
+  public exportPDF() {
+    const pdfTable = document.getElementById("firstPageMultiple") as HTMLElement;
+    const pdfTable2 = document.getElementById("secondPageMultiple") as HTMLElement;
+    const pdfTable3 = document.getElementById("thirdPageMultiple") as HTMLElement;
+    this.generatePDF(pdfTable, true);
+    this.generatePDF(pdfTable2, true);
+    this.generatePDF(pdfTable3, false);
+
+    const defaultStyle = {
+      fontSize: 11,
+      alignment: 'justify'
+    }
+    const documentDefinition: any = { pageOrientation: 'portrait', pageSize: 'A4', content: this.allPDF, defaultStyle };
+    pdfMake.createPdf(documentDefinition).download('Modulo Iscrizione Gara.pdf');
+  }
+
+  allPDF: any[] = [];
+
+  generatePDF(pdf: HTMLElement, pageBreak: boolean) {
+    let html = htmlToPdfmake(pdf.innerHTML);
+
+    html = html.map((element: any) => {
+      if (element.nodeName.includes('H')) {
+        element.style = {
+          alignment: 'center'
+        }
+      }
+      return element;
+    });
+
+    if (pageBreak) {
+      html[html.length - 1] = {
+        ...html[html.length - 1],
+        pageBreak: 'after'
+      }
+    }
+    this.allPDF.push(html);
+  }
+
   sendMail() {
     const subject = "Iscrizione GARA MULTIPLA compilata da: " + this.intestatario.value['nome'] + " " + this.intestatario.value['cognome'];
-
+    const recipients = ['fortesting.lc@gmail.com', 'campusscherma@gmail.com'];
     const isForGara = (user: any, isIntestatario: boolean) => {
-      if(!isIntestatario && user.gara) {
+      if (!isIntestatario && user.gara) {
         return ` che parteciperà alla gara. Taglia Maglietta: ${user.tShirt}`
-      } else if(isIntestatario && user['gara']) {
+      } else if (isIntestatario && user['gara']) {
         return ` che parteciperà alla gara. Taglia Maglietta: ${user['tShirt']}`
       }
       return "";
@@ -201,7 +330,7 @@ export class MultipleReservationComponent implements OnInit {
 
       const mailReq: MailRequest = {
         subject: subject,
-        recipients: ['fortesting.lc@gmail.com'], // this.datiAtletaMaggiorenne.value['email'] 'campusscherma@gmail.com', 
+        recipients: recipients,
         mailText: `
         ${`L'utente che ha inviato questa mail (${this.intestatario.value['nome']} ${this.intestatario.value['cognome']}), ha richiesto l'iscrizione alla gara di Pizzo per le persone indicate.`}
         ${`Le persone collegate a questa richiesta, sono: ${this.nomiECognomi.map(u => u.nome + ' ' + u.cognome + ' - ')}.`}
@@ -215,6 +344,32 @@ export class MultipleReservationComponent implements OnInit {
       return mailReq;
     });
 
+    const secondFiles: MailRequest[] = this.nomiECognomi.map(user => {
+      const fileName = user.doc_1?.name;
+      const fo: FileObject = {
+        filename: fileName + "." + user.doc_1?.extension,
+        data: user.doc_1?.content,
+        contentType: user.doc_1?.contentType || ""
+      }
+
+      const mailReq: MailRequest = {
+        subject: subject,
+        recipients: recipients,
+        mailText: `
+        ${`L'utente che ha inviato questa mail (${this.intestatario.value['nome']} ${this.intestatario.value['cognome']}), ha richiesto l'iscrizione alla gara di Pizzo per le persone indicate.`}
+        ${`Le persone collegate a questa richiesta, sono: ${this.nomiECognomi.map(u => u.nome + ' ' + u.cognome + ' - ')}.`}
+        ${`In allegato il documento (retro) di: ${user.nome} ${user.cognome} ${isForGara(user, false)}`}
+        ${`Questa mail è stata inviata dalla mail: ${this.intestatario.value['email']}.`}
+        ${`Telefono: ${this.intestatario.value['telefono']}`}.
+        ${`Questa mail è stata generata automaticamente. Si prega di non rispondere.`}`,
+        files: [fo]
+      }
+
+      return mailReq;
+    });
+
+    mailRequests.push(...secondFiles);
+
     const fileIntestatario: FileObject = {
       filename: this.docIntestatario.name + "." + this.docIntestatario?.extension,
       data: this.docIntestatario?.content,
@@ -223,7 +378,7 @@ export class MultipleReservationComponent implements OnInit {
     mailRequests.push(
       {
         subject: subject,
-        recipients: ['fortesting.lc@gmail.com'], // this.datiAtletaMaggiorenne.value['email'] 'campusscherma@gmail.com', 
+        recipients: recipients,
         mailText: `
         ${`L'utente che ha inviato questa mail (${this.intestatario.value['nome']} ${this.intestatario.value['cognome']}), ha richiesto l'iscrizione alla gara di Pizzo per le persone indicate.`}
         ${`Le persone collegate a questa richiesta, sono: ${this.nomiECognomi.map(u => u.nome + ' ' + u.cognome + ' - ')}.`}
@@ -232,6 +387,46 @@ export class MultipleReservationComponent implements OnInit {
         ${`Telefono: ${this.intestatario.value['telefono']}`}.
         ${`Questa mail è stata generata automaticamente. Si prega di non rispondere.`}`,
         files: [fileIntestatario]
+      }
+    );
+
+    const fileIntestatario_1: FileObject = {
+      filename: this.docIntestatario_1.name + "." + this.docIntestatario_1?.extension,
+      data: this.docIntestatario_1?.content,
+      contentType: this.docIntestatario_1?.contentType || ""
+    }
+    mailRequests.push(
+      {
+        subject: subject,
+        recipients: recipients,
+        mailText: `
+        ${`L'utente che ha inviato questa mail (${this.intestatario.value['nome']} ${this.intestatario.value['cognome']}), ha richiesto l'iscrizione alla gara di Pizzo per le persone indicate.`}
+        ${`Le persone collegate a questa richiesta, sono: ${this.nomiECognomi.map(u => u.nome + ' ' + u.cognome + ' - ')}.`}
+        ${`In allegato il documento (retro) di: ${this.intestatario.value['nome']} ${this.intestatario.value['cognome']} ${isForGara(this.intestatario.value, false)}`}
+        ${`Questa mail è stata inviata dalla mail: ${this.intestatario.value['email']}.`}
+        ${`Telefono: ${this.intestatario.value['telefono']}`}.
+        ${`Questa mail è stata generata automaticamente. Si prega di non rispondere.`}`,
+        files: [fileIntestatario_1]
+      }
+    );
+
+    const fileModuloIscrizione: FileObject = {
+      filename: this.moduloIscrizione.name + "." + this.moduloIscrizione?.extension,
+      data: this.moduloIscrizione?.content,
+      contentType: this.moduloIscrizione?.contentType || ""
+    }
+    mailRequests.push(
+      {
+        subject: subject,
+        recipients: recipients,
+        mailText: `
+        ${`L'utente che ha inviato questa mail (${this.intestatario.value['nome']} ${this.intestatario.value['cognome']}), ha richiesto l'iscrizione alla gara di Pizzo per le persone indicate.`}
+        ${`Le persone collegate a questa richiesta, sono: ${this.nomiECognomi.map(u => u.nome + ' ' + u.cognome + ' - ')}.`}
+        ${`In allegato il modulo di iscrizione.`}
+        ${`Questa mail è stata inviata dalla mail: ${this.intestatario.value['email']}.`}
+        ${`Telefono: ${this.intestatario.value['telefono']}`}.
+        ${`Questa mail è stata generata automaticamente. Si prega di non rispondere.`}`,
+        files: [fileModuloIscrizione]
       }
     );
 

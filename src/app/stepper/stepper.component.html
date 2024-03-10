@@ -3,8 +3,8 @@
     <div class="full-width">
       <label>Seleziona un'opzione</label>
       <mat-radio-group (change)="setIsMaggiorenne($event)" aria-label="Seleziona un'opzione">
-        <mat-radio-button value="0">Minorenne</mat-radio-button>
-        <mat-radio-button value="1">Maggiorenne</mat-radio-button>
+        <mat-radio-button class="pad-5" value="0">Minorenne</mat-radio-button>
+        <mat-radio-button class="pad-5" value="1">Maggiorenne</mat-radio-button>
       </mat-radio-group>
     </div>
     <div class="button-container">
@@ -36,7 +36,7 @@
   </mat-step>
   <mat-step (click)="scroll()">
     <ng-template matStepLabel>Esporta PDF</ng-template>
-    <p *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid">
+    <p style="font-weight: bold;" *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid">
       Scarica e stampa i moduli precompilati, firmali in originale e ricaricali nello step successivo per il
       completamento dell'iscrizione.
     </p>
@@ -85,10 +85,19 @@
           </div>
         </div>
         <div class="nome-cognome-atleta form-group title">
+          <label class="wi-25">Email</label>
+          <input matInput type="email" class="form-control" [(ngModel)]="emailAtleta"  placeholder="...">
+          <div class="characters-notify">
+            <span *ngIf="!emailAtleta || emailAtleta === ''" class="form--error">
+              Questo campo è obbligatorio
+            </span>
+          </div>
+        </div>
+        <div class="nome-cognome-atleta form-group title">
           <label class="wi-25">Campus</label>
           <mat-select class="form-control" [(ngModel)]="campusAtleta">
-            <mat-option value="Formia">Camp di Formia (spada)</mat-option>
-            <mat-option value="Pizzo">Camp di Pizzo (spada)</mat-option>
+            <mat-option value="Formia">Camp di Formia (spada) dal 14 al 20 luglio</mat-option>
+            <mat-option value="Pizzo">Camp di Pizzo (spada) dal 27 agosto al 2 settembre</mat-option>
           </mat-select>
           <div class="characters-notify">
             <span *ngIf="!campusAtleta || campusAtleta === ''" class="form--error">

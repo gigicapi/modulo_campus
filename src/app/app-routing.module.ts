@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { StartComponent } from './start/start.component';
 import { HomeComponent } from './home/home.component';
 import { MultipleReservationComponent } from './multiple-reservation/multiple-reservation.component';
+import { UpdateDocumentsComponent } from './update-documents/update-documents.component';
 
 const routes: Routes = [
 
@@ -27,6 +28,10 @@ const routes: Routes = [
   {
     path: 'reservations',
     component: MultipleReservationComponent
+  },
+  {
+    path: 'upload-docs',
+    component: UpdateDocumentsComponent
   },
 ];
 

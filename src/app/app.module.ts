@@ -25,6 +25,7 @@ import { StartComponent } from './start/start.component';
 import { WrapperComponent } from './wrapper/wrapper.component';
 import { MultipleReservationComponent } from './multiple-reservation/multiple-reservation.component';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
+import { UpdateDocumentsComponent } from './update-documents/update-documents.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { CdkAccordionModule } from '@angular/cdk/accordion';
     MinorenneComponent,
     MaggiorenneComponent,
     WrapperComponent,
-    MultipleReservationComponent
+    MultipleReservationComponent,
+    UpdateDocumentsComponent
   ],
   imports: [
     BrowserModule,
