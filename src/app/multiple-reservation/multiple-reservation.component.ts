@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SharedService } from '../shared.service';
 import { combineLatest } from 'rxjs';
 import { MatStepper } from '@angular/material/stepper';
-import { EmailService, FileObject, MailRequest } from '../email.service';
+import { EmailService, FileObject, isValidContent, MailRequest } from '../email.service';
 import { HttpClient } from '@angular/common/http';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
@@ -194,7 +194,7 @@ export class MultipleReservationComponent implements OnInit {
 
       const contentType = file.type;
 
-      if (!file || file.size === 0 || file.size >= 7000000 || !contentType || contentType === '') {
+      if (!file || file.size === 0 || file.size >= 7000000 || !isValidContent(contentType)) {
         this.nomiECognomi[index].doc = undefined;
         alert("File non valido");
         return;

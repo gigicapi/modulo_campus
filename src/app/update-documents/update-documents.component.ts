@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SharedService } from '../shared.service';
-import { EmailService, FileObject, MailRequest } from '../email.service';
+import { EmailService, FileObject, isValidContent, MailRequest } from '../email.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -47,8 +47,10 @@ export class UpdateDocumentsComponent implements OnInit {
       const file: File = event.target.files[0];
 
       const contentType = file.type;
+      console.log("file", file);
+      console.log("contentType", contentType);
 
-      if (!file || file.size === 0 || file.size >= 7000000 || !contentType || contentType === '') {
+      if (!file || file.size === 0 || file.size >= 7000000 || !isValidContent(contentType)) {
         delete this.attachmentsDict[key];
         alert("File non valido");
         return;

@@ -2,10 +2,12 @@
   <h2>Benvenuto nel sistema di prenotazione eventi Heraclea 2024</h2>
   <h4>Cosa vuoi fare?</h4>
   <ul>
-    <li class="link" (click)="goToClassicReservation()">Iscrizione campus atleti</li>
-    <p class="promo">Se decidi di iscriverti anche all'evento gara di Pizzo dal 02/09/2024 al 04/09/2024,</p>
+    <li class="link" (click)="goToClassicReservation()">Iscrizione campus Atleti</li>
+    <br />
+    <li class="link" (click)="goToSingleReservation()">Iscrizione gara Pizzo SOLO Atleti</li>
+    <!--<p class="promo">Se decidi di iscriverti anche all'evento gara di Pizzo dal 02/09/2024 al 04/09/2024,</p>
     <p class="promo">puoi usufruire della PROMO al costo di <strong>170€</strong>, invece che 230€, per le prenotazioni
-      entro marzo</p>
+      entro marzo</p>-->
     <!--<br />
     <li class="link" (click)="selectOnePeople = true">Iscrizione Evento Gara (SOLO ATLETI)</li>
     
@@ -19,7 +21,7 @@
       </button>
     </div>-->
     <br />
-    <li class="link" (click)="selectPeople = true">Iscrizione Evento Gara (da 3 a 5 persone)</li>
+    <li class="link" (click)="selectPeople = true">Iscrizione Evento Gara per Atleti e/o Genitori (da 3 a 5 persone)</li>
     <br />
     <div class="form-group" *ngIf="selectPeople">
       <div>
@@ -33,7 +35,7 @@
       </button>
     </div>
     <br />
-    <li class="link" (click)="goToUpdateDocuments()">Rinnovo documenti</li>
+    <li class="link" (click)="goToUpdateDocuments()">Rinnovo documenti e inserimento Manleva</li>
     <p class="muted-text">Se hai già effettuato una prenotazione e hai bisogno di caricare un documento aggiornato</p>
   </ul>
 

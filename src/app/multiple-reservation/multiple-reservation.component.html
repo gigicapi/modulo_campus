@@ -252,14 +252,27 @@
 
     </mat-step>
 
-    <mat-step label="Carica documenti" [completed]="isStepCompleted('Carica documenti')">
-
+    <mat-step label="Esporta Modulo">
+        <p style="font-weight: bold;">
+            Scarica e stampa i moduli precompilati, firmali in originale e ricaricali nello step successivo per il
+            completamento dell'iscrizione.
+        </p>
         <div class="upload-section">
-            <label>Scarica, stampa e firma il file modulo di iscrizione</label>
             <button mat-raised-button *ngIf="intestatario.valid" (click)="exportPDF()" color="primary">
-                <span>Scarica PDF</span> <mat-icon fontIcon="download"></mat-icon>
+                <span>Scarica Modulo</span> <mat-icon fontIcon="download"></mat-icon>
             </button>
         </div>
+
+        <div class="button-container">
+            <button mat-raised-button matStepperPrevious><mat-icon fontIcon="arrow_back"></mat-icon>
+                <span>Indietro</span></button>
+            <button *ngIf="isAllSubStepsCompleted()" mat-raised-button color="primary" matStepperNext>
+                <span>Avanti</span> <mat-icon fontIcon="arrow_forward"></mat-icon>
+            </button>
+        </div>
+    </mat-step>
+
+    <mat-step label="Carica documenti" [completed]="isStepCompleted('Carica documenti')">
 
         <h4>Carica i documenti di tutte le persone della prenotazione</h4>
 
@@ -288,14 +301,15 @@
 
         <div *ngFor="let doc of steps" class="upload-section">
             <label [ngClass]="{ 'file-loaded': nomiECognomi[doc].doc }">
-                Documento {{doc + 1}}
+                Documento {{doc + 1}} (FRONTE)
                 <mat-icon *ngIf="nomiECognomi[doc].doc">check</mat-icon></label>
             <input type="file" id="documento_{{doc}}" (change)="selectFile($event, doc)" name="documento_{{doc}}" />
 
             <label [ngClass]="{ 'file-loaded': nomiECognomi[doc].doc_1 }">
-                Documento {{doc + 1}}
+                Documento {{doc + 1}} (RETRO)
                 <mat-icon *ngIf="nomiECognomi[doc].doc_1">check</mat-icon></label>
-            <input type="file" id="documento_{{doc}}_1" (change)="selectFile($event, doc, true)" name="documento_{{doc}}_1" />
+            <input type="file" id="documento_{{doc}}_1" (change)="selectFile($event, doc, true)"
+                name="documento_{{doc}}_1" />
         </div>
 
         <div class="button-container">
@@ -397,11 +411,16 @@
             <li>Allegare la dichiarazione di esonero delle responsabilità</li>
             <li>Allegare la liberatoria di utilizzo immagini e video</li>
             <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell'atleta</li>
-            <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico
+            <li>Allegare copia del certificato (solo per i partecipanti alla gara) di idoneità alla pratica agonistica
+                in corso di validità (non agonistico
                 per
                 i nati dal 2014 in poi)</li>
             <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2024-2025 (solo per i partecipanti alla
                 gara)
+            </li>
+            <li>Attestazione di versamento della caparra 100,00 € a persona sul C/C bancario intestato a: Club
+                Scherma Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720
+                specifcando nella causale: Evento gara cognome e nome dell'atleta - es. evento gara - Luigi Rossi
             </li>
         </ul>
         <p>

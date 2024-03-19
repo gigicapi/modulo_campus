@@ -84,6 +84,13 @@
         <input type="file" id="certificatoMedico" (change)="selectFile($event, 'CERTIFICATO_MEDICO')" name="certificatoMedico" />
     </div>
 
+    <div class="upload-section">
+        <label [ngClass]="{ 'file-loaded': attachmentsDict['MANLEVA'] }">
+            Manleva camera quintupla
+            <mat-icon *ngIf="attachmentsDict['MANLEVA']">check</mat-icon></label>
+        <input type="file" id="manleva" (change)="selectFile($event, 'MANLEVA')" name="manleva" />
+    </div>
+
     <div *ngIf="!sendingMail" class="confirm-container">
         <button *ngIf="atLeastOneDoc()" mat-raised-button color="primary" (click)="sendMail()">
             <mat-icon fontIcon="send"></mat-icon>

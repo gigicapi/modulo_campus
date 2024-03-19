@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedService } from '../shared.service';
 
 @Component({
   selector: 'app-home',
@@ -10,9 +11,16 @@ export class HomeComponent implements OnInit {
   stepStart: boolean = false;
   onlyUpload: boolean = false;
 
-  constructor() { }
+  isGara: boolean = false;
+
+  constructor(private shared: SharedService) { }
 
   ngOnInit(): void {
+    this.shared.getIsGara$().subscribe(
+      (isGara) => {
+        this.isGara = isGara;
+      }
+    )
   }
 
 }

@@ -12,7 +12,7 @@ const htmlToPdfmake = require("html-to-pdfmake");
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
 import '../../assets/smtp.js';
-import { EmailService, FileObject, MailRequest } from '../email.service';
+import { EmailService, FileObject, isValidContent, MailRequest } from '../email.service';
 import { SharedService } from '../shared.service'
 import { combineLatest } from 'rxjs';
 declare let Email: any;
@@ -94,7 +94,7 @@ export class StepperComponent implements OnInit, OnChanges {
       societa: ['', Validators.required],
       numeroFIS: ['', Validators.required],
       allergie: [''],
-      iscrizioneGara: ['', Validators.required],
+      iscrizioneGara: ['NO', Validators.required],
       preferenzaCamera: [''],
       telefonoAtleta: ['', Validators.required],
       telefonoPadre: ['', Validators.required],
@@ -115,7 +115,7 @@ export class StepperComponent implements OnInit, OnChanges {
       societa: ['', Validators.required],
       numeroFIS: ['', Validators.required],
       allergie: [''],
-      iscrizioneGara: ['', Validators.required],
+      iscrizioneGara: ['NO', Validators.required],
       preferenzaCamera: [''],
       telefonoAtleta: ['', Validators.required],
       telefonoPadre: [''],
@@ -150,6 +150,9 @@ export class StepperComponent implements OnInit, OnChanges {
           this.datiAtletaMinorenne.controls["iscrizione"].addValidators(Validators.required);
           this.datiAtletaMaggiorenne.controls["pantaloncino"].addValidators(Validators.required);
           this.datiAtletaMinorenne.controls["pantaloncino"].addValidators(Validators.required);
+        } else {
+          this.datiAtletaMaggiorenne.controls["iscrizioneGara"].setValue("SI");
+          this.datiAtletaMinorenne.controls["iscrizioneGara"].setValue("SI");
         }
 
         this.alreadySigned = alreadySigned > 0;
@@ -249,7 +252,7 @@ export class StepperComponent implements OnInit, OnChanges {
 
       const contentType = file.type;
 
-      if (!file || file.size === 0 || file.size >= 7000000 || !contentType || contentType === '') {
+      if (!file || file.size === 0 || file.size >= 7000000 || !isValidContent(contentType)) {
         delete this.attachmentsDict[key];
         alert("File non valido");
         return;
@@ -382,9 +385,11 @@ export class StepperComponent implements OnInit, OnChanges {
           subject: subject + campus + " - " + fo.filename,
           recipients: ['fortesting.lc@gmail.com', 'campusscherma@gmail.com'],
           mailText: `
-          ${this.upload ? `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.` :
+          ${this.upload ? 
+            `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.
+              Questa mail è stata inviata dalla mail: ${this.emailAtleta}` :
               `In allegato i documenti di iscrizione per il campo estivo dell'atleta: ${subject}.
-              Questa mail è stata inviata dalla mail: ${this.upload ? this.emailAtleta : this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}.`}
+              Questa mail è stata inviata dalla mail: ${this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email']}.`}
               ${this.isGara && this.alreadySigned ? `L'iscrizione richiesta è per la gara di Pizzo e non ha caricato tutti i file, in quanto dichiara di essersi già iscritto.` : ``}
               Questa mail è stata generata automaticamente. Si prega di non rispondere.`,
           files: [fo]

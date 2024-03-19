@@ -212,56 +212,63 @@
     margin-top: 25px;
 
     .file-loaded {
-      color: green;
-      font-weight: bold;
-      text-decoration: underline;
+        color: green;
+        font-weight: bold;
+        text-decoration: underline;
     }
 
     .action-loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      line-height: 30px;
-      margin-top: 50px;
-      width: 100%;
-      padding: 10px;
-      background-color: orange;
-      font-size: larger;
-      font-weight: bold;
-      color: white;
-      border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        line-height: 30px;
+        margin-top: 50px;
+        width: 100%;
+        padding: 10px;
+        background-color: orange;
+        font-size: larger;
+        font-weight: bold;
+        color: white;
+        border-radius: 5px;
     }
 
     .action-complete {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      line-height: 30px;
-      margin-top: 50px;
-      width: 100%;
-      padding: 10px;
-      background-color: green;
-      font-size: larger;
-      font-weight: bold;
-      color: white;
-      border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        line-height: 30px;
+        margin-top: 50px;
+        width: 100%;
+        padding: 10px;
+        background-color: green;
+        font-size: larger;
+        font-weight: bold;
+        color: white;
+        border-radius: 5px;
     }
 
     .action-error {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      line-height: 30px;
-      margin-top: 50px;
-      width: 100%;
-      padding: 10px;
-      background-color: red;
-      font-size: larger;
-      font-weight: bold;
-      color: white;
-      border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        line-height: 30px;
+        margin-top: 50px;
+        width: 100%;
+        padding: 10px;
+        background-color: red;
+        font-size: larger;
+        font-weight: bold;
+        color: white;
+        border-radius: 5px;
     }
-  }
+}
+
+.confirm-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
