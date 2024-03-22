@@ -1,4 +1,4 @@
-<h4>Inserisci i tuoi dati</h4>
+<h4 class="text-center">Inserisci i tuoi dati</h4>
 <div [formGroup]="intestatario" id="english-form" class="content">
     <div class="form-group title">
         <label>Nome</label>
@@ -54,7 +54,7 @@
 </div>
 
 <div *ngIf="intestatario.valid">
-    <h4>Carica i documenti che vuoi rinnovare</h4>
+    <h4 class="text-center">Carica <span class="highlight">SOLO</span> i documenti che vuoi rinnovare, nessuno dei documenti è obbligatorio</h4>
 
     <div class="upload-section">
         <label [ngClass]="{ 'file-loaded': attachmentsDict['CI_FRONTE'] }">
