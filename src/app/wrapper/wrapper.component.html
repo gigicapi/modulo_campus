@@ -1,6 +1,6 @@
 <div *ngIf="!isAllCompleted()">
     <div *ngIf="numberOfAlreadySigned > 0">
-        <h4>Inserisci i nomi delle persone già iscritte ad un campus Heraclea 2024</h4>
+        <h4>Inserisci i nomi delle persone già iscritte ad un campus Heraclea 2025</h4>
         <mat-stepper #stepper>
             <div *ngFor="let n of stepsAlreadySigned">
                 <mat-step label="{{n+1}}" [completed]="isAlreadySignStepCompleted(n)">

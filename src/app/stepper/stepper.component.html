@@ -96,8 +96,8 @@
         <div class="nome-cognome-atleta form-group title">
           <label class="wi-25">Campus</label>
           <mat-select class="form-control" [(ngModel)]="campusAtleta">
-            <mat-option value="Formia">Camp di Formia (spada) dal 14 al 20 luglio</mat-option>
-            <mat-option value="Pizzo">Camp di Pizzo (spada) dal 27 agosto al 2 settembre</mat-option>
+            <!--<mat-option value="Formia">Camp di Formia (spada) dal 14 al 20 luglio</mat-option>-->
+            <mat-option value="Pizzo">Camp di Pizzo (spada) dal 30 agosto al 5 settembre</mat-option>
           </mat-select>
           <div class="characters-notify">
             <span *ngIf="!campusAtleta || campusAtleta === ''" class="form--error">
@@ -278,6 +278,8 @@
       <br />
       T-Shirt <strong>{{datiAtletaMinorenne.value['tShirt']}}</strong> Pantaloncino
       <strong>{{datiAtletaMinorenne.value['pantaloncino']}}</strong>
+      <br />
+      taglie disponibili XXXS-XXS (bambino) - XS-S-M-L-XL (adulto)
     </p>
   </div>
   <div *ngIf="isMaggiorenne" class="dati_atleta">
@@ -307,27 +309,29 @@
       <br />
       T-Shirt <strong>{{datiAtletaMaggiorenne.value['tShirt']}}</strong> Pantaloncino
       <strong>{{datiAtletaMaggiorenne.value['pantaloncino']}}</strong>
+      <br />
+      taglie disponibili XXXS-XXS (bambino) - XS-S-M-L-XL (adulto)
     </p>
   </div>
   <h5 class="underline center">REGOLAMENTO GENERALE</h5>
   <div class="regolamento">
     <ol>
-      <li>La quota campus ammonta a 650,00 €<span *ngIf="isAlsoForGara()"> più 170,00 € per l'evento gara. Le quote comprendono</span> <span>. La quota comprende </span>: Sistemazione in camera multipla, pensione completa,
-        all-inclusive 24h (solo camp di Pizzo), lezioni individuali e di gruppo, tornei, kit campus, attività ricreativa con l'utilizzo di tutti i servizi della struttura.
+      <li>La quota campus ammonta a 750,00 €<span *ngIf="isAlsoForGara()"> più 170,00 € per l'evento gara. Le quote comprendono</span> <span>. La quota comprende </span>: Sistemazione in camera multipla,  pensione completa, all-inclusive 24h (solo camp di Pizzo), lezioni individuali e di gruppo, tornei, kit campus, attività ricreativa con l'utilizzo di tutti i servizi della struttura.</li>
+      <li>Sono previste due tipologie di sconto non cumulabili fra loro.
         <ul>
-          <li>Sono previste due tipologie di sconto non cumulabili fra loro.
-            <ol>
-              <li>50,00 € sul saldo della quota del secondo figlio/a.</li>
-              <li>50,00 € per chi parteciperà ad entrambi i campus. (Sconto applicabile sul saldo del secondo campus)
-              </li>
-            </ol>
+          <li>50,00 € sul saldo della quota del secondo figlio/a.</li>
+          <li>50,00 € per chi parteciperà ad entrambi i campus. (Sconto applicabile sul saldo del secondo campus)
           </li>
         </ul>
       </li>
       <li>
-        Anticipo quota d'iscrizione di 350,00 €, saldo da consegnare al proprio Maestro di sala oppure da
-        concordare telefonicamente. La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione
-        dello stage.
+        La quota d'iscrizione verrà suddivisa come segue:
+        <ul>
+          <li>bonifico 1a rata di 250,00 € al momento dell'iscrizione.</li>
+          <li>bonifico 2a rata di 250,00 € entro il 31 marzo 2025</li>
+          <li>contanti 3a rata di 250,00 € ad inizio campus, da consegnare al proprio Maestro di sala oppure da concordare telefonicamente.</li>
+        </ul>
+        <p class="underline bold">La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione dello stage.</p>
       </li>
       <li>
         La società organizzatrice declina ogni responsabilità per eventuali incidenti o danni a persone o
@@ -341,15 +345,16 @@
   <h6 class="bold">Preso atto ed approvato il presente Regolamento Generale, dichiaro di:</h6>
   <div>
     <ul>
+      <li>Impegnarmi a pagare le quote d'iscrizione come riportato nel regolamento generale.</li>
       <li>Allegare modulo di iscrizione</li>
       <li>Allegare la dichiarazione di esonero delle responsabilità</li>
       <li>Allegare la liberatoria di utilizzo immagini e video</li>
       <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell'atleta</li>
       <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico per
         i nati dal 2014 in poi)</li>
-      <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2023-2024 per Formia, e 2024-2025 per Pizzo
+      <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2024-2025 per Formia, e 2025-2026 per Pizzo
       </li>
-      <li>Attestazione di versamento della caparra (350,00 €) sul C/C bancario intestato a: Club
+      <li>Attestazione di versamento della caparra (250,00 €) sul C/C bancario intestato a: Club
         Scherma
         Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720
         specificando nella causale: camp cognome e nome dell'atleta - es. Formia o Pizzo - Luigi Rossi.</li>
@@ -407,7 +412,7 @@
   <p *ngIf="isMaggiorenne">la sua iscrizione al camp:</p>
   <ul>
     <li>{{isMaggiorenne ? datiAtletaMaggiorenne.value['iscrizione'] : datiAtletaMinorenne.value['iscrizione']}}</li>
-    <li *ngIf="isAlsoForGara()">Evento Gara Pizzo dal 02/09/2024 al 04/09/2024</li>
+    <!--<li *ngIf="isAlsoForGara()">Evento Gara Pizzo dal 02/09/2024 al 04/09/2024</li>-->
   </ul>
   <h5 class="title">E DICHIARA</h5>
   <p *ngIf="!isMaggiorenne">
