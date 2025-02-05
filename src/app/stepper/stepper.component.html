@@ -97,7 +97,7 @@
           <label class="wi-25">Campus</label>
           <mat-select class="form-control" [(ngModel)]="campusAtleta">
             <!--<mat-option value="Formia">Camp di Formia (spada) dal 14 al 20 luglio</mat-option>-->
-            <mat-option value="Pizzo">Camp di Pizzo (spada) dal 30 agosto al 5 settembre</mat-option>
+            <mat-option value="Pizzo">Camp di Pizzo (spada) dal 30 agosto al 5 settembre 2025</mat-option>
           </mat-select>
           <div class="characters-notify">
             <span *ngIf="!campusAtleta || campusAtleta === ''" class="form--error">
@@ -171,7 +171,7 @@
         <label
           [ngClass]="{ 'file-loaded' : attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0 }">Certificato
           medico di idoneità agonistica (non agonistico per
-          i nati dal 2014 in poi)<mat-icon
+          i nati dal 2015 in poi)<mat-icon
             *ngIf="attachmentsDict['CERTIFICATO_MEDICO'] && attachmentsDict['CERTIFICATO_MEDICO'].length > 0">check</mat-icon></label>
         <input type="file" id="fileInputCertificatoMedico" (change)="selectFile($event, 'CERTIFICATO_MEDICO')"
           name="fileInputCertificatoMedico" />
@@ -316,7 +316,7 @@
   <h5 class="underline center">REGOLAMENTO GENERALE</h5>
   <div class="regolamento">
     <ol>
-      <li>La quota campus ammonta a 750,00 €<span *ngIf="isAlsoForGara()"> più 170,00 € per l'evento gara. Le quote comprendono</span> <span>. La quota comprende </span>: Sistemazione in camera multipla,  pensione completa, all-inclusive 24h (solo camp di Pizzo), lezioni individuali e di gruppo, tornei, kit campus, attività ricreativa con l'utilizzo di tutti i servizi della struttura.</li>
+      <li>La quota campus ammonta a 750,00 €<span *ngIf="isAlsoForGara()"> più 170,00 € per l'evento gara. Le quote comprendono</span> <span>. La quota comprende </span>: Sistemazione in camera multipla,  pensione completa, all-inclusive 24h (solo camp di Pizzo), tassa di soggiorno, lezioni individuali e di gruppo, tornei, kit campus, attività ricreativa con l'utilizzo di tutti i servizi della struttura.</li>
       <li>Sono previste due tipologie di sconto non cumulabili fra loro.
         <ul>
           <li>50,00 € sul saldo della quota del secondo figlio/a.</li>
@@ -351,7 +351,7 @@
       <li>Allegare la liberatoria di utilizzo immagini e video</li>
       <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell'atleta</li>
       <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico per
-        i nati dal 2014 in poi)</li>
+        i nati dal 2015 in poi)</li>
       <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2024-2025 per Formia, e 2025-2026 per Pizzo
       </li>
       <li>Attestazione di versamento della caparra (250,00 €) sul C/C bancario intestato a: Club
@@ -591,7 +591,7 @@
       <li>Allegare la liberatoria di utilizzo immagini e video</li>
       <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell'atleta</li>
       <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico per
-        i nati dal 2014 in poi)</li>
+        i nati dal 2015 in poi)</li>
       <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2024-2025</li>
       <li>Attestazione di versamento della caparra 100,00 € sul C/C bancario intestato a: Club Scherma Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720 specifcando nella causale: Evento gara cognome e nome dell'atleta - es. evento gara - Luigi Rossi</li>
     </ul>
