@@ -96,7 +96,7 @@
         <div class="nome-cognome-atleta form-group title">
           <label class="wi-25">Campus</label>
           <mat-select class="form-control" [(ngModel)]="campusAtleta">
-            <!--<mat-option value="Formia">Camp di Formia (spada) dal 14 al 20 luglio</mat-option>-->
+            <mat-option value="Formia">Camp di Formia (spada) dal 20 al 26 luglio</mat-option>
             <mat-option value="Pizzo">Camp di Pizzo (spada) dal 30 agosto al 5 settembre 2025</mat-option>
           </mat-select>
           <div class="characters-notify">
@@ -241,7 +241,7 @@
 </mat-stepper>
 
 <div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="firstPage" class="page">
-  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />MODULO D'ISCRIZIONE HERACLEA
+  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="60px" />MODULO D'ISCRIZIONE HERACLEA
     FENCING CAMP</h3>
   <div *ngIf="!isMaggiorenne" class="dati_atleta">
     <p>
@@ -316,7 +316,7 @@
   <h5 class="underline center">REGOLAMENTO GENERALE</h5>
   <div class="regolamento">
     <ol>
-      <li>La quota campus ammonta a 750,00 €<span *ngIf="isAlsoForGara()"> più 170,00 € per l'evento gara. Le quote comprendono</span> <span>. La quota comprende </span>: Sistemazione in camera multipla,  pensione completa, all-inclusive 24h (solo camp di Pizzo), tassa di soggiorno, lezioni individuali e di gruppo, tornei, kit campus, attività ricreativa con l'utilizzo di tutti i servizi della struttura.</li>
+      <li>La quota campus ammonta a <span *ngIf="isPizzo()">750,00 €</span> <span *ngIf="!isPizzo()">650,00 €</span> <span *ngIf="isAlsoForGara()"> più 170,00 € per l'evento gara. Le quote comprendono</span> <span>. La quota comprende </span>: Sistemazione in camera multipla,  pensione completa, all-inclusive 24h (solo camp di Pizzo), tassa di soggiorno, lezioni individuali e di gruppo, tornei, kit campus, attività ricreativa con l'utilizzo di tutti i servizi della struttura.</li>
       <li>Sono previste due tipologie di sconto non cumulabili fra loro.
         <ul>
           <li>50,00 € sul saldo della quota del secondo figlio/a.</li>
@@ -327,9 +327,9 @@
       <li>
         La quota d'iscrizione verrà suddivisa come segue:
         <ul>
-          <li>bonifico 1a rata di 250,00 € al momento dell'iscrizione.</li>
-          <li>bonifico 2a rata di 250,00 € entro il 31 marzo 2025</li>
-          <li>contanti 3a rata di 250,00 € ad inizio campus, da consegnare al proprio Maestro di sala oppure da concordare telefonicamente.</li>
+          <li>bonifico 1a rata di <span *ngIf="isPizzo()">500,00 €</span> <span *ngIf="!isPizzo()">400,00 €</span> al momento dell'iscrizione</li>
+          <!--<li>bonifico 2a rata di <span *ngIf="isPizzo()">250,00 €</span> <span *ngIf="!isPizzo()">200,00 €</span>  entro il 30 aprile 2025</li>-->
+          <li>contanti 2a rata di 250,00 € ad inizio campus, da consegnare al proprio Maestro di sala oppure da concordare telefonicamente.</li>
         </ul>
         <p class="underline bold">La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione dello stage.</p>
       </li>
@@ -354,7 +354,7 @@
         i nati dal 2015 in poi)</li>
       <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2024-2025 per Formia, e 2025-2026 per Pizzo
       </li>
-      <li>Attestazione di versamento della caparra (250,00 €) sul C/C bancario intestato a: Club
+      <li>Attestazione di versamento della caparra (<span *ngIf="isPizzo()">250,00 €</span> <span *ngIf="!isPizzo()">200,00 €</span>) sul C/C bancario intestato a: Club
         Scherma
         Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720
         specificando nella causale: camp cognome e nome dell'atleta - es. Formia o Pizzo - Luigi Rossi.</li>
@@ -373,7 +373,7 @@
 </div>
 
 <div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="secondPage" class="page">
-  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />DICHIARAZIONE DI ESONERO DA
+  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="60px" />DICHIARAZIONE DI ESONERO DA
     OGNI RESPONSABILITA'</h3>
 
   <p *ngIf="!isMaggiorenne">
@@ -442,7 +442,7 @@
 </div>
 
 <div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="thirdPage" class="page">
-  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />LIBERATORIA DI UTILIZZO DELLE IMMAGINI E
+  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="60px" />LIBERATORIA DI UTILIZZO DELLE IMMAGINI E
     DEI VIDEO</h3>
   <p *ngIf="!isMaggiorenne">
     il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;
@@ -497,8 +497,8 @@
   </p>
 </div>
 
-<div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="firstPageForGara" class="page">
-  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />MODULO D'ISCRIZIONE HERACLEA
+<div id="firstPageForGara" class="page">
+  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="60px" />MODULO D'ISCRIZIONE HERACLEA
     FENCING CAMP</h3>
   <div *ngIf="!isMaggiorenne" class="dati_atleta">
     <p>
@@ -609,7 +609,7 @@
 </div>
 
 <div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="secondPageForGara" class="page">
-  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />DICHIARAZIONE DI ESONERO DA
+  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="60px" />DICHIARAZIONE DI ESONERO DA
     OGNI RESPONSABILITA'</h3>
 
   <p *ngIf="!isMaggiorenne">
@@ -674,7 +674,7 @@
 </div>
 
 <div *ngIf="isMaggiorenne ? datiAtletaMaggiorenne.valid : datiAtletaMinorenne.valid" id="thirdPageForGara" class="page">
-  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="100px" />LIBERATORIA DI UTILIZZO DELLE IMMAGINI E
+  <h3 class="title"><img alt="logo_image" [src]="logoBase64" width="60px" />LIBERATORIA DI UTILIZZO DELLE IMMAGINI E
     DEI VIDEO</h3>
   <p *ngIf="!isMaggiorenne">
     il/la sottoscritto/a <strong>{{datiAtletaMinorenne.value['nomeGenitore']}}</strong>&nbsp;

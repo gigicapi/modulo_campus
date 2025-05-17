@@ -20,7 +20,14 @@ export class HomeComponent implements OnInit {
       (isGara) => {
         this.isGara = isGara;
       }
-    )
+    );
+
+    this.shared.getOnlyUpload$().subscribe(
+      (onlyUpload) => {
+        this.onlyUpload = onlyUpload;
+        this.stepStart = true;
+      }
+    );
   }
 
 }

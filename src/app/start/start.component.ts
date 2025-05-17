@@ -25,6 +25,7 @@ export class StartComponent implements OnInit {
     this.shared.setNReservation(1);
     this.shared.setNSigned(0);
     this.shared.setIsGara(false);
+    this.shared.setOnlyUpload(false);
     this.router.navigate(['home']);
   }
 
@@ -32,6 +33,7 @@ export class StartComponent implements OnInit {
     this.shared.setNReservation(this.alreadySigned ? 0 : 1);
     this.shared.setNSigned(this.alreadySigned ? 1 : 0);
     this.shared.setIsGara(true);
+    this.shared.setOnlyUpload(false);
     this.router.navigate(['home']);
   }
 
@@ -40,11 +42,18 @@ export class StartComponent implements OnInit {
     //this.shared.setNSigned(this.numeroPersoneIscritte);
     //this.shared.setNForGara(this.numeroPersoneGara);
     this.shared.setIsGara(true);
+    this.shared.setOnlyUpload(false);
     this.router.navigate(['reservations']);
   }
 
   goToUpdateDocuments() {
     this.router.navigate(['upload-docs']);
+  }
+
+  goToUploadSection() {
+    this.shared.setIsGara(false);
+    this.shared.setOnlyUpload(true);
+    this.router.navigate(['home']);
   }
 
 }

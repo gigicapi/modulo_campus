@@ -10,6 +10,7 @@ export class SharedService {
   nAlreadySigned: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   nForGara: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   isGara: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  onlyUpload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor() { }
 
@@ -51,6 +52,18 @@ export class SharedService {
 
   setNForGara(n: number) {
     this.nForGara.next(n);
+  }
+
+  setOnlyUpload(n: boolean) {
+    this.onlyUpload.next(n);
+  }
+
+  getOnlyUpload() {
+    return this.onlyUpload.getValue();
+  }
+
+  getOnlyUpload$() {
+    return this.onlyUpload.asObservable();
   }
 
 }

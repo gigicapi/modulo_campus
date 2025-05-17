@@ -39,7 +39,7 @@
     <div class="nome-cognome-atleta form-group title">
         <label>A quale campus sei iscritto?</label>
         <mat-select class="form-control" formControlName="campus">
-            <!--<mat-option value="Formia">Camp di Formia (spada) dal 14 al 20 luglio</mat-option>-->
+            <mat-option value="Formia">Camp di Formia (spada) dal 20 al 26 luglio</mat-option>
             <mat-option value="Pizzo">Camp di Pizzo (spada) dal 30 agosto al 5 settembre 2025</mat-option>
         </mat-select>
         <div class="characters-notify">
@@ -55,6 +55,13 @@
 
 <div *ngIf="intestatario.valid">
     <h4 class="text-center">Carica <span class="highlight">SOLO</span> i documenti che vuoi rinnovare, nessuno dei documenti è obbligatorio</h4>
+
+    <div class="upload-section">
+        <label [ngClass]="{ 'file-loaded': attachmentsDict['RICEVUTA'] }">
+            Ricevuta seconda rata
+            <mat-icon *ngIf="attachmentsDict['RICEVUTA']">check</mat-icon></label>
+        <input type="file" id="ricevuta" (change)="selectFile($event, 'RICEVUTA')" name="ricevuta" />
+    </div>
 
     <div class="upload-section">
         <label [ngClass]="{ 'file-loaded': attachmentsDict['CI_FRONTE'] }">
