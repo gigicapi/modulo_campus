@@ -374,6 +374,8 @@ export class StepperComponent implements OnInit, OnChanges {
         this.datiAtletaMaggiorenne.value['cognome'] + " " + this.datiAtletaMaggiorenne.value['nome'] :
         this.datiAtletaMinorenne.value['cognome'] + " " + this.datiAtletaMinorenne.value['nome'];
 
+      const mailInserted = this.isMaggiorenne ? this.datiAtletaMaggiorenne.value['email'] : this.datiAtletaMinorenne.value['email'];
+
       const mailRequests: MailRequest[] = Object.keys(this.attachmentsDict).map(fileName => {
         const fo: FileObject = {
           filename: fileName + "." + this.attachmentsDict[fileName][1],
@@ -383,7 +385,7 @@ export class StepperComponent implements OnInit, OnChanges {
 
         const mailReq: MailRequest = {
           subject: subject + campus + " - " + fo.filename,
-          recipients: ['fortesting.lc@gmail.com', 'campusscherma@gmail.com'],
+          recipients: ['campusscherma@gmail.com', mailInserted], // 'fortesting.lc@gmail.com',
           mailText: `
           ${this.upload ? 
             `L'utente che ha inviato questa mail (${this.nomeAtleta} ${this.cognomeAtleta}), non ha compilato il modulo, ma ha direttamente caricato i file da inviare.

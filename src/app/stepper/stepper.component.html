@@ -96,8 +96,8 @@
         <div class="nome-cognome-atleta form-group title">
           <label class="wi-25">Campus</label>
           <mat-select class="form-control" [(ngModel)]="campusAtleta">
-            <mat-option value="Formia">Camp di Formia (spada) dal 20 al 26 luglio</mat-option>
-            <mat-option value="Pizzo">Camp di Pizzo (spada) dal 30 agosto al 5 settembre 2025</mat-option>
+            <mat-option value="Formia">Camp di Formia (spada) dal 13 al 19 luglio 2026</mat-option>
+            <!--<mat-option value="Pizzo">Camp di Pizzo (spada) dal 27 agosto al 2 settembre 2026</mat-option>-->
           </mat-select>
           <div class="characters-notify">
             <span *ngIf="!campusAtleta || campusAtleta === ''" class="form--error">
@@ -256,7 +256,7 @@
       <strong>{{datiAtletaMinorenne.value['telefonoPadre']}}</strong> - Cell Madre
       <strong>{{datiAtletaMinorenne.value['telefonoMadre']}}</strong>
       in qualità di genitore/esercente la patria potestà <strong>chiede</strong> l'iscrizione al
-      campus&nbsp;<strong>{{datiAtletaMinorenne.value['iscrizione']}}</strong>&nbsp; <span *ngIf="isAlsoForGara()">&nbsp;ed anche all'evento gara (individuale o squadre) dal 2 al 4 settembre 2024&nbsp;</span> del/della figlio/figlia:
+      campus&nbsp;<strong>{{datiAtletaMinorenne.value['iscrizione']}}</strong>&nbsp; <span *ngIf="isAlsoForGara()">&nbsp;ed anche all'evento gara (individuale o squadre) dal 2 al 4 settembre 2026&nbsp;</span> del/della figlio/figlia:
     </p>
     <p>
       Nome <strong>{{datiAtletaMinorenne.value['nome']}}</strong> Cognome
@@ -286,7 +286,7 @@
     <p>
       il/la sottoscritto/a <strong>{{datiAtletaMaggiorenne.value['nome']}}</strong>&nbsp;
       <strong>{{datiAtletaMaggiorenne.value['cognome']}}</strong> <strong>chiede</strong>
-      l'iscrizione al campus: <strong>{{datiAtletaMaggiorenne.value['iscrizione']}}</strong> <span *ngIf="isAlsoForGara()">&nbsp;ed anche all'evento gara (individuale o squadre) dal 2 al 4 settembre 2024&nbsp;</span>
+      l'iscrizione al campus: <strong>{{datiAtletaMaggiorenne.value['iscrizione']}}</strong> <span *ngIf="isAlsoForGara()">&nbsp;ed anche all'evento gara (individuale o squadre) dal 2 al 4 settembre 2026&nbsp;</span>
     </p>
     <p>
       nato/a a <strong>{{datiAtletaMaggiorenne.value['luogo']}}</strong> il
@@ -327,9 +327,9 @@
       <li>
         La quota d'iscrizione verrà suddivisa come segue:
         <ul>
-          <li>bonifico 1a rata di <span *ngIf="isPizzo()">500,00 €</span> <span *ngIf="!isPizzo()">400,00 €</span> al momento dell'iscrizione</li>
-          <!--<li>bonifico 2a rata di <span *ngIf="isPizzo()">250,00 €</span> <span *ngIf="!isPizzo()">200,00 €</span>  entro il 30 aprile 2025</li>-->
-          <li>contanti 2a rata di 250,00 € ad inizio campus, da consegnare al proprio Maestro di sala oppure da concordare telefonicamente.</li>
+          <li>bonifico 1a rata di <span *ngIf="isPizzo()">500,00 €</span> <span *ngIf="!isPizzo()">250,00 €</span> al momento dell'iscrizione</li>
+          <li>bonifico 2a rata di <span *ngIf="isPizzo()">250,00 €</span> <span *ngIf="!isPizzo()">200,00 €</span> entro il 30 maggio 2026</li>
+          <li>contanti 3a rata di 250,00 € ad inizio campus, da consegnare al proprio Maestro di sala oppure da concordare telefonicamente.</li>
         </ul>
         <p class="underline bold">La quota non è rimborsabile, fatta salva l'ipotesi di non effettuazione dello stage.</p>
       </li>
@@ -352,12 +352,12 @@
       <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell'atleta</li>
       <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico per
         i nati dal 2015 in poi)</li>
-      <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2024-2025 per Formia, e 2025-2026 per Pizzo
+      <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2025-2026 per Formia, e 2026-2027 per Pizzo
       </li>
-      <li>Attestazione di versamento della caparra (<span *ngIf="isPizzo()">250,00 €</span> <span *ngIf="!isPizzo()">200,00 €</span>) sul C/C bancario intestato a: Club
+      <li>Attestazione di versamento della caparra (<span *ngIf="isPizzo()">250,00 €</span> <span *ngIf="!isPizzo()">250,00 €</span>) sul C/C bancario intestato a: Club
         Scherma
         Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720
-        specificando nella causale: camp cognome e nome dell'atleta - es. Formia o Pizzo - Luigi Rossi.</li>
+        specificando nella causale: 1a rata camp cognome e nome dell'atleta - es. Formia o Pizzo - Luigi Rossi.</li>
     </ul>
     <p>
       Si autorizza il trattamento dei dati personali, nonché alla comunicazione e diffusione degli stessi, ai sensi e
@@ -592,7 +592,7 @@
       <li>Allegare copia del documento di riconoscimento e della tessera sanitaria dell'atleta</li>
       <li>Allegare copia del certificato di idoneità alla pratica agonistica in corso di validità (non agonistico per
         i nati dal 2015 in poi)</li>
-      <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2024-2025</li>
+      <li>Essere in regola con l'iscrizione alla F.I.S. per la stagione 2024-2026</li>
       <li>Attestazione di versamento della caparra 100,00 € sul C/C bancario intestato a: Club Scherma Cosenza presso la Banca BCC Mediocrati di Rende con iban IT35 B 07062 80880 0000 0011 3720 specifcando nella causale: Evento gara cognome e nome dell'atleta - es. evento gara - Luigi Rossi</li>
     </ul>
     <p>
